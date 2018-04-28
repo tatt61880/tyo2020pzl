@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>#tyo2020pzl</title>
+<link rel="shortcut icon" href="./images/t.gif" />
+<link rel="stylesheet" href="./style.css">
+<style>
+	span.nowrap{white-space:nowrap; margin:0px 0px 0px 0px;}
+	input[type="radio"]{margin:3px 7px 7px 12px;}
+	input[type="checkbox"]{margin:3px 7px 7px 12px;}
+	input[type="button"]{border-radius:16px; padding:0px 10px 0px 10px; margin:15px 5px 15px 5px; height:32px;}
+	input[class="large_button"]{border-radius:24px; height:48px; font-size:130%;}
+	div.round{border-radius:10px; margin:3px 5px 3px 5px;}
+</style>
+</head>
+
+<body>
+<script>
+<!--
+function onClick_OpenClose(click_id, str){
+	obj = document.getElementById(click_id).style;
+	closedFlag = (obj.display == 'none');
+	obj.display = closedFlag ? 'block' : 'none';
+	document.getElementById(click_id + '_a').innerHTML = closedFlag ? '△' + str + ' (クリックして閉じる)' : '▼' + str + ' (クリックして開く)';
+}
+//-->
+</script>
+<div id="container" style="padding: 0px 0px 5px 0px">
+	<form>
+		<div id="left" style="float: left; max-width: 600px;">
+			<h1 id="upperTitle">東京オリンピック2020・エンブレム・パズル</h1>
+			<div id="TargetCanvas" style="display:none; ">
+				<canvas id="Canvas_Target" height="0" width="0"></canvas>
+			</div>
+			<div style="display:block;">
+				<canvas id="Canvas_Puzzle" height="400" width="400"></canvas>
+			</div>
+			<h1 id="lowerTitle" style="display:none;">東京オリンピック・エンブレム・パズル</h1>
+			<span id="Text_clickCount">初期化中…</span>
+			<div id="Button_Tweet" style="display:none;"></div>
+			<div id="Finish" style="display:none;">
+				<span id="Text_finishCount" style="color:#FF0000"></span>
+				<div id="Button_Tweet2" style="display:inline"></div>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs'); </script>
+			</div>
+		</div>
+
+		<div id="right" style="float:left; max-width:400px;">
+		<!-- セーブデータ -->
+		<div class="round" style="background-color:#FFF0FF; margin-bottom:5px; padding:1px 0px 1px 0px;">
+			<div onclick="onClick_OpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+				<a id="savedata_a" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
+			</div>
+			<div id="savedata" style="display:none; clear:both;">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Load" id="Button_Load" onclick="onButtonClick_SavedataLoad(event)">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Undo" id="Button_Undo" onclick="onButtonClick_SavedataUndo(event)">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Redo" id="Button_Redo" onclick="onButtonClick_SavedataRedo(event)">
+				<div onclick="onClick_OpenClose('savedata_str', 'テキストエリア')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+					<a id="savedata_str_a" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
+				</div>
+				<div id="savedata_str" style="display:none; clear:both;">
+					<textarea id="Textarea_Savedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
+				</div>
+				<div onclick="onClick_OpenClose('usage_for_savedata', 'セーブデータの使い方')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+					<a id="usage_for_savedata_a" style="cursor:pointer;">▼セーブデータの使い方 (クリックして開く)</a>
+				</div>
+				<div id="usage_for_savedata" style="display:none; clear:both;">
+					<ul>
+						<li>テキストエリア内の文字列がセーブデータです。適宜更新されます。1文字が1手に相当します。</li>
+						<li>【Load】セーブデータを読み込みます。</li>
+						<li>【Undo】1手前の状態に戻します。<br>※通常のUndoの意味合いと少し異なります。</li>
+						<li>【Redo】Undoする前の状態に戻します。</li>
+						<li>【おまけ機能】 半角のピリオド「.」でランダムな手が使えます。</li>
+						<li>【ショートカットキー】アローキー(←→)でもUndo, Redoできます。(※テキストエリアを非表示にしている状態の時のみ有効です)</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!-- オプション -->
+		<div class="round" style="background-color:#DFD; margin-bottom:5px; padding:1px 0px 1px 0px;">
+			<div onclick="onClick_OpenClose('option', 'オプション')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+				<a id="option_a" style="cursor:pointer;">△オプション (クリックして閉じる)</a>
+			</div>
+			<div id="option" style="display:block; clear:both;">
+				<div onclick="DrawColorSelector();onClick_OpenClose('HueCircle', '色')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+					<a id="HueCircle_a" style="cursor:pointer;">▼色 (クリックして開く)</a>
+				</div>
+				<div id="HueCircle" style="display:none; clear:both;">
+					<div style="display:block; text-align:center;">
+						<canvas id="CanvasColor" height="240" width="240"></canvas>
+					</div>
+					<div style="text-align:center;">
+						<input type="button" style="background-color:#BFB;" value="色を元に戻す" id="Button_DefaultColor" onclick="onButtonClick_DefaultColor(event)">
+					</div>
+				</div>
+
+				<div class="round" style="border:5px solid; border-color:#BFB;">
+					<div onclick="onClick_OpenClose('pattern', '模様')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+						<a id="pattern_a" style="cursor:pointer;">▼模様 (クリックして開く)</a>
+					</div>
+					<div id="pattern" style="display:none; clear:both;">
+						<input type="file" multiple id="myFile">
+						<div style="text-align:center;">
+							<input type="button" style="background-color:#BFB;" value="模様を元に戻す" id="Button_ResetShape" onclick="onButtonClick_ResetShape(event)">
+						</div>
+						<div id="myFileImg"></div>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEllipse"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEllipse">楕円</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeOctagram" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeOctagram">八芒星</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeOctangle" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeOctangle">八角形</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEspille1" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEspille1">キラキラ1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEspille2" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEspille2">キラキラ2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCross1"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCross1">手裏剣1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCross2"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCross2">手裏剣2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeFlower1"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeFlower1">花1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeFlower2"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeFlower2">花2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRectS"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRectS">□</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRect"     onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRect">口</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRects"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRects">田</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapePlus1"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapePlus1">十</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapePlus2"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapePlus2">×</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle1"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle1">○A</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle2"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle2">○B</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle3"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle3">○C</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle4"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle4">○D</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle5"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle5">○E</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle6"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle6">○F</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeLines"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeLines">線</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeLines2"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeLines2">線2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeNone"     onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeNone">なし</label></span>
+					</div>
+					<hr style="border:none;border-top:dashed 5px #BFB;">
+
+					<div id="target_location">
+						<div style="margin:1px 10px 1px 10px">
+							完成状態の表示位置
+						</div>
+						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetTopLeft" checked/><label for="RadioButton_TargetTopLeft">左上</label>
+						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetFront"          /><label for="RadioButton_TargetFront">前面</label>
+						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetBack"           /><label for="RadioButton_TargetBack">背面</label>
+						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetOther"          /><label for="RadioButton_TargetOther">上</label>
+						<hr style="border:none;border-top:dashed 5px #BFB;">
+					</div>
+					<div id="ColoredProperPieces">
+						<span class="nowrap"><input type="checkbox" id="Checkbox_ColoredProperPieces" onclick="onCheckboxChange_ColoredProperPieces()" checked><label for="Checkbox_ColoredProperPieces">正しい位置のピースを薄い色で表示</label></span>
+						<br>
+					</div>
+					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowPoints" onclick="onCheckboxChange_ShowPoints()" checked><label for="Checkbox_ShowPoints">点</label></span>
+					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowLozenge" onclick="onCheckboxChange_ShowLozenge()" checked><label for="Checkbox_ShowLozenge">境界線</label></span>
+					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowUnusedPieces" onclick="onCheckboxChange_ShowUnusedPieces()"><label for="Checkbox_ShowUnusedPieces">すべてのピースに模様を表示</label></span>
+					<br>
+					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowIndex" onclick="onCheckboxChange_ShowIndex()"><label for="Checkbox_ShowIndex">番号</label></span>
+					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowLines" onclick="onCheckboxChange_ShowLines()"><label for="Checkbox_ShowLines">隣接ピースの中央を結ぶ線</label></span>
+					<div style="text-align:center;">
+						<input type="button" style="background-color:#BFB;" value="すべてオフ" id="Button_UncheckAll" onclick="onButtonClick_UncheckAll(event)">
+						<input type="button" style="background-color:#BFB;" value="ランダムに1手動かす" id="Button_Random" onclick="onButtonClick_Random(event)">
+						<input type="button" style="background-color:#BFB;" value="ランダムに動かし続ける" id="Button_RandomInterval" onclick="onButtonClick_RandomInterval(event)">
+						<input type="button" style="background-color:#BFB;" value="停止" id="Button_RandomIntervalStop" onclick="onButtonClick_RandomIntervalStop(event)">
+						<p>←速い <input type="range" id="RangeRandom" min="50" max="500" onchange="oninput_Range(event)" oninput="oninput_Range(event)"> 遅い→</p>
+					</div>
+				</div>
+
+				<div class="round" style="border:5px solid; border-color:#BFB;">
+					<input type="checkbox" id="Checkbox_ShowTweetButton" onclick="onCheckboxChange_ShowTweetButon()"><label for="Checkbox_ShowTweetButton">未完成時用ツイートボタン</label>
+					<br>
+					<p>※未完成時用ツイートボタンは、ツイート直前に表示すればOKです。表示中は盤面変更の度に更新します。</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- レベル -->
+		<div class="round" style="background-color:#DDF; margin-bottom:5px; padding:1px 0px 1px 0px;">
+			<div onclick="onClick_OpenClose('level_select', 'レベル')" class="round" style="background-color:#BBF; padding:0px 5px 0px 5px;">
+				<a id="level_select_a" style="cursor:pointer;">▼レベル (クリックして開く)</a>
+			</div>
+			<div id="level_select" style="display:none; clear:both; padding-bottom:5px">
+				<p>
+				<strong style="color:#F00;">【注意事項】</strong>レベルを変更するとページを再読み込みします。初期化されるのでご注意ください。
+				</p>
+				<input type="radio" name="RadioButton_Mode" id="RadioButton_ModeEasy" onchange="onRadioButtonChange_Level()" />
+				<label for="RadioButton_ModeEasy">レベル6 (イージーモード)</label>
+				<table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
+					<tr>
+						<th style="background-color:#BBF;">初期状態</th>
+						<th style="background-color:#BBF;">完成状態</th>
+					</tr>
+					<tr>
+						<td style="text-align:center;">
+							<img style="vertical-align:middle;" src="./images/para6.png" alt="(イージーモードの初期状態の画像)" />
+						</td>
+						<td style="text-align:center;">
+							<img style="vertical-align:middle;" src="./images/olym6.png" alt="(イージーモードの完成状態の画像)" />
+						</td>
+					</tr>
+				</table>
+				<input type="radio" name="RadioButton_Mode" id="RadioButton_ModeNormal" onchange="onRadioButtonChange_Level()" checked/>
+				<label for="RadioButton_ModeNormal">レベル12 (ノーマルモード)</label>
+				<table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
+					<tr>
+						<th style="background-color:#BBF;">初期状態</th>
+						<th style="background-color:#BBF;">完成状態</th>
+					</tr>
+					<tr>
+						<td style="text-align:center;">
+							<img style="vertical-align:middle;" src="./images/para.png" alt="(ノーマルモードの初期状態の画像)" />
+						</td>
+						<td style="text-align:center;">
+							<img style="vertical-align:middle;" src="./images/olym.png" alt="(ノーマルモードの完成状態の画像)" />
+						</td>
+					</tr>
+				</table>
+				<div style="margin:0px 15px 0px 15px">
+					完成状態が定義されているのは「レベル6 (イージーモード)」と「レベル12 (ノーマルモード)」のみですが、他のレベルでも遊べます。
+					<select id="Select_Level">
+						<option value="6">レベル6</option>
+						<option value="8">レベル8</option>
+						<option value="10">レベル10</option>
+						<option value="12" selected>レベル12</option>
+						<option value="14">レベル14</option>
+						<option value="16">レベル16</option>
+						<option value="18">レベル18</option>
+						<option value="20">レベル20</option>
+						<option value="22">レベル22</option>
+						<option value="24">レベル24</option>
+						<option value="26">レベル26</option>
+						<option value="28">レベル28</option>
+						<option value="30">レベル30</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		</div>
+	</form>
+
+	<div id="bottom" style="clear:both;">
+	<h2>概要</h2>
+	<p>
+	東京オリンピック(2020年)のエンブレムにちなんだパズルです。
+	</p>
+
+	<h2>遊び方</h2>
+	<ul>
+		<li>このパズルは、菱形の形状をしたピースが敷き詰められた構造になっています。菱形の中に何も描かれていないピースと、藍色の長方形が描かれているピースがあります。(※オプションにより、薄い色で表示されているピースが存在する場合があります。)
+		<div style="text-align:center;">
+			<img src="./images/pieces.png" alt="(ピースの図)" />
+		</div>
+		</li>
+		<li>
+		<b style="color:#FF0000">赤い点</b>や<b style="color:#00BB00">緑の点</b>をクリックし、ピースを動かします。
+		</li>
+		<li>【<b style="color:#FF0000">赤い点(□)</b>】3つの互いに隣接したピースの位置を、赤い点を中心として180度入れ替えます。<br>
+		<div style="text-align:center;">
+			<img src="./images/red_point.png" alt="(赤い点の説明図)" />
+		</div>
+		</li>
+		<li>【<b style="color:#00BB00">緑の点(■)</b>】2つの隣接したピースの位置を、緑の点を中心として180度入れ替えます。<br>
+		<div style="text-align:center;">
+			<img src="./images/green_point.png" alt="(緑の点の説明図)" />
+		</div>
+		</li>
+		<li>
+		藍色の長方形だけに注目したときにオリンピックのエンブレムの模様になっていれば完成です。
+		<table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#DDF">
+			<tr>
+				<th style="background-color:#BBF; text-align:center;">初期状態</th>
+				<th style="background-color:#BBF; text-align:center;">完成状態</th>
+			</tr>
+			<tr>
+				<td style="text-align:center;">パラリンピックの<br>エンブレム</td>
+				<td style="text-align:center;">オリンピックの<br>エンブレム</td>
+			</tr>
+			<tr>
+				<td style="text-align:center;">
+					<img style="vertical-align:middle; margin:5px 0px 5px 0px;" src="./images/para.png" alt="(パラリンピックのエンブレムの画像)" />
+				</td>
+				<td style="text-align:center">
+					<img style="vertical-align:middle; margin:5px 0px 5px 0px;" src="./images/olym.png" alt="(オリンピックのエンブレムの画像)" />
+				</td>
+			</tr>
+		</table>
+		</li>
+		<li>
+		赤い点や緑の点は、「その操作が可能で、操作の結果、操作前と異なった模様になる場所」に自動的に生じます。
+		</li>
+		<li>点から多少離れた位置をクリックしてもOKです。スマホでも遊びやすいと思います。</li>
+		<li>完成状態の表示方法はオプションで変更できます。</li>
+	</ul>
+
+	<h2>このプログラムの作者</h2>
+	<table style="text-align:center; border:0;">
+		<tr>
+		<td>
+			<img src="./images/tatt61880.png" alt="(Tattアイコン)" />
+		</td>
+		<td>
+			たっと(Tatt) <a target="_blank" href="https://twitter.com/tatt61880">@tatt61880</a>
+		</td>
+		</tr>
+	</table>
+
+	<h3>既知の不具合</h3>
+	<ul>
+		<li>スマホで、画面を傾けたときに正しくリサイズされない場合があります (iPhoneの場合、Safariでは問題ない様子)。</li>
+		<li>IE8以下で動作しません。(※対応予定はありません。新しいブラウザをご利用ください。)</li>
+	</ul>
+	<p>
+	不具合を発見された場合は、報告していただけると幸いです。よろしくお願いします。<br>
+	要望がある場合も是非。<br>
+	Twitterで気軽にリプライしていただいて構いません。<br>
+	ちなみに、ハッシュタグは<a target="_blank" href="https://twitter.com/search?q=%23tyo2020pzl">#tyo2020pzl</a>に決定しました(よんますさん、ありがとうございます)。
+	</p>
+	<h3>改善したい内容</h3>
+	<ul>
+		<li>LoadやUndoやRedoの処理速度向上。</li>
+		<li>奇数レベルへの対応。</li>
+		<li>レベル6, レベル12以外の完成形の定義。</li>
+	</ul>
+
+	<h3>謝辞</h3>
+	<ul>
+		<li>パズルの作成に際し、よんますさん(<a target="_blank" href="https://twitter.com/yonmas">@yonmas</a>)とTokusiNさん(<a target="_blank" href="https://twitter.com/toku51n">@toku51n</a>)にお世話になりました。お二方のおかげで完成可能なパズルに仕上げることが出来ました。</li>
+		<li>みずすましさん(<a target="_blank" href="https://twitter.com/nosiika">@nosiika</a>)のツイートや、松川昌平さん(<a target="_blank" href="https://twitter.com/sho000">@sho000</a>)のツイートが、パズルの作成のきっかけになりました。</li>
+		<li>エンブレム作者の野老朝雄さん(<a target="_blank" href="https://twitter.com/asaoTOKOLO">@asaoTOKOLO</a>)さんがいなければこのパズルが作られることはありませんでした。</li>
+		<li>Twitterでエンブレムの話題が盛り上がっていたことが、このパズルを作成するモチベーションになりました。</li>
+		<li>オプションの実装の一部で、がおさん(<a target="_blank" href="https://twitter.com/gaogao_9">@gaogao_9</a>)がQiitaに書いた方法を利用しました。</li>
+	</ul>
+	<p>
+	皆様に厚くお礼申し上げます。ありがとうございました。
+	</p>
+	<h3>記録集</h3>
+	<p>
+	沢山遊んでくださり、ありがとうございます！<br>
+	2016/05/29現在、ノーマルモードにおいて、85手で完成する手順が知られています。84以下で完成させることが可能か否かは判っていません。<br>
+	以下の手順のURLは、ページが読み込まれた直後は完成形になっています。セーブデータのUndo機能を使うことで、巻き戻しながら手順を確認できます。
+	</p>
+	<ul>
+		<li> <a target="_blank" href="./index.html?level=12&s=45312EHJF8KHJF8766666110111C9EED88HECK072B8FEJHLKA77AHEHE9JI8DCIFH1HF8798C0FD90A7GGDC">85手の手順</a> (←<a target="_blank" href="https://twitter.com/moririncross/status/736372984089182208">@moririncross</a>さんの解法です) </li>
+		<li> <a target="_blank" href="./index.html?level=12&s=15275HJF8KHJFD822650111155555ADD6DBFG8F7I8GFI0KLLAB77EFEEJJ8D9IDA8E9HEAIC9111D8ED7GDC">85手の手順</a> (←<a target="_blank" href="https://twitter.com/hiiro_157/status/736351646997827584">@hiiro_157</a>さんの解法です) </li>
+	</ul>
+
+	<h3>いろんな模様</h3>
+	<ul>
+		<li> <a target="_blank" href="./index.html?level=8&s=23123710155660874631081877969725477A97766335650660A1598876778366087A1977668161132B56262440324305731560706335699725000456555785A3">Level8(完成形?)</a></li>
+		<li> <a target="_blank" href="./index.html?level=10&s=0DD2332G0E7HCB10GD65CDCCC4DBC5BA967555466615300121240134FC1211D45A23B2571341B0401029231474D42E53183C233AA3H1D0103672918780547010074116127078BH81C000CB6760655298B9116B554C7333565B21BEE0EEEA892310D44C531EA0EF1BB0E3267F132DB210ED10101010054000321CDCB98DDDD9830044AA6BB6A96B9BA3883C080784644444A34B1B98C0CB1B0900B098AB3B9315465229DA19E31AF22CFD5556787774575446DA865445BBB0209634347184">Level10(星形)</a></li>
+		<li> <a target="_blank" href="./index.html?level=10&s=666696448555573444923273214053491117226315644A746700971689">Level10</a></li>
+		<li> <a target="_blank" href="./index.html?level=14&s=BCAB9JCC99JD98AEKF7F9GCAIJ5E759G45555555AII7AII11323H261002HN78339LG0012N062FKC2E000112HEA7O917P1A92PMTMHHBBBTELTSP660PTCHKDFIBSBR6BBKGIHAICIDIGL899FECD45NEPN0HMNO08JBBC0D0DC9GE9OAFG8081IIIAA777H4MG9AE5EGFK556I66B361GL0KHN2GG0GGB5IG1FEHI3JL23H433G2J74GI9885578G555566AIFCMPKK1BLCOPANOCGFJGIX8HC80246DPM31KLN7591234B58B58AP4F0D2D4D6EKBGFD58ABC14GKC147AADGE145431EHA9EDE1357">Level14</a></li>
+		<li> <a target="_blank" href="./index.html?level=18&s=AAAAAAAAHIIIIAHJJJBGJKCGIDGEEEEEG8988H9A9999H9B9AAAAAAAGA9AAA0BAAAAAAJFFJ3334EE4EH4DH3DGH5B4F5EDFD7988886D6D5DCCFIH112EDH0BDDDCDCDQBCCCCBCCCCCSBCCCCCCVQAEFFFEAFMJWPEALIEAFIJDSGNAEGGGAEDTBHE0HH0III0MKGE0FKE0JMCJCEHHDDLBKNCENDGGGDIPE1WELKJVE0TT989DFEE45EFEDLN33AKKLSIJLDEBBLDE9AAABA8LJ3BA24329EUC3DHAMTQYQ56EFNCNEMLILMMMMLLMV62IC8EYWZc66QfNbPbVcWZXXXeWcQQOXBNJUOXXKXXbKKXDDQ2333V2D6FI34AG5586D6364MFACMUNJ69DMSWNOWNWKRVL7PTKPLUNUOUONUWQVEMULSIAAAHGHLOMGROFFGGHGHGHGHHIKIKOIGJEBJGIIHIPLMPH1EFT0EFFQFGGGKHKIHJ000012DBBBDLBKDLGIKFMLFFKDKNGHFIADNBDBPHK997BE676AM97BMEEGLDGLFMJCFJEFJFJDEDLIHDJL97D7879K9CMFJEICEDC2B54E338CFFDBHCL000FH10K2CGJHFC1GF64CMEOLHEGG0C00484EM444K4B1IGGKJK1315448C8HE9B932F50OQ4NERQ85G5EO3P3OKMSQMNJCC7780C111DCDHKLGCHJHELKLIJIKDKKC9BBBBBBJJKEGKDJDK67ED9F99KHKH99HKDMMDMDEIFC7BBBB9BJKGBDBCGGGCI999JECDC9AH5009MC99999FLNLDNCEEFFMBKIGE7LCBCCC8888BIIDJCCEIDDC88IIKHHJIKCHJIEJIKEHEKEEEC1ABBBBB9FFHHHHDIJHBJFKFF0HGKLIIILMI2222HKKJLGIMCB3ABBB1AKHLIIJG1F1111EGJ100JKFDEKFEIF">Level18</a></li>
+		<li> <a target="_blank" href="./index.html?level=20&s=9XJJJNRVTPLI9KOSWUQMHKOROLI91IEDEFFFFFFAAAAAAIKJJJJIJ011111113NOOOOO8999997OPOO3NTT6NUTS45TUTNOO56766Oc6ARWNNN6ATe0005QRQP555QYZYN6RWO006RXVjJ5QPQWJcJhN0222003001P1P1P10AQZYN0889VaM00MMMVL0T0S0dfjlOhOY2333XXXXQUTOeQNbRRRRRQQQQQQYR7777OOnMRckVOMXXTX5555555M7Pm898888WBLNAAASW8A8TOWAQSBBBBBBQafbgSOXAhPP5hhOPajchkkjjikik2l22NVdkO3OWlPVdbdh4OQR8aWIBCCCCCCCCBCCCBCBCBOO333333WWO4QQOAAWd2PAPMeXp3hQZRbLo8iRoCTcehVQY9afkml2QZbd3RbkflicVLk8lRnEDDTdaVQY9hd3333HVGGVGGcUUUAAAALYk9TpQZoGGGGGGGlllHAAGHITHALXb9SmQZlTJVVVVHHHHHHO1SIIIIIHII1QYTUUUU72Q2S2S2Sdfedd4444448ZYk788cqhXgXbXlGGFcp7ihZjkVbg8Xi333333ESRRRdA99KUS8QfOaeTUTcdEdRSSSS1NZHHHGIGH2NLN44444444qqdffhrkTgYQdTTTTogtkUjdTFSRFFRRcEDDfiUl43333333a44bj34355NNogFUD3333STSUog77hgAhaIIH9PVUUUALKLAAPHnJAABABAKKKBIHIIEEEEEEDRRRE2ELljdHP77AOelcbHhF77777GnjbdkdplImV444444p3333433TIdccjkgbkqbGGUiiFFFFjG2sWqFGGGFGnGjmFFFFoFppGGFFFHk44X4H444mj333333sjW6WMeccqcVhqpVVEEjtqEkroEkWiggjijRBBBCDSDABB2DBBBDDDEFFeSSSGFGGCIkhdWUUUQWWCCCQCUdCZWfDBBVWWCXZBCDWCghTShhhkUeYcCbCSTWTTTUBASBFAAABSQBDAGGGRGGCCCCCCPZXOfXNOiicaHSfKSRJTYRJdJ66KdTZTdabddaK76LK7ddK766LLdbdecbZeSaTeK0gKJ63333bciehbeZc2II11aXbJRRK660fUWQR9aJ0ePWcRWXbcSdbadQXZcdZaZYUU">Level20(完成形?)</a> (←TokusiNさんが作成)</li>
+		<li> <a target="_blank" href="./index.html?level=12&s=122201111CC5BGJE1112CF1FC52F0J1KCO1OCN1H111112C5EE2E0NBP1QLOCR1K122222230CCRDU1P">Level12規則的な並び</a></li>
+	</ul>
+
+	<h3>リンク集</h3>
+	<ul>
+		<li><a target="_blank" href="../para/index.html">東京パラリンピック(2020年)のエンブレム拡張</a></li>
+		<li><a target="_blank" href="../o/index.html">東京オリンピック(2020年)のエンブレム拡張？</a></li>
+		<!--
+		<li><a target="_blank" href="../pzl/index.html">東京オリンピック・エンブレム・パズル</a></li>
+		-->
+	</ul>
+	</div>
+</div>
+<script src="./js/tyo2020pzl.js?v=20180428-2"></script>
+</body>
+</html>
+
+// vim:set noexpandtab ts=2 sw=2 sts=2:
