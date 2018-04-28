@@ -32,13 +32,13 @@ function onClick_OpenClose(click_id, str){
 		<div id="left" style="float: left; max-width: 600px;">
 			<h1 id="upperTitle">東京オリンピック2020・エンブレム・パズル</h1>
 			<div id="TargetCanvas" style="display:none; ">
-				<canvas id="Canvas_Target" height="0" width="0"></canvas>
+				<canvas id="canvasTarget" height="0" width="0"></canvas>
 			</div>
 			<div style="display:block;">
-				<canvas id="Canvas_Puzzle" height="400" width="400"></canvas>
+				<canvas id="canvasMain" height="400" width="400"></canvas>
 			</div>
 			<h1 id="lowerTitle" style="display:none;">東京オリンピック・エンブレム・パズル</h1>
-			<span id="Text_clickCount">初期化中…</span>
+			<span id="textClickCount">初期化中…</span>
 			<div id="Button_Tweet" style="display:none;"></div>
 			<div id="Finish" style="display:none;">
 				<span id="Text_finishCount" style="color:#FF0000"></span>
@@ -54,9 +54,9 @@ function onClick_OpenClose(click_id, str){
 				<a id="savedata_a" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
 			</div>
 			<div id="savedata" style="display:none; clear:both;">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Load" id="Button_Load" onclick="onButtonClick_SavedataLoad(event)">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Undo" id="Button_Undo" onclick="onButtonClick_SavedataUndo(event)">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Redo" id="Button_Redo" onclick="onButtonClick_SavedataRedo(event)">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Load" id="buttonLoad" onclick="onButtonClick_SavedataLoad(event)">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Undo" id="buttonUndo" onclick="onButtonClick_SavedataUndo(event)">
+				<input type="button" class="large_button" style="background-color:#FDF;" value="Redo" id="buttonRedo" onclick="onButtonClick_SavedataRedo(event)">
 				<div onclick="onClick_OpenClose('savedata_str', 'テキストエリア')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
 					<a id="savedata_str_a" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
 				</div>
@@ -213,7 +213,7 @@ function onClick_OpenClose(click_id, str){
 				</table>
 				<div style="margin:0px 15px 0px 15px">
 					完成状態が定義されているのは「レベル6 (イージーモード)」と「レベル12 (ノーマルモード)」のみですが、他のレベルでも遊べます。
-					<select id="Select_Level">
+					<select id="selectLevel">
 						<option value="6">レベル6</option>
 						<option value="8">レベル8</option>
 						<option value="10">レベル10</option>
@@ -361,7 +361,7 @@ function onClick_OpenClose(click_id, str){
 	</ul>
 	</div>
 </div>
-<script src="./js/tyo2020pzl.js?v=20180428-3"></script>
+<script src="./js/tyo2020pzl.js?v=20180428-4"></script>
 </body>
 </html>
 
