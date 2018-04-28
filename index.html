@@ -11,7 +11,7 @@
 	input[type="radio"]{margin:3px 7px 7px 12px;}
 	input[type="checkbox"]{margin:3px 7px 7px 12px;}
 	input[type="button"]{border-radius:16px; padding:0px 10px 0px 10px; margin:15px 5px 15px 5px; height:32px;}
-	input[class="large_button"]{border-radius:24px; height:48px; font-size:130%;}
+	input[class="largeButton"]{border-radius:24px; height:48px; font-size:130%;}
 	div.round{border-radius:10px; margin:3px 5px 3px 5px;}
 </style>
 </head>
@@ -19,11 +19,11 @@
 <body>
 <script>
 <!--
-function onClick_OpenClose(click_id, str){
-	obj = document.getElementById(click_id).style;
+function onClickOpenClose(clickId, str){
+	obj = document.getElementById(clickId).style;
 	closedFlag = (obj.display == 'none');
 	obj.display = closedFlag ? 'block' : 'none';
-	document.getElementById(click_id + '_a').innerHTML = closedFlag ? '△' + str + ' (クリックして閉じる)' : '▼' + str + ' (クリックして開く)';
+	document.getElementById(clickId + 'Title').innerHTML = closedFlag ? '△' + str + ' (クリックして閉じる)' : '▼' + str + ' (クリックして開く)';
 }
 //-->
 </script>
@@ -39,10 +39,10 @@ function onClick_OpenClose(click_id, str){
 			</div>
 			<h1 id="lowerTitle" style="display:none;">東京オリンピック・エンブレム・パズル</h1>
 			<span id="textClickCount">初期化中…</span>
-			<div id="Button_Tweet" style="display:none;"></div>
+			<div id="ButtonTweet" style="display:none;"></div>
 			<div id="Finish" style="display:none;">
-				<span id="Text_finishCount" style="color:#FF0000"></span>
-				<div id="Button_Tweet2" style="display:inline"></div>
+				<span id="TextFinishCount" style="color:#FF0000"></span>
+				<div id="ButtonTweet2" style="display:inline"></div>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs'); </script>
 			</div>
 		</div>
@@ -50,23 +50,23 @@ function onClick_OpenClose(click_id, str){
 		<div id="right" style="float:left; max-width:400px;">
 		<!-- セーブデータ -->
 		<div class="round" style="background-color:#FFF0FF; margin-bottom:5px; padding:1px 0px 1px 0px;">
-			<div onclick="onClick_OpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
-				<a id="savedata_a" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
+			<div onclick="onClickOpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+				<a id="savedataTitle" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
 			</div>
 			<div id="savedata" style="display:none; clear:both;">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Load" id="buttonLoad" onclick="onButtonClick_SavedataLoad(event)">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Undo" id="buttonUndo" onclick="onButtonClick_SavedataUndo(event)">
-				<input type="button" class="large_button" style="background-color:#FDF;" value="Redo" id="buttonRedo" onclick="onButtonClick_SavedataRedo(event)">
-				<div onclick="onClick_OpenClose('savedata_str', 'テキストエリア')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
-					<a id="savedata_str_a" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
+				<input type="button" class="largeButton" style="background-color:#FDF;" value="Load" id="buttonLoad" onclick="onButtonClickSavedataLoad(event)">
+				<input type="button" class="largeButton" style="background-color:#FDF;" value="Undo" id="buttonUndo" onclick="onButtonClickSavedataUndo(event)">
+				<input type="button" class="largeButton" style="background-color:#FDF;" value="Redo" id="buttonRedo" onclick="onButtonClickSavedataRedo(event)">
+				<div onclick="onClickOpenClose('savedataStr', 'テキストエリア')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+					<a id="savedataStrTitle" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
 				</div>
-				<div id="savedata_str" style="display:none; clear:both;">
-					<textarea id="Textarea_Savedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
+				<div id="savedataStr" style="display:none; clear:both;">
+					<textarea id="TextareaSavedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
 				</div>
-				<div onclick="onClick_OpenClose('usage_for_savedata', 'セーブデータの使い方')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
-					<a id="usage_for_savedata_a" style="cursor:pointer;">▼セーブデータの使い方 (クリックして開く)</a>
+				<div onclick="onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+					<a id="usageForSavedataTitle" style="cursor:pointer;">▼セーブデータの使い方 (クリックして開く)</a>
 				</div>
-				<div id="usage_for_savedata" style="display:none; clear:both;">
+				<div id="usageForSavedata" style="display:none; clear:both;">
 					<ul>
 						<li>テキストエリア内の文字列がセーブデータです。適宜更新されます。1文字が1手に相当します。</li>
 						<li>【Load】セーブデータを読み込みます。</li>
@@ -81,89 +81,89 @@ function onClick_OpenClose(click_id, str){
 
 		<!-- オプション -->
 		<div class="round" style="background-color:#DFD; margin-bottom:5px; padding:1px 0px 1px 0px;">
-			<div onclick="onClick_OpenClose('option', 'オプション')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
-				<a id="option_a" style="cursor:pointer;">△オプション (クリックして閉じる)</a>
+			<div onclick="onClickOpenClose('option', 'オプション')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+				<a id="optionTitle" style="cursor:pointer;">△オプション (クリックして閉じる)</a>
 			</div>
 			<div id="option" style="display:block; clear:both;">
-				<div onclick="DrawColorSelector();onClick_OpenClose('HueCircle', '色')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
-					<a id="HueCircle_a" style="cursor:pointer;">▼色 (クリックして開く)</a>
+				<div onclick="drawColorSelector();onClickOpenClose('HueCircle', '色')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+					<a id="HueCircleTitle" style="cursor:pointer;">▼色 (クリックして開く)</a>
 				</div>
 				<div id="HueCircle" style="display:none; clear:both;">
 					<div style="display:block; text-align:center;">
-						<canvas id="CanvasColor" height="240" width="240"></canvas>
+						<canvas id="canvasForColor" height="240" width="240"></canvas>
 					</div>
 					<div style="text-align:center;">
-						<input type="button" style="background-color:#BFB;" value="色を元に戻す" id="Button_DefaultColor" onclick="onButtonClick_DefaultColor(event)">
+						<input type="button" style="background-color:#BFB;" value="色を元に戻す" id="Button_DefaultColor" onclick="onButtonClickDefaultColor(event)">
 					</div>
 				</div>
 
 				<div class="round" style="border:5px solid; border-color:#BFB;">
-					<div onclick="onClick_OpenClose('pattern', '模様')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
-						<a id="pattern_a" style="cursor:pointer;">▼模様 (クリックして開く)</a>
+					<div onclick="onClickOpenClose('pattern', '模様')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
+						<a id="patternTitle" style="cursor:pointer;">▼模様 (クリックして開く)</a>
 					</div>
 					<div id="pattern" style="display:none; clear:both;">
 						<input type="file" multiple id="myFile">
 						<div style="text-align:center;">
-							<input type="button" style="background-color:#BFB;" value="模様を元に戻す" id="Button_ResetShape" onclick="onButtonClick_ResetShape(event)">
+							<input type="button" style="background-color:#BFB;" value="模様を元に戻す" id="ButtonResetShape" onclick="onButtonClickResetShape(event)">
 						</div>
 						<div id="myFileImg"></div>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEllipse"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEllipse">楕円</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeOctagram" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeOctagram">八芒星</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeOctangle" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeOctangle">八角形</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEspille1" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEspille1">キラキラ1</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeEspille2" onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeEspille2">キラキラ2</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCross1"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCross1">手裏剣1</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCross2"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCross2">手裏剣2</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeFlower1"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeFlower1">花1</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeFlower2"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeFlower2">花2</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRectS"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRectS">□</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRect"     onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRect">口</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeRects"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeRects">田</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapePlus1"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapePlus1">十</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapePlus2"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapePlus2">×</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle1"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle1">○A</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle2"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle2">○B</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle3"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle3">○C</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle4"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle4">○D</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle5"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle5">○E</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeCircle6"  onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeCircle6">○F</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeLines"    onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeLines">線</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeLines2"   onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeLines2">線2</label></span>
-						<span class="nowrap"><input type="radio" name="RadioButton_Shape" id="RadioButton_ShapeNone"     onclick="onRadioButtonChange_Shape()"><label for="RadioButton_ShapeNone">なし</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeEllipse"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeEllipse">楕円</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeOctagram" onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeOctagram">八芒星</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeOctangle" onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeOctangle">八角形</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeEspille1" onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeEspille1">キラキラ1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeEspille2" onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeEspille2">キラキラ2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCross1"   onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCross1">手裏剣1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCross2"   onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCross2">手裏剣2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeFlower1"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeFlower1">花1</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeFlower2"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeFlower2">花2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeRectS"    onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeRectS">□</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeRect"     onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeRect">口</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeRects"    onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeRects">田</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapePlus1"    onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapePlus1">十</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapePlus2"    onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapePlus2">×</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle1"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle1">○A</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle2"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle2">○B</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle3"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle3">○C</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle4"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle4">○D</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle5"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle5">○E</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeCircle6"  onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeCircle6">○F</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeLines"    onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeLines">線</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeLines2"   onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeLines2">線2</label></span>
+						<span class="nowrap"><input type="radio" name="RadioButtonShape" id="RadioButtonShapeNone"     onclick="onRadioButtonChangeShape()"><label for="RadioButtonShapeNone">なし</label></span>
 					</div>
 					<hr style="border:none;border-top:dashed 5px #BFB;">
 
-					<div id="target_location">
+					<div id="targetLocation">
 						<div style="margin:1px 10px 1px 10px">
 							完成状態の表示位置
 						</div>
-						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetTopLeft" checked/><label for="RadioButton_TargetTopLeft">左上</label>
-						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetFront"          /><label for="RadioButton_TargetFront">前面</label>
-						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetBack"           /><label for="RadioButton_TargetBack">背面</label>
-						<input type="radio" name="RadioButton_Target" onchange="onRadioButtonChange_Target()" id="RadioButton_TargetOther"          /><label for="RadioButton_TargetOther">上</label>
+						<input type="radio" name="RadioButtonTarget" onchange="onRadioButtonChangeTarget()" id="RadioButtonTargetTopLeft" checked/><label for="RadioButtonTargetTopLeft">左上</label>
+						<input type="radio" name="RadioButtonTarget" onchange="onRadioButtonChangeTarget()" id="RadioButtonTargetFront"          /><label for="RadioButtonTargetFront">前面</label>
+						<input type="radio" name="RadioButtonTarget" onchange="onRadioButtonChangeTarget()" id="RadioButtonTargetBack"           /><label for="RadioButtonTargetBack">背面</label>
+						<input type="radio" name="RadioButtonTarget" onchange="onRadioButtonChangeTarget()" id="RadioButtonTargetOther"          /><label for="RadioButtonTargetOther">上</label>
 						<hr style="border:none;border-top:dashed 5px #BFB;">
 					</div>
 					<div id="ColoredProperPieces">
-						<span class="nowrap"><input type="checkbox" id="Checkbox_ColoredProperPieces" onclick="onCheckboxChange_ColoredProperPieces()" checked><label for="Checkbox_ColoredProperPieces">正しい位置のピースを薄い色で表示</label></span>
+						<span class="nowrap"><input type="checkbox" id="CheckboxColoredProperPieces" onclick="onCheckboxChangeColoredProperPieces()" checked><label for="CheckboxColoredProperPieces">正しい位置のピースを薄い色で表示</label></span>
 						<br>
 					</div>
-					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowPoints" onclick="onCheckboxChange_ShowPoints()" checked><label for="Checkbox_ShowPoints">点</label></span>
-					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowLozenge" onclick="onCheckboxChange_ShowLozenge()" checked><label for="Checkbox_ShowLozenge">境界線</label></span>
-					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowUnusedPieces" onclick="onCheckboxChange_ShowUnusedPieces()"><label for="Checkbox_ShowUnusedPieces">すべてのピースに模様を表示</label></span>
+					<span class="nowrap"><input type="checkbox" id="CheckboxShowPoints" onclick="onCheckboxChangeShowPoints()" checked><label for="CheckboxShowPoints">点</label></span>
+					<span class="nowrap"><input type="checkbox" id="CheckboxShowLozenge" onclick="onCheckboxChangeShowLozenge()" checked><label for="CheckboxShowLozenge">境界線</label></span>
+					<span class="nowrap"><input type="checkbox" id="CheckboxShowUnusedPieces" onclick="onCheckboxChangeShowUnusedPieces()"><label for="CheckboxShowUnusedPieces">すべてのピースに模様を表示</label></span>
 					<br>
-					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowIndex" onclick="onCheckboxChange_ShowIndex()"><label for="Checkbox_ShowIndex">番号</label></span>
-					<span class="nowrap"><input type="checkbox" id="Checkbox_ShowLines" onclick="onCheckboxChange_ShowLines()"><label for="Checkbox_ShowLines">隣接ピースの中央を結ぶ線</label></span>
+					<span class="nowrap"><input type="checkbox" id="CheckboxShowIndex" onclick="onCheckboxChangeShowIndex()"><label for="CheckboxShowIndex">番号</label></span>
+					<span class="nowrap"><input type="checkbox" id="CheckboxShowLines" onclick="onCheckboxChangeShowLines()"><label for="CheckboxShowLines">隣接ピースの中央を結ぶ線</label></span>
 					<div style="text-align:center;">
-						<input type="button" style="background-color:#BFB;" value="すべてオフ" id="Button_UncheckAll" onclick="onButtonClick_UncheckAll(event)">
-						<input type="button" style="background-color:#BFB;" value="ランダムに1手動かす" id="Button_Random" onclick="onButtonClick_Random(event)">
-						<input type="button" style="background-color:#BFB;" value="ランダムに動かし続ける" id="Button_RandomInterval" onclick="onButtonClick_RandomInterval(event)">
-						<input type="button" style="background-color:#BFB;" value="停止" id="Button_RandomIntervalStop" onclick="onButtonClick_RandomIntervalStop(event)">
-						<p>←速い <input type="range" id="RangeRandom" min="50" max="500" onchange="oninput_Range(event)" oninput="oninput_Range(event)"> 遅い→</p>
+						<input type="button" style="background-color:#BFB;" value="すべてオフ" id="Button_UncheckAll" onclick="onButtonClickUncheckAll(event)">
+						<input type="button" style="background-color:#BFB;" value="ランダムに1手動かす" id="ButtonRandom" onclick="onButtonClickRandom(event)">
+						<input type="button" style="background-color:#BFB;" value="ランダムに動かし続ける" id="ButtonRandomInterval" onclick="onButtonClickRandomInterval(event)">
+						<input type="button" style="background-color:#BFB;" value="停止" id="ButtonRandomIntervalStop" onclick="onButtonClickRandomIntervalStop(event)">
+						<p>←遅い <input type="range" id="RangeRandom" min="50" max="500" onchange="oninputRange(event)" oninput="oninputRange(event)"> 速い→</p>
 					</div>
 				</div>
 
 				<div class="round" style="border:5px solid; border-color:#BFB;">
-					<input type="checkbox" id="Checkbox_ShowTweetButton" onclick="onCheckboxChange_ShowTweetButon()"><label for="Checkbox_ShowTweetButton">未完成時用ツイートボタン</label>
+					<input type="checkbox" id="CheckboxShowTweetButton" onclick="onCheckboxChangeShowTweetButon()"><label for="CheckboxShowTweetButton">未完成時用ツイートボタン</label>
 					<br>
 					<p>※未完成時用ツイートボタンは、ツイート直前に表示すればOKです。表示中は盤面変更の度に更新します。</p>
 				</div>
@@ -172,15 +172,15 @@ function onClick_OpenClose(click_id, str){
 
 		<!-- レベル -->
 		<div class="round" style="background-color:#DDF; margin-bottom:5px; padding:1px 0px 1px 0px;">
-			<div onclick="onClick_OpenClose('level_select', 'レベル')" class="round" style="background-color:#BBF; padding:0px 5px 0px 5px;">
-				<a id="level_select_a" style="cursor:pointer;">▼レベル (クリックして開く)</a>
+			<div onclick="onClickOpenClose('levelSelect', 'レベル')" class="round" style="background-color:#BBF; padding:0px 5px 0px 5px;">
+				<a id="levelSelectTitle" style="cursor:pointer;">▼レベル (クリックして開く)</a>
 			</div>
-			<div id="level_select" style="display:none; clear:both; padding-bottom:5px">
+			<div id="levelSelect" style="display:none; clear:both; padding-bottom:5px">
 				<p>
 				<strong style="color:#F00;">【注意事項】</strong>レベルを変更するとページを再読み込みします。初期化されるのでご注意ください。
 				</p>
-				<input type="radio" name="RadioButton_Mode" id="RadioButton_ModeEasy" onchange="onRadioButtonChange_Level()" />
-				<label for="RadioButton_ModeEasy">レベル6 (イージーモード)</label>
+				<input type="radio" name="RadioButtonLevel" id="RadioButtonModeEasy" onchange="onRadioButtonChangeLevel()" />
+				<label for="RadioButtonModeEasy">レベル6 (イージーモード)</label>
 				<table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
 					<tr>
 						<th style="background-color:#BBF;">初期状態</th>
@@ -195,8 +195,8 @@ function onClick_OpenClose(click_id, str){
 						</td>
 					</tr>
 				</table>
-				<input type="radio" name="RadioButton_Mode" id="RadioButton_ModeNormal" onchange="onRadioButtonChange_Level()" checked/>
-				<label for="RadioButton_ModeNormal">レベル12 (ノーマルモード)</label>
+				<input type="radio" name="RadioButtonLevel" id="RadioButtonModeNormal" onchange="onRadioButtonChangeLevel()" checked/>
+				<label for="RadioButtonModeNormal">レベル12 (ノーマルモード)</label>
 				<table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
 					<tr>
 						<th style="background-color:#BBF;">初期状態</th>
@@ -361,7 +361,7 @@ function onClick_OpenClose(click_id, str){
 	</ul>
 	</div>
 </div>
-<script src="./js/tyo2020pzl.js?v=20180428-4"></script>
+<script src="./js/tyo2020pzl.js?v=20180428-5"></script>
 </body>
 </html>
 

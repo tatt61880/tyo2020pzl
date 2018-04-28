@@ -69,11 +69,11 @@ let bShowTweetButton = false;
 
 let redoCount = 0;
 let clickCount = 0;
-let clickCount_red = 0;
-let clickCount_green = 0;
-let clickCount_fin = 0;
-let clickCount_fin_red = 0;
-let clickCount_fin_green = 0;
+let clickCountRed = 0;
+let clickCountGreen = 0;
+let clickCountFin = 0;
+let clickCountFinRed = 0;
+let clickCountFinGreen = 0;
 let completedFlag = false;
 let notYetCompletedFlag = true;
 
@@ -96,16 +96,16 @@ let cxs = [];
 let cys = [];
 let unusedFlags = [];
 let properFlags = [];
-let properFlags_target = [];
+let properFlagsTarget = [];
 
 let pairVertex = [];
 
 // 完成状態用
-let target_rectTypes = [];
-let target_rots = [];
-let target_cxs = [];
-let target_cys = [];
-let target_unusedFlags = [];
+let targetRectTypes = [];
+let targetRots = [];
+let targetCxs = [];
+let targetCys = [];
+let targetUnusedFlags = [];
 
 let isSmartPhone = navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/);
 
@@ -119,7 +119,8 @@ document.getElementById('myFile').addEventListener( 'change', function() {
   let file = this.files[0];
   // if(blobUrl != "") URL.revokeObjectURL(blobUrl);
   blobUrl = window.URL.createObjectURL(file);
-  document.getElementById('myFileImg').innerHTML = '<img style="max-width:100%" src="' + blobUrl + '">';
+  document.getElementById('myFileImg').innerHTML =
+    '<img style="max-width:100%" src="' + blobUrl + '">';
   myImg.src = blobUrl;
   myImg.onload = function() {
     draw();
@@ -133,7 +134,8 @@ window.addEventListener('load', onLoad, false);
 
 function onLoad() {
   // iOSの場合とそれ以外とで画面回転時を判定するイベントを切り替える
-  const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ? 'orientationchange' : 'resize';
+  const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ?
+    'orientationchange' : 'resize';
   window.addEventListener(rotateEvent, onOrientationchange, false);
 
   let dataLoad = '';
@@ -157,13 +159,17 @@ function onLoad() {
 
     let maxLevel = 70;
     if (num % 2 == 1) {
-      if (window.confirm('奇数レベルには未対応です。申し訳ありません。\n1つ下のレベル(レベル' + (num - 1) + ')を読み込みます。良いですか？\n(キャンセルするとレベル12を読み込みます。)')) {
-        num--;
-      } else {
-        num = 12;
-      }
+      if (window.confirm('奇数レベルには未対応です。申し訳ありません。\n' +
+        '1つ下のレベル(レベル' + (num - 1) + ')を読み込みます。良いですか？\n' +
+          '(キャンセルするとレベル12を読み込みます。)')) {
+            num--;
+          } else {
+            num = 12;
+          }
     } else if (num > maxLevel) {
-      window.alert('※レベル' + maxLevel + 'より上のレベルは、フリーズ等の対策のため制限しています。\nご了承ください。');
+      window.alert('※レベル' + maxLevel +
+        'より上のレベルは、フリーズ等の対策のため制限しています。\n' +
+          'ご了承ください。');
       num = 12;
     }
 
@@ -171,13 +177,13 @@ function onLoad() {
       document.getElementById('upperTitle').style.display = 'block';
       document.getElementById('lowerTitle').style.display = 'none';
     } else {
-      document.getElementById('RadioButton_TargetTopLeft').checked = false;
-      document.getElementById('RadioButton_TargetFront').checked = false;
-      document.getElementById('RadioButton_TargetBack').checked = false;
-      document.getElementById('RadioButton_TargetOther').checked = false;
-      document.getElementById('target_location').style.display = 'none';
+      document.getElementById('RadioButtonTargetTopLeft').checked = false;
+      document.getElementById('RadioButtonTargetFront').checked = false;
+      document.getElementById('RadioButtonTargetBack').checked = false;
+      document.getElementById('RadioButtonTargetOther').checked = false;
+      document.getElementById('targetLocation').style.display = 'none';
       document.getElementById('ColoredProperPieces').style.display = 'none';
-      document.getElementById('Checkbox_ColoredProperPieces').checked = false;
+      document.getElementById('CheckboxColoredProperPieces').checked = false;
       document.getElementById('upperTitle').style.display = 'none';
       document.getElementById('lowerTitle').style.display = 'block';
     }
@@ -186,18 +192,19 @@ function onLoad() {
     numChanged();
 
     document.getElementById('Finish').style.display = 'none';
-    document.getElementById('RadioButton_ModeEasy').checked = (num == 6);
-    document.getElementById('RadioButton_ModeNormal').checked = (num == 12);
-    document.getElementById('RadioButton_ModeNormal').checked = (num == 12);
-    for (let i = 0; i < select_level.length; ++i) {
-      select_level.options[i].selected = (select_level.options[i].value == num);
+    document.getElementById('RadioButtonModeEasy').checked = (num == 6);
+    document.getElementById('RadioButtonModeNormal').checked = (num == 12);
+    document.getElementById('RadioButtonModeNormal').checked = (num == 12);
+    for (let i = 0; i < selectLevel.length; ++i) {
+      selectLevel.options[i].selected = (selectLevel.options[i].value == num);
     }
   }
 
   document.getElementById('buttonRedo').style.visibility = 'hidden';
   canvas = document.getElementById('canvasMain');
   canvasTarget = document.getElementById('canvasTarget');
-  canvas.addEventListener(isSmartPhone ? 'touchstart' : 'click', onClick, false);
+  canvas.addEventListener(isSmartPhone ? 'touchstart' : 'click',
+    onClick, false);
 
   updateTargetLocation();
   updateColordProperPieces();
@@ -212,11 +219,14 @@ function onLoad() {
   let maxStep = 10000;
   let step = dataLoad.length;
   if (step < maxStep) {
-    LoadData(dataLoad);
+    loadData(dataLoad);
   } else {
-    window.alert('読み込もうとしたデータは' + step + '手のデータです。\n処理に時間がかかる可能性があるため、' + maxStep +'手以上のデータは自動では読み込みません。\n読み込みたい場合は、セーブデータからロードしてください。');
-    LoadData('');
-    document.getElementById('Textarea_Savedata').value = dataLoad;
+    window.alert('読み込もうとしたデータは' + step + '手のデータです。\n' +
+      '処理に時間がかかる可能性があるため、' + maxStep + '手以上のデータは' +
+        '自動では読み込みません。\n' +
+        '読み込みたい場合は、セーブデータからロードしてください。');
+    loadData('');
+    document.getElementById('TextareaSavedata').value = dataLoad;
   }
   setRedoData();
 }
@@ -245,68 +255,76 @@ function initScale() {
 }
 
 function updateTargetLocation() {
-  bTargetTopLeft = document.getElementById('RadioButton_TargetTopLeft').checked;
-  bTargetFront = document.getElementById('RadioButton_TargetFront').checked;
-  bTargetBack = document.getElementById('RadioButton_TargetBack').checked;
-  bTargetOther = document.getElementById('RadioButton_TargetOther').checked;
-  document.getElementById('TargetCanvas').style.display = bTargetOther ? 'block' : 'none';
+  bTargetTopLeft = document.getElementById('RadioButtonTargetTopLeft').checked;
+  bTargetFront = document.getElementById('RadioButtonTargetFront').checked;
+  bTargetBack = document.getElementById('RadioButtonTargetBack').checked;
+  bTargetOther = document.getElementById('RadioButtonTargetOther').checked;
+  document.getElementById('TargetCanvas').style.display =
+    bTargetOther ? 'block' : 'none';
 }
 
 function updateColordProperPieces() {
-  bColoredProperPieces = document.getElementById('Checkbox_ColoredProperPieces').checked;
+  bColoredProperPieces =
+    document.getElementById('CheckboxColoredProperPieces').checked;
 }
 function updateShowPoints() {
-  bShowPoints = document.getElementById('Checkbox_ShowPoints').checked;
+  bShowPoints =
+    document.getElementById('CheckboxShowPoints').checked;
 }
 function updateShowLogenzes() {
-  bShowLozenges = document.getElementById('Checkbox_ShowLozenge').checked;
+  bShowLozenges =
+    document.getElementById('CheckboxShowLozenge').checked;
 }
 function updateShowUnusedPieces() {
-  bShowUnusedPieces = document.getElementById('Checkbox_ShowUnusedPieces').checked;
+  bShowUnusedPieces =
+    document.getElementById('CheckboxShowUnusedPieces').checked;
 }
 function updateShowIndex() {
-  bShowIndex = document.getElementById('Checkbox_ShowIndex').checked;
+  bShowIndex =
+    document.getElementById('CheckboxShowIndex').checked;
 }
 function updateShowLines() {
-  bShowLines = document.getElementById('Checkbox_ShowLines').checked;
+  bShowLines =
+    document.getElementById('CheckboxShowLines').checked;
 }
 function updateShapeType() {
-  bShapeEllipse = document.getElementById('RadioButton_ShapeEllipse').checked;
-  bShapeOctagram = document.getElementById('RadioButton_ShapeOctagram').checked;
-  bShapeOctangle = document.getElementById('RadioButton_ShapeOctangle').checked;
-  bShapeEspille1 = document.getElementById('RadioButton_ShapeEspille1').checked;
-  bShapeEspille2 = document.getElementById('RadioButton_ShapeEspille2').checked;
-  bShapeCross1 = document.getElementById('RadioButton_ShapeCross1').checked;
-  bShapeCross2 = document.getElementById('RadioButton_ShapeCross2').checked;
-  bShapeFlower1 = document.getElementById('RadioButton_ShapeFlower1').checked;
-  bShapeFlower2 = document.getElementById('RadioButton_ShapeFlower2').checked;
-  bShapeRectS = document.getElementById('RadioButton_ShapeRectS').checked;
-  bShapeRect = document.getElementById('RadioButton_ShapeRect').checked;
-  bShapeRects = document.getElementById('RadioButton_ShapeRects').checked;
-  bShapePlus1 = document.getElementById('RadioButton_ShapePlus1').checked;
-  bShapePlus2 = document.getElementById('RadioButton_ShapePlus2').checked;
-  bShapeCircle1 = document.getElementById('RadioButton_ShapeCircle1').checked;
-  bShapeCircle2 = document.getElementById('RadioButton_ShapeCircle2').checked;
-  bShapeCircle3 = document.getElementById('RadioButton_ShapeCircle3').checked;
-  bShapeCircle4 = document.getElementById('RadioButton_ShapeCircle4').checked;
-  bShapeCircle5 = document.getElementById('RadioButton_ShapeCircle5').checked;
-  bShapeCircle6 = document.getElementById('RadioButton_ShapeCircle6').checked;
-  bShapeLines = document.getElementById('RadioButton_ShapeLines').checked;
-  bShapeLines2 = document.getElementById('RadioButton_ShapeLines2').checked;
-  bShapeNone = document.getElementById('RadioButton_ShapeNone').checked;
+  bShapeEllipse = document.getElementById('RadioButtonShapeEllipse').checked;
+  bShapeOctagram = document.getElementById('RadioButtonShapeOctagram').checked;
+  bShapeOctangle = document.getElementById('RadioButtonShapeOctangle').checked;
+  bShapeEspille1 = document.getElementById('RadioButtonShapeEspille1').checked;
+  bShapeEspille2 = document.getElementById('RadioButtonShapeEspille2').checked;
+  bShapeCross1 = document.getElementById('RadioButtonShapeCross1').checked;
+  bShapeCross2 = document.getElementById('RadioButtonShapeCross2').checked;
+  bShapeFlower1 = document.getElementById('RadioButtonShapeFlower1').checked;
+  bShapeFlower2 = document.getElementById('RadioButtonShapeFlower2').checked;
+  bShapeRectS = document.getElementById('RadioButtonShapeRectS').checked;
+  bShapeRect = document.getElementById('RadioButtonShapeRect').checked;
+  bShapeRects = document.getElementById('RadioButtonShapeRects').checked;
+  bShapePlus1 = document.getElementById('RadioButtonShapePlus1').checked;
+  bShapePlus2 = document.getElementById('RadioButtonShapePlus2').checked;
+  bShapeCircle1 = document.getElementById('RadioButtonShapeCircle1').checked;
+  bShapeCircle2 = document.getElementById('RadioButtonShapeCircle2').checked;
+  bShapeCircle3 = document.getElementById('RadioButtonShapeCircle3').checked;
+  bShapeCircle4 = document.getElementById('RadioButtonShapeCircle4').checked;
+  bShapeCircle5 = document.getElementById('RadioButtonShapeCircle5').checked;
+  bShapeCircle6 = document.getElementById('RadioButtonShapeCircle6').checked;
+  bShapeLines = document.getElementById('RadioButtonShapeLines').checked;
+  bShapeLines2 = document.getElementById('RadioButtonShapeLines2').checked;
+  bShapeNone = document.getElementById('RadioButtonShapeNone').checked;
 }
 
 function updateShowTweetButton() {
-  bShowTweetButton = document.getElementById('Checkbox_ShowTweetButton').checked;
+  bShowTweetButton = document.getElementById('CheckboxShowTweetButton').checked;
   if (bShowTweetButton) {
     addTweetButton(false);
   }
-  document.getElementById('Button_Tweet').style.display = bShowTweetButton ? 'inline' : 'none';
+  document.getElementById('ButtonTweet').style.display =
+    bShowTweetButton ? 'inline' : 'none';
 }
 
 function initializePairVartex() {
-  let piece_vertex_x = [];
-  let piece_vertex_y = [];
+  let pieceVertexX = [];
+  let pieceVertexY = [];
   for (let idx = 0; idx < pieceNum; idx++) {
     let x = rects[rectTypes[idx]].w / 2;
     let y = rects[rectTypes[idx]].h / 2;
@@ -319,8 +337,10 @@ function initializePairVartex() {
     let xs = x * s;
     let yc = y * c;
     let ys = y * s;
-    piece_vertex_x[idx] = [cx + xc - ys, cx - xc - ys, cx - xc + ys, cx + xc + ys];
-    piece_vertex_y[idx] = [cy + xs + yc, cy - xs + yc, cy - xs - yc, cy + xs - yc];
+    pieceVertexX[idx] = [cx + xc - ys, cx - xc - ys,
+                         cx - xc + ys, cx + xc + ys];
+    pieceVertexY[idx] = [cy + xs + yc, cy - xs + yc,
+                         cy - xs - yc, cy + xs - yc];
   }
 
   for (let i = 0; i < pieceNum * 4; i++) {
@@ -330,11 +350,12 @@ function initializePairVartex() {
   for (let piece1id = 0; piece1id < pieceNum; piece1id++) {
     for (let point1id = 0; point1id < 4; point1id++) {
       if (pairVertex[piece1id * 4 + point1id] != -1) continue;
-      let point1_x = piece_vertex_x[piece1id][point1id];
-      let point1_y = piece_vertex_y[piece1id][point1id];
+      let point1X = pieceVertexX[piece1id][point1id];
+      let point1Y = pieceVertexY[piece1id][point1id];
       for (let piece2id = piece1id + 1; piece2id < pieceNum; piece2id++) {
         for (let point2id = 0; point2id < 4; point2id++) {
-          if (nearlyEqual(point1_x, piece_vertex_x[piece2id][point2id]) && nearlyEqual(point1_y, piece_vertex_y[piece2id][point2id])) {
+          if (nearlyEqual(point1X, pieceVertexX[piece2id][point2id]) &&
+              nearlyEqual(point1Y, pieceVertexY[piece2id][point2id])) {
             pairVertex[piece1id * 4 + point1id] = piece2id * 4 + point2id;
             pairVertex[piece2id * 4 + point2id] = piece1id * 4 + point1id;
             // goto
@@ -348,10 +369,11 @@ function initializePairVartex() {
 }
 
 function initializeState() {
-  let rot_x = centerX;
-  let rot_y_ = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
-  let rot_y1 = centerY + rot_y_;
-  let rot_y2 = centerY - rot_y_;
+  let rotX = centerX;
+  let rotY_ = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
+               Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
+  let rotY1 = centerY + rotY_;
+  let rotY2 = centerY - rotY_;
 
   for (let j = 0; j < num / 2 - 1; j++) {
     for (let i = 0; i < num; i++) {
@@ -367,12 +389,12 @@ function initializeState() {
       rots[idx] = (4 * j < num - 2) ? rot : ((rot + num / 2) % (2 * num));
       unusedFlags[idx] = false;
       if (j + 1 < index && index < num - j) { // 下側の小円内のピース
-        cxs[idx] = 2 * rot_x - cxs[idx];
-        cys[idx] = 2 * rot_y1 - cys[idx];
+        cxs[idx] = 2 * rotX - cxs[idx];
+        cys[idx] = 2 * rotY1 - cys[idx];
       } else if (num + j < index && index < 2 * num - j) { // 上側の小円内のピース
         unusedFlags[idx] = true;
-        cxs[idx] = 2 * rot_x - cxs[idx];
-        cys[idx] = 2 * rot_y2 - cys[idx];
+        cxs[idx] = 2 * rotX - cxs[idx];
+        cys[idx] = 2 * rotY2 - cys[idx];
       }
     }
   }
@@ -381,41 +403,44 @@ function initializeState() {
 }
 
 function setTargetState() {
-  let rot1_x = [];
-  let rot1_y = [];
-  let rot2_x = [];
-  let rot2_y = [];
+  let rot1X = [];
+  let rot1Y = [];
+  let rot2X = [];
+  let rot2Y = [];
 
   let rx1 = 0.0;
-  let ry1 = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
+  let ry1 = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
+             Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
 
   let theta;
   for (let i = 0; i < 3; i++) {
     theta = i * 2 * num / 3.0;
-    rot1_x[i] = centerX + rx1 * cos[theta] - ry1 * sin[theta];
-    rot1_y[i] = centerY + rx1 * sin[theta] + ry1 * cos[theta];
+    rot1X[i] = centerX + rx1 * cos[theta] - ry1 * sin[theta];
+    rot1Y[i] = centerY + rx1 * sin[theta] + ry1 * cos[theta];
   }
 
-  let rx2_a = L[num / 6] / 2.0;
-  let ry2_a = -Math.pow(Math.pow(rr[num / 6], 2.0) - Math.pow(rx2_a, 2.0), 0.5);
-  let rx2_b__ = -rx2_a;
-  let ry2_b__ = ry2_a;
+  let rx2A = L[num / 6] / 2.0;
+  let ry2A = -Math.pow(Math.pow(rr[num / 6], 2.0) - Math.pow(rx2A, 2.0), 0.5);
+  let rx2BBB = -rx2A;
+  let ry2BBB = ry2A;
 
   theta = 2;
-  let rx2_b_ = (rx2_b__) * cos[theta] - (ry2_b__) * sin[theta];
-  let ry2_b_ = (rx2_b__) * sin[theta] + (ry2_b__) * cos[theta];
+  let rx2BB = (rx2BBB) * cos[theta] - (ry2BBB) * sin[theta];
+  let ry2BB = (rx2BBB) * sin[theta] + (ry2BBB) * cos[theta];
 
   theta = num / 3;
-  let cx_b = rot1_x[2] - centerX;
-  let cy_b = rot1_y[2] - centerY;
-  let rx2_b = (rx2_b_ - cx_b) * cos[theta] - (ry2_b_ - cy_b) * sin[theta] + cx_b;
-  let ry2_b = (rx2_b_ - cx_b) * sin[theta] + (ry2_b_ - cy_b) * cos[theta] + cy_b;
-  let rx2 = (rx2_a + rx2_b) / 2;
-  let ry2 = (ry2_a + ry2_b) / 2;
+  let cxB = rot1X[2] - centerX;
+  let cyB = rot1Y[2] - centerY;
+  let rx2B = (rx2BB - cxB) * cos[theta] -
+              (ry2BB - cyB) * sin[theta] + cxB;
+  let ry2B = (rx2BB - cxB) * sin[theta] +
+              (ry2BB - cyB) * cos[theta] + cyB;
+  let rx2 = (rx2A + rx2B) / 2;
+  let ry2 = (ry2A + ry2B) / 2;
   for (let i = 0; i < 3; i++) {
     theta = ((i + 1) * 2 * num / 3) % (2 * num);
-    rot2_x[i] = centerX + rx2 * cos[theta] - ry2 * sin[theta];
-    rot2_y[i] = centerY + rx2 * sin[theta] + ry2 * cos[theta];
+    rot2X[i] = centerX + rx2 * cos[theta] - ry2 * sin[theta];
+    rot2Y[i] = centerY + rx2 * sin[theta] + ry2 * cos[theta];
   }
 
   for (let j = 0; j < num / 2 - 1; j++) {
@@ -425,20 +450,27 @@ function setTargetState() {
       let unusedFlag = false;
       if (j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j) {
         typeNum = 1;
-      } else if (j + 1 < index - num * 2 / 3 && index - num * 2 / 3 < j + 1 + num / 6 * 2 && index - num * 2 / 3 < num - j) {
+      } else if (j + 1 < index - num * 2 / 3 &&
+                         index - num * 2 / 3 < j + 1 + num / 6 * 2 &&
+                         index - num * 2 / 3 < num - j) {
         typeNum = 2;
-      } else if (j + 1 < index - num * 4 / 3 && index - num * 4 / 3 < j + 1 + num / 6 * 2 && index - num * 4 / 3 < num - j) {
+      } else if (j + 1 < index - num * 4 / 3 &&
+                         index - num * 4 / 3 < j + 1 + num / 6 * 2 &&
+                         index - num * 4 / 3 < num - j) {
         typeNum = 3;
       } else if (j + 1 < index && index < num - j) {
         typeNum = 1;
         unusedFlag = true;
-      } else if (j + 1 < index - num * 2 / 3 && index - num * 2 / 3 < num - j) {
+      } else if (j + 1 < index - num * 2 / 3 &&
+                         index - num * 2 / 3 < num - j) {
         typeNum = 2;
         unusedFlag = true;
-      } else if (j + 1 < index - num * 4 / 3 && index - num * 4 / 3 < num - j) {
+      } else if (j + 1 < index - num * 4 / 3 &&
+                         index - num * 4 / 3 < num - j) {
         typeNum = 3;
         unusedFlag = true;
-      } else if (j + 1 < index + num * 2 / 3 && index + num * 2 / 3 < num - j) {
+      } else if (j + 1 < index + num * 2 / 3 &&
+                         index + num * 2 / 3 < num - j) {
         typeNum = 1;
         unusedFlag = true;
       }
@@ -450,46 +482,52 @@ function setTargetState() {
 
       let posIdx = typeNum - 1;
       if (typeNum != 0) {
-        let rot_add = num / 3;
-        let cx_old = cx;
-        let cy_old = cy;
-        cx = (cx_old - rot1_x[posIdx]) * cos[rot_add] - (cy_old - rot1_y[posIdx]) * sin[rot_add] + rot1_x[posIdx];
-        cy = (cx_old - rot1_x[posIdx]) * sin[rot_add] + (cy_old - rot1_y[posIdx]) * cos[rot_add] + rot1_y[posIdx];
-        rot += rot_add;
+        let rotAdd = num / 3;
+        let cxOld = cx;
+        let cyOld = cy;
+        cx = (cxOld - rot1X[posIdx]) * cos[rotAdd] -
+             (cyOld - rot1Y[posIdx]) * sin[rotAdd] + rot1X[posIdx];
+        cy = (cxOld - rot1X[posIdx]) * sin[rotAdd] +
+             (cyOld - rot1Y[posIdx]) * cos[rotAdd] + rot1Y[posIdx];
+        rot += rotAdd;
       }
 
       for (let n = 0; n < 3; n ++) {
-        if (j + 1 < index - num * 2 * n / 3 && index - num * 2 * n / 3 < num / 3 + 1 - j) {
-          unusedFlag = false;
-          let rot_add = num;
-          let cx_old = cx;
-          let cy_old = cy;
-          cx = (cx_old - rot2_x[posIdx]) * cos[rot_add] - (cy_old - rot2_y[posIdx]) * sin[rot_add] + rot2_x[posIdx];
-          cy = (cx_old - rot2_x[posIdx]) * sin[rot_add] + (cy_old - rot2_y[posIdx]) * cos[rot_add] + rot2_y[posIdx];
-          rot += rot_add;
-        }
+        if (j + 1 < index - num * 2 * n / 3 &&
+          index - num * 2 * n / 3 < num / 3 + 1 - j) {
+            unusedFlag = false;
+            let rotAdd = num;
+            let cxOld = cx;
+            let cyOld = cy;
+            cx = (cxOld - rot2X[posIdx]) * cos[rotAdd] -
+                 (cyOld - rot2Y[posIdx]) * sin[rotAdd] + rot2X[posIdx];
+            cy = (cxOld - rot2X[posIdx]) * sin[rotAdd] +
+                 (cyOld - rot2Y[posIdx]) * cos[rotAdd] + rot2Y[posIdx];
+            rot += rotAdd;
+          }
       }
       rot %= 2 * num;
 
-      target_rectTypes[idx] = (4 * j < num - 2) ? j : (num / 2 - 2 - j);
-      target_rots[idx] = (4 * j < num - 2) ? rot : ((rot + num / 2) % (2 * num));
-      target_cxs[idx] = cx;
-      target_cys[idx] = cy;
-      target_unusedFlags[idx] = unusedFlag;
+      targetRectTypes[idx] = (4 * j < num - 2) ? j : (num / 2 - 2 - j);
+      targetRots[idx] = (4 * j < num - 2) ? rot : ((rot + num / 2) % (2 * num));
+      targetCxs[idx] = cx;
+      targetCys[idx] = cy;
+      targetUnusedFlags[idx] = unusedFlag;
     }
   }
 }
 
 document.addEventListener('keydown', function(event) {
-  if (document.getElementById('savedata_str').style.display != 'none' && document.getElementById('savedata_str').style.display != 'none') return;
+  if (document.getElementById('savedataStr').style.display != 'none' &&
+      document.getElementById('savedataStr').style.display != 'none') return;
   let k = event.keyCode;
   if (k == 37) {
     if (document.getElementById('buttonUndo').style.visibility == 'visible') {
-      onButtonClick_SavedataUndo(event);
+      onButtonClickSavedataUndo(event);
     }
   } else if (k == 39) {
     if (document.getElementById('buttonRedo').style.visibility == 'visible') {
-      onButtonClick_SavedataRedo(event);
+      onButtonClickSavedataRedo(event);
     }
   }
 }, false);
@@ -504,8 +542,8 @@ function init() {
 
   {
     clickCount = 0;
-    clickCount_red = 0;
-    clickCount_green = 0;
+    clickCountRed = 0;
+    clickCountGreen = 0;
     completedFlag = false;
     notYetCompletedFlag = true;
   }
@@ -521,7 +559,7 @@ function init() {
 
   addTweetButton(false);
   dataCurrent = '';
-  document.getElementById('Textarea_Savedata').value = '';
+  document.getElementById('TextareaSavedata').value = '';
   document.getElementById('buttonUndo').style.visibility = 'hidden';
 
   let points = [];
@@ -538,11 +576,17 @@ function init() {
   }
   r[0] = L[num / 2 - 2];
   for (let i = 1; i < num / 2 - 1; i++) {
-    r[i] = Math.pow(Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0) - Math.pow(rects[i].h / 2.0, 2.0), 0.5) + rects[i].w / 2.0;
+    r[i] = Math.pow(Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) +
+                    Math.pow(rects[i - 1].h / 2.0, 2.0) -
+                    Math.pow(rects[i].h / 2.0, 2.0), 0.5) + rects[i].w / 2.0;
   }
   rr[0] = L[num / 2 - 1] / 2.0;
   for (let i = 1; i < num / 2; i++) {
-    rr[i] = Math.pow(Math.pow(Math.pow(Math.pow(rr[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) + rects[i - 1].w, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
+    rr[i] = Math.pow(Math.pow(Math.pow(
+      Math.pow(rr[i - 1], 2.0) -
+        Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) +
+        rects[i - 1].w, 2.0) +
+        Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
   }
 
   initializeState();
@@ -554,19 +598,17 @@ function numChanged() {
   let paravalsStr = location.href.split('?')[1];
   if (paravalsStr == null) paravalsStr = '';
   let paravalsArray = paravalsStr.split('&');
-  let num_url = -1;
+  let numUrl = -1;
   for (let i = 0, len = paravalsArray.length; i < len; i++) {
     let paraval = (paravalsArray[i]).split('=');
     if (paraval.length == 2) {
       if (paraval[0] == 'level') {
-        num_url = Number(paraval[1]);
+        numUrl = Number(paraval[1]);
       }
     }
   }
-  if (num_url == -1) num_url = 12;
-  if (num_url != num) {
-    location.search = '?level=' + num;
-  }
+  if (numUrl == -1) numUrl = 12;
+  if (numUrl != num) location.search = '?level=' + num;
 }
 
 function showIndex(idx, cx, cy, unusedFlag, bProperFlag) {
@@ -644,22 +686,21 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w, -h, w * 2, h * 2);
-    // ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w / Math.sqrt(2), -h / Math.sqrt(2), w * Math.sqrt(2), h * Math.sqrt(2));
     ctx.restore();
   } else if (bShapeEllipse) {
     ctx.scale(1, h / w);
     ctx.arc(0, 0, w / Math.sqrt(2.0), 0, 2*Math.PI, false);
   } else if (bShapeOctagram) {
-    let h_2 = h / 2;
-    let w_2 = w / 2;
+    let hDiv2 = h / 2;
+    let wDiv2 = w / 2;
     ctx.moveTo(0, h);
-    ctx.lineTo(w_2, -h_2);
+    ctx.lineTo(wDiv2, -hDiv2);
     ctx.lineTo(-w, 0);
-    ctx.lineTo(w_2, h_2);
+    ctx.lineTo(wDiv2, hDiv2);
     ctx.lineTo(0, -h);
-    ctx.lineTo(-w_2, h_2);
+    ctx.lineTo(-wDiv2, hDiv2);
     ctx.lineTo(w, 0);
-    ctx.lineTo(-w_2, -h_2);
+    ctx.lineTo(-wDiv2, -hDiv2);
     ctx.closePath();
   } else if (bShapeOctangle) {
     ctx.moveTo( w * 1/3, h * 2/3);
@@ -674,62 +715,62 @@ function drawShape(ctx, rectType, strokeOn) {
   } else if (bShapeEspille1) {
     ctx.scale(1, h / w);
     let r = w / Math.sqrt(2.0);
-    let pi_4 = Math.PI / 4;
-    ctx.arc( 0, w, r, 5 * pi_4, 7 * pi_4, false);
-    ctx.arc( w, 0, r, 3 * pi_4, 5 * pi_4, false);
-    ctx.arc( 0, -w, r, 1 * pi_4, 3 * pi_4, false);
-    ctx.arc(-w, 0, r, -1 * pi_4, 1 * pi_4, false);
+    let piDiv4 = Math.PI / 4;
+    ctx.arc( 0, w, r, 5 * piDiv4, 7 * piDiv4, false);
+    ctx.arc( w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
+    ctx.arc( 0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
+    ctx.arc(-w, 0, r, -1 * piDiv4, 1 * piDiv4, false);
   } else if (bShapeEspille2) {
     ctx.scale(1, h / w);
     let r = w;
-    let pi_2 = Math.PI / 2;
-    ctx.arc( w, w, r, 2 * pi_2, 3 * pi_2, false);
-    ctx.arc( w, -w, r, 1 * pi_2, 2 * pi_2, false);
-    ctx.arc(-w, -w, r, 0 * pi_2, 1 * pi_2, false);
-    ctx.arc(-w, w, r, -1 * pi_2, 0 * pi_2, false);
+    let piDiv2 = Math.PI / 2;
+    ctx.arc( w, w, r, 2 * piDiv2, 3 * piDiv2, false);
+    ctx.arc( w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
+    ctx.arc(-w, -w, r, 0 * piDiv2, 1 * piDiv2, false);
+    ctx.arc(-w, w, r, -1 * piDiv2, 0 * piDiv2, false);
   } else if (bShapeCross1) {
-    let w_2 = w / 2;
+    let wDiv2 = w / 2;
     let r = w;
     ctx.scale(1, h / w);
-    let pi_6 = Math.PI / 6;
-    ctx.arc( w_2, w_2, r, 6 * pi_6, 7 * pi_6, false);
-    ctx.arc( w_2, -w_2, r, 5 * pi_6, 6 * pi_6, false);
-    ctx.arc(-w_2, w_2, r, 9 * pi_6, 10 * pi_6, false);
-    ctx.arc( w_2, w_2, r, 8 * pi_6, 9 * pi_6, false);
-    ctx.arc(-w_2, -w_2, r, 0 * pi_6, 1 * pi_6, false);
-    ctx.arc(-w_2, w_2, r, 11 * pi_6, 12 * pi_6, false);
-    ctx.arc( w_2, -w_2, r, 3 * pi_6, 4 * pi_6, false);
-    ctx.arc(-w_2, -w_2, r, 2 * pi_6, 3 * pi_6, false);
+    const piDiv6 = Math.PI / 6;
+    ctx.arc( wDiv2, wDiv2, r, 6 * piDiv6, 7 * piDiv6, false);
+    ctx.arc( wDiv2, -wDiv2, r, 5 * piDiv6, 6 * piDiv6, false);
+    ctx.arc(-wDiv2, wDiv2, r, 9 * piDiv6, 10 * piDiv6, false);
+    ctx.arc( wDiv2, wDiv2, r, 8 * piDiv6, 9 * piDiv6, false);
+    ctx.arc(-wDiv2, -wDiv2, r, 0 * piDiv6, 1 * piDiv6, false);
+    ctx.arc(-wDiv2, wDiv2, r, 11 * piDiv6, 12 * piDiv6, false);
+    ctx.arc( wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
+    ctx.arc(-wDiv2, -wDiv2, r, 2 * piDiv6, 3 * piDiv6, false);
   } else if (bShapeCross2) {
     let r = w * Math.sqrt(2.0);
     ctx.scale(1, h / w);
-    let pi_12 = Math.PI / 12;
-    ctx.arc( 0, w, r, 15 * pi_12, 17 * pi_12, false);
-    ctx.arc( w, 0, r, 13 * pi_12, 15 * pi_12, false);
-    ctx.arc(-w, 0, r, 21 * pi_12, 23 * pi_12, false);
-    ctx.arc( 0, w, r, 19 * pi_12, 21 * pi_12, false);
-    ctx.arc( 0, -w, r, 3 * pi_12, 5 * pi_12, false);
-    ctx.arc(-w, 0, r, 25 * pi_12, 27 * pi_12, false);
-    ctx.arc( w, 0, r, 9 * pi_12, 11 * pi_12, false);
-    ctx.arc( 0, -w, r, 7 * pi_12, 9 * pi_12, false);
+    let piDiv12 = Math.PI / 12;
+    ctx.arc( 0, w, r, 15 * piDiv12, 17 * piDiv12, false);
+    ctx.arc( w, 0, r, 13 * piDiv12, 15 * piDiv12, false);
+    ctx.arc(-w, 0, r, 21 * piDiv12, 23 * piDiv12, false);
+    ctx.arc( 0, w, r, 19 * piDiv12, 21 * piDiv12, false);
+    ctx.arc( 0, -w, r, 3 * piDiv12, 5 * piDiv12, false);
+    ctx.arc(-w, 0, r, 25 * piDiv12, 27 * piDiv12, false);
+    ctx.arc( w, 0, r, 9 * piDiv12, 11 * piDiv12, false);
+    ctx.arc( 0, -w, r, 7 * piDiv12, 9 * piDiv12, false);
   } else if (bShapeFlower1) {
-    let w_2 = w / 2;
-    let r = w_2;
+    let wDiv2 = w / 2;
+    let r = wDiv2;
     ctx.scale(1, h / w);
-    let pi_2 = Math.PI / 2;
-    ctx.arc( 0, w_2, r, 2 * pi_2, 4 * pi_2, false);
-    ctx.arc( w_2, 0, r, 1 * pi_2, 3 * pi_2, false);
-    ctx.arc( 0, -w_2, r, 0 * pi_2, 2 * pi_2, false);
-    ctx.arc(-w_2, 0, r, 3 * pi_2, 1 * pi_2, false);
+    let piDiv2 = Math.PI / 2;
+    ctx.arc( 0, wDiv2, r, 2 * piDiv2, 4 * piDiv2, false);
+    ctx.arc( wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
+    ctx.arc( 0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
+    ctx.arc(-wDiv2, 0, r, 3 * piDiv2, 1 * piDiv2, false);
   } else if (bShapeFlower2) {
-    let w_2 = w / 2;
-    let r = w_2 * Math.sqrt(2.0);
+    let wDiv2 = w / 2;
+    let r = wDiv2 * Math.sqrt(2.0);
     ctx.scale(1, h / w);
-    let pi_4 = Math.PI / 4;
-    ctx.arc( w_2, w_2, r, 3 * pi_4, 7 * pi_4, false);
-    ctx.arc( w_2, -w_2, r, 1 * pi_4, 5 * pi_4, false);
-    ctx.arc(-w_2, -w_2, r, 7 * pi_4, 3 * pi_4, false);
-    ctx.arc(-w_2, w_2, r, 5 * pi_4, 1 * pi_4, false);
+    let piDiv4 = Math.PI / 4;
+    ctx.arc( wDiv2, wDiv2, r, 3 * piDiv4, 7 * piDiv4, false);
+    ctx.arc( wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
+    ctx.arc(-wDiv2, -wDiv2, r, 7 * piDiv4, 3 * piDiv4, false);
+    ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, 1 * piDiv4, false);
   } else if (bShapeRectS) {
     let rate = 0.5;
     ctx.moveTo(0, h * rate);
@@ -746,23 +787,23 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.closePath();
   } else if (bShapeRects) {
     let paddingRate = 0.1;
-    let w_2 = w / 2;
-    let h_2 = h / 2;
+    let wDiv2 = w / 2;
+    let hDiv2 = h / 2;
 
     {
       ctx.beginPath();
       ctx.moveTo(0, h * (1 - paddingRate));
-      ctx.lineTo(w_2 * (1 - paddingRate * 2), h_2);
+      ctx.lineTo(wDiv2 * (1 - paddingRate * 2), hDiv2);
       ctx.lineTo(0, h * paddingRate);
-      ctx.lineTo(-w_2 * (1 - paddingRate * 2), h_2);
+      ctx.lineTo(-wDiv2 * (1 - paddingRate * 2), hDiv2);
       ctx.closePath();
     }
     ctx.fill();
     {
       ctx.beginPath();
-      ctx.moveTo(w_2, h_2 * (1 - paddingRate * 2));
+      ctx.moveTo(wDiv2, hDiv2 * (1 - paddingRate * 2));
       ctx.lineTo(w * (1 - paddingRate), 0);
-      ctx.lineTo(w_2, -h_2 * (1 - paddingRate * 2));
+      ctx.lineTo(wDiv2, -hDiv2 * (1 - paddingRate * 2));
       ctx.lineTo(w * paddingRate, 0);
       ctx.closePath();
     }
@@ -770,17 +811,17 @@ function drawShape(ctx, rectType, strokeOn) {
     {
       ctx.beginPath();
       ctx.moveTo(0, -h * (1 - paddingRate));
-      ctx.lineTo(w_2 * (1 - paddingRate * 2), -h_2);
+      ctx.lineTo(wDiv2 * (1 - paddingRate * 2), -hDiv2);
       ctx.lineTo(0, -h * paddingRate);
-      ctx.lineTo(-w_2 * (1 - paddingRate * 2), -h_2);
+      ctx.lineTo(-wDiv2 * (1 - paddingRate * 2), -hDiv2);
       ctx.closePath();
     }
     ctx.fill();
     {
       ctx.beginPath();
-      ctx.moveTo(-w_2, h_2 * (1 - paddingRate * 2));
+      ctx.moveTo(-wDiv2, hDiv2 * (1 - paddingRate * 2));
       ctx.lineTo(-w * (1 - paddingRate), 0);
-      ctx.lineTo(-w_2, -h_2 * (1 - paddingRate * 2));
+      ctx.lineTo(-wDiv2, -hDiv2 * (1 - paddingRate * 2));
       ctx.lineTo(-w * paddingRate, 0);
       ctx.closePath();
     }
@@ -790,17 +831,17 @@ function drawShape(ctx, rectType, strokeOn) {
       {
         ctx.beginPath();
         ctx.moveTo(0, h * (1 - paddingRate));
-        ctx.lineTo(w_2 * (1 - paddingRate * 2), h_2);
+        ctx.lineTo(wDiv2 * (1 - paddingRate * 2), hDiv2);
         ctx.lineTo(0, h * paddingRate);
-        ctx.lineTo(-w_2 * (1 - paddingRate * 2), h_2);
+        ctx.lineTo(-wDiv2 * (1 - paddingRate * 2), hDiv2);
         ctx.closePath();
       }
       ctx.stroke();
       {
         ctx.beginPath();
-        ctx.moveTo(w_2, h_2 * (1 - paddingRate * 2));
+        ctx.moveTo(wDiv2, hDiv2 * (1 - paddingRate * 2));
         ctx.lineTo(w * (1 - paddingRate), 0);
-        ctx.lineTo(w_2, -h_2 * (1 - paddingRate * 2));
+        ctx.lineTo(wDiv2, -hDiv2 * (1 - paddingRate * 2));
         ctx.lineTo(w * paddingRate, 0);
         ctx.closePath();
       }
@@ -808,17 +849,17 @@ function drawShape(ctx, rectType, strokeOn) {
       {
         ctx.beginPath();
         ctx.moveTo(0, -h * (1 - paddingRate));
-        ctx.lineTo(w_2 * (1 - paddingRate * 2), -h_2);
+        ctx.lineTo(wDiv2 * (1 - paddingRate * 2), -hDiv2);
         ctx.lineTo(0, -h * paddingRate);
-        ctx.lineTo(-w_2 * (1 - paddingRate * 2), -h_2);
+        ctx.lineTo(-wDiv2 * (1 - paddingRate * 2), -hDiv2);
         ctx.closePath();
       }
       ctx.stroke();
       {
         ctx.beginPath();
-        ctx.moveTo(-w_2, h_2 * (1 - paddingRate * 2));
+        ctx.moveTo(-wDiv2, hDiv2 * (1 - paddingRate * 2));
         ctx.lineTo(-w * (1 - paddingRate), 0);
-        ctx.lineTo(-w_2, -h_2 * (1 - paddingRate * 2));
+        ctx.lineTo(-wDiv2, -hDiv2 * (1 - paddingRate * 2));
         ctx.lineTo(-w * paddingRate, 0);
         ctx.closePath();
       }
@@ -826,19 +867,19 @@ function drawShape(ctx, rectType, strokeOn) {
     }
   } else if (bShapePlus1) {
     let widthRate = 0.1;
-    let w_2 = w / 2;
-    let h_2 = h / 2;
-    ctx.moveTo( w_2 * (1 - widthRate), h_2 * (1 + widthRate));
-    ctx.lineTo( w_2 * (1 + widthRate), h_2 * (1 - widthRate));
+    let wDiv2 = w / 2;
+    let hDiv2 = h / 2;
+    ctx.moveTo( wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
+    ctx.lineTo( wDiv2 * (1 + widthRate), hDiv2 * (1 - widthRate));
     ctx.lineTo(w * widthRate, 0);
-    ctx.lineTo( w_2 * (1 + widthRate), -h_2 * (1 - widthRate));
-    ctx.lineTo( w_2 * (1 - widthRate), -h_2 * (1 + widthRate));
+    ctx.lineTo( wDiv2 * (1 + widthRate), -hDiv2 * (1 - widthRate));
+    ctx.lineTo( wDiv2 * (1 - widthRate), -hDiv2 * (1 + widthRate));
     ctx.lineTo(0, -h * widthRate);
-    ctx.lineTo(-w_2 * (1 - widthRate), -h_2 * (1 + widthRate));
-    ctx.lineTo(-w_2 * (1 + widthRate), -h_2 * (1 - widthRate));
+    ctx.lineTo(-wDiv2 * (1 - widthRate), -hDiv2 * (1 + widthRate));
+    ctx.lineTo(-wDiv2 * (1 + widthRate), -hDiv2 * (1 - widthRate));
     ctx.lineTo(-w * widthRate, 0);
-    ctx.lineTo(-w_2 * (1 + widthRate), h_2 * (1 - widthRate));
-    ctx.lineTo(-w_2 * (1 - widthRate), h_2 * (1 + widthRate));
+    ctx.lineTo(-wDiv2 * (1 + widthRate), hDiv2 * (1 - widthRate));
+    ctx.lineTo(-wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
     ctx.lineTo(0, h * widthRate);
     ctx.closePath();
   } else if (bShapePlus2) {
@@ -942,19 +983,19 @@ function drawTarget(ctx, smallSize, normalColor) {
     ctx.fillStyle = colorFillTargetPiece;
   }
   for (let idx = 0; idx < pieceNum; idx++) {
-    if (target_unusedFlags[idx]) continue;
-    let rectType = target_rectTypes[idx];
+    if (targetUnusedFlags[idx]) continue;
+    let rectType = targetRectTypes[idx];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (smallSize) ctx.scale(0.19, 0.19);
     if (normalColor) {
-      if (bColoredProperPieces && properFlags_target[idx] != -1) {
+      if (bColoredProperPieces && properFlagsTarget[idx] != -1) {
         ctx.fillStyle = ctx.strokeStyle = colorFillProperPiece;
       } else {
         ctx.fillStyle = ctx.strokeStyle = colorFillNormalPiece;
       }
     }
-    ctx.translate(target_cxs[idx], target_cys[idx]);
-    ctx.rotate(target_rots[idx] * Math.PI / num);
+    ctx.translate(targetCxs[idx], targetCys[idx]);
+    ctx.rotate(targetRots[idx] * Math.PI / num);
     drawShape(ctx, rectType, !normalColor);
   }
   ctx.restore();
@@ -1029,18 +1070,20 @@ function drawLines() {
   for (let i = 0; i < pieceNum * 4; i++) {
     let j = pairVertex[i];
     if (j == -1) continue;
-    let idx_i = Math.floor(i / 4);
-    let idx_j = Math.floor(j / 4);
+    let idxI = Math.floor(i / 4);
+    let idxJ = Math.floor(j / 4);
     ctx.beginPath();
-    ctx.moveTo(cxs[idx_i], cys[idx_i]);
-    ctx.lineTo(cxs[idx_j], cys[idx_j]);
+    ctx.moveTo(cxs[idxI], cys[idxI]);
+    ctx.lineTo(cxs[idxJ], cys[idxJ]);
     ctx.stroke();
   }
   ctx.restore();
 }
 
 function draw() {
-  document.getElementById('textClickCount').innerHTML='現在'+clickCount+'手目です。 (赤' + clickCount_red + ', 緑' + clickCount_green + ')';
+  document.getElementById('textClickCount').innerHTML = '現在' +
+    clickCount + '手目です。' +
+    ' (赤' + clickCountRed + ', 緑' + clickCountGreen + ')';
   ctx.fillStyle = colorFillBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctxTarget.fillStyle = colorFillBackground;
@@ -1077,7 +1120,7 @@ function nearlyEqual(a, b) {
   return (Math.abs(a - b) < eps);
 }
 
-function nearlyEqual_forRot(a, b, n) {
+function nearlyEqualForRot(a, b, n) {
   return Math.abs(a - b) % (2 * num / n) == 0;
 }
 
@@ -1088,8 +1131,8 @@ let clickPoints;
 function calcClickPoints(clickID) {
   clickPoints = [];
 
-  let piece_vertex_x = [];
-  let piece_vertex_y = [];
+  let pieceVertexX = [];
+  let pieceVertexY = [];
   for (let idx = 0; idx < pieceNum; idx++) {
     let x = rects[rectTypes[idx]].w / 2;
     let y = rects[rectTypes[idx]].h / 2;
@@ -1102,15 +1145,17 @@ function calcClickPoints(clickID) {
     let xs = x * s;
     let yc = y * c;
     let ys = y * s;
-    piece_vertex_x[idx] = [cx + xc - ys, cx - xc - ys, cx - xc + ys, cx + xc + ys];
-    piece_vertex_y[idx] = [cy + xs + yc, cy - xs + yc, cy - xs - yc, cy + xs - yc];
+    pieceVertexX[idx] = [cx + xc - ys, cx - xc - ys,
+                         cx - xc + ys, cx + xc + ys];
+    pieceVertexY[idx] = [cy + xs + yc, cy - xs + yc,
+                         cy - xs - yc, cy + xs - yc];
   }
   pointNum = 0;
   for (let p11 = 0; p11 < pieceNum * 4; p11++) {
     let piece1id = Math.floor(p11 / 4);
     let point1id = (p11 & 3);
-    let point1_x = piece_vertex_x[piece1id][point1id];
-    let point1_y = piece_vertex_y[piece1id][point1id];
+    let point1X = pieceVertexX[piece1id][point1id];
+    let point1Y = pieceVertexY[piece1id][point1id];
 
     let p12 = nextId[p11];
     let p21 = pairVertex[p12];
@@ -1118,15 +1163,17 @@ function calcClickPoints(clickID) {
     let piece2id = Math.floor(p21 / 4);
     if (piece1id > piece2id) continue;
     let point2id = (p21 & 3);
-    let point2_x = piece_vertex_x[piece2id][point2id];
-    let point2_y = piece_vertex_y[piece2id][point2id];
+    let point2X = pieceVertexX[piece2id][point2id];
+    let point2Y = pieceVertexY[piece2id][point2id];
     // for swapping 2 objects; (ペア)
     if (unusedFlags[piece1id] != unusedFlags[piece2id]
       && rectTypes[piece1id] == rectTypes[piece2id]
-        && nearlyEqual_forRot(rots[piece1id], rots[piece2id], (rectTypes[piece1id] + 1) * 4 == num ? 4 : 2)
-    ) {
+        && nearlyEqualForRot(rots[piece1id], rots[piece2id],
+          (rectTypes[piece1id] + 1) * 4 == num ? 4 : 2)) {
       if (clickID == -1 || pointNum == clickID) {
-        clickPoints[pointNum] = {px: point2_x, py: point2_y, id1: p12, id2: p21, trio: false};
+        clickPoints[pointNum] = {
+          px: point2X, py: point2Y, id1: p12, id2: p21, trio: false,
+        };
         if (clickID != -1) {
           return;
         }
@@ -1140,15 +1187,19 @@ function calcClickPoints(clickID) {
     let piece3id = Math.floor(p31 / 4);
     if (piece1id > piece3id) continue;
     let point3id = (p31 & 3);
-    let point3_x = piece_vertex_x[piece3id][point3id];
-    let point3_y = piece_vertex_y[piece3id][point3id];
+    let point3X = pieceVertexX[piece3id][point3id];
+    let point3Y = pieceVertexY[piece3id][point3id];
 
     if (pairVertex[nextId[p31]] == p11) {
       if (clickID == -1 || pointNum == clickID) {
         // for swapping 3 objects; (トリオ)
-        let px = ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 - (point1_x + point2_x + point3_x)) / 3;
-        let py = ((cys[piece1id] + cys[piece2id] + cys[piece3id]) * 2 - (point1_y + point2_y + point3_y)) / 3;
-        clickPoints[pointNum] = {px: px, py: py, id1: p11, id2: p21, id3: p31, trio: true};
+        let px = ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 -
+          (point1X + point2X + point3X)) / 3;
+        let py = ((cys[piece1id] + cys[piece2id] + cys[piece3id]) * 2 -
+          (point1Y + point2Y + point3Y)) / 3;
+        clickPoints[pointNum] = {
+          px: px, py: py, id1: p11, id2: p21, id3: p31, trio: true,
+        };
         if (clickID != -1) {
           return;
         }
@@ -1161,24 +1212,25 @@ function calcClickPoints(clickID) {
 function onOrientationchange() {
   if (canvas == null) return;
   initScale();
-  LoadData(dataCurrent);
+  loadData(dataCurrent);
 }
 
-function PieceMatchCheck(targetId, pieceId) {
-  return (target_rectTypes[targetId] == rectTypes[pieceId]
-    && nearlyEqual(target_cxs[targetId], cxs[pieceId])
-      && nearlyEqual(target_cys[targetId], cys[pieceId])
-      && nearlyEqual_forRot(target_rots[targetId], rots[pieceId], (rectTypes[targetId] + 1) * 4 == num ? 4 : 2));
+function pieceMatchCheck(targetId, pieceId) {
+  return (targetRectTypes[targetId] == rectTypes[pieceId]
+    && nearlyEqual(targetCxs[targetId], cxs[pieceId])
+      && nearlyEqual(targetCys[targetId], cys[pieceId])
+      && nearlyEqualForRot(targetRots[targetId], rots[pieceId],
+        (rectTypes[targetId] + 1) * 4 == num ? 4 : 2));
 }
 
 function updateProperFlags(pieceId) {
   properFlags[pieceId] = -1;
   if (unusedFlags[pieceId]) return;
   for (let targetId = 0; targetId < pieceNum; targetId++) {
-    if (target_unusedFlags[targetId]) continue;
-    if (PieceMatchCheck(targetId, pieceId)) {
+    if (targetUnusedFlags[targetId]) continue;
+    if (pieceMatchCheck(targetId, pieceId)) {
       properFlags[pieceId] = targetId;
-      properFlags_target[targetId] = pieceId;
+      properFlagsTarget[targetId] = pieceId;
       return;
     }
   }
@@ -1186,7 +1238,7 @@ function updateProperFlags(pieceId) {
 function initProperFlags() {
   for (let i = 0; i < pieceNum; i++) {
     properFlags[i] = -1;
-    properFlags_target[i] = -1;
+    properFlagsTarget[i] = -1;
   }
   for (let pieceId = 0; pieceId < pieceNum; pieceId++) {
     updateProperFlags(pieceId);
@@ -1194,15 +1246,15 @@ function initProperFlags() {
 }
 function isFinished() {
   for (let targetId = 0; targetId < pieceNum; targetId++) {
-    if (target_unusedFlags[targetId]) continue;
-    if (properFlags_target[targetId] == -1) return false;
+    if (targetUnusedFlags[targetId]) continue;
+    if (properFlagsTarget[targetId] == -1) return false;
   }
   return true;
 }
 
 function addTweetButton(finished) {
   if (!finished && !bShowTweetButton) return;
-  let buttonID = finished ? 'Button_Tweet2' : 'Button_Tweet';
+  let buttonID = finished ? 'ButtonTweet2' : 'ButtonTweet';
   let d = document.getElementById(buttonID);
   while (d.firstChild != null) d.removeChild(d.firstChild);
 
@@ -1218,20 +1270,24 @@ function addTweetButton(finished) {
     title = '「東京オリンピック・エンブレム・パズル(' + num + '角形ベース)」';
   }
   if (finished) {
-    ele.setAttribute('data-text', title + 'を' + clickCount + '手(赤' + clickCount_red + ', 緑' + clickCount_green + ')で解きました！');
+    ele.setAttribute('data-text', title + 'を' +
+      clickCount + '手(赤' + clickCountRed + ', 緑' + clickCountGreen + ')' +
+        'で解きました！');
   } else {
     if (clickCount == 0) {
       ele.setAttribute('data-text', '今から、' + title + 'に挑戦します！');
     } else {
-      ele.setAttribute('data-text', title + 'に挑戦中！ 現在' + clickCount + '手目(赤' + clickCount_red + ', 緑' + clickCount_green + ')');
+      ele.setAttribute('data-text', title + 'に挑戦中！ 現在' +
+        clickCount + '手目(赤' + clickCountRed + ', 緑' + clickCountGreen + ')');
     }
   }
   let buf = location.href;
-  let question_mark_pos = buf.search('\\?');
-  if (question_mark_pos != -1) {
-    buf = buf.substr(0, question_mark_pos);
+  let questionPos = buf.search('\\?');
+  if (questionPos != -1) {
+    buf = buf.substr(0, questionPos);
   }
-  ele.setAttribute('data-url', buf + '?level=' + num + (dataCurrent == '' ? '' : '&s=' + dataCurrent));
+  ele.setAttribute('data-url', buf + '?level=' + num +
+    (dataCurrent == '' ? '' : '&s=' + dataCurrent));
   ele.setAttribute('data-via', 'tatt61880');
   ele.setAttribute('data-hashtags', 'tyo2020pzl');
   let str = document.createTextNode('Tweet');
@@ -1258,7 +1314,7 @@ function itoa(n) {
 function updateSavedata(clickID) {
   let c = itoa(clickID);
   dataCurrent += c;
-  document.getElementById('Textarea_Savedata').value = dataCurrent;
+  document.getElementById('TextareaSavedata').value = dataCurrent;
 }
 
 function movePieces(clickID) {
@@ -1276,7 +1332,7 @@ function movePieces(clickID) {
     if (bId != -1) pairVertex[bId] = aId;
   }
   if (clickPoints[clickID].trio) {
-    clickCount_red++;
+    clickCountRed++;
     let px = clickPoints[clickID].px;
     let py = clickPoints[clickID].py;
     let piece1id = Math.floor(clickPoints[clickID].id1 / 4);
@@ -1289,9 +1345,15 @@ function movePieces(clickID) {
     cys[piece2id] = 2 * py - cys[piece2id];
     cxs[piece3id] = 2 * px - cxs[piece3id];
     cys[piece3id] = 2 * py - cys[piece3id];
-    if (properFlags[piece1id] != -1) properFlags_target[properFlags[piece1id]] = -1;
-    if (properFlags[piece2id] != -1) properFlags_target[properFlags[piece2id]] = -1;
-    if (properFlags[piece3id] != -1) properFlags_target[properFlags[piece3id]] = -1;
+    if (properFlags[piece1id] != -1) {
+      properFlagsTarget[properFlags[piece1id]] = -1;
+    }
+    if (properFlags[piece2id] != -1) {
+      properFlagsTarget[properFlags[piece2id]] = -1;
+    }
+    if (properFlags[piece3id] != -1) {
+      properFlagsTarget[properFlags[piece3id]] = -1;
+    }
     updateProperFlags(piece1id);
     updateProperFlags(piece2id);
     updateProperFlags(piece3id);
@@ -1319,13 +1381,17 @@ function movePieces(clickID) {
     g(p23, p14);
     g(p33, p24);
   } else {
-    clickCount_green++;
+    clickCountGreen++;
     let piece1id = Math.floor(clickPoints[clickID].id1 / 4);
     let piece2id = Math.floor(clickPoints[clickID].id2 / 4);
     cxs[piece1id] = [cxs[piece2id], cxs[piece2id] = cxs[piece1id]][0];
     cys[piece1id] = [cys[piece2id], cys[piece2id] = cys[piece1id]][0];
-    if (properFlags[piece1id] != -1) properFlags_target[properFlags[piece1id]] = -1;
-    if (properFlags[piece2id] != -1) properFlags_target[properFlags[piece2id]] = -1;
+    if (properFlags[piece1id] != -1) {
+      properFlagsTarget[properFlags[piece1id]] = -1;
+    }
+    if (properFlags[piece2id] != -1) {
+      properFlagsTarget[properFlags[piece2id]] = -1;
+    }
     updateProperFlags(piece1id);
     updateProperFlags(piece2id);
 
@@ -1360,12 +1426,16 @@ function movePieces(clickID) {
     if (notYetCompletedFlag) {
       document.getElementById('Finish').style.display = 'block';
       notYetCompletedFlag = false;
-      document.getElementById('Text_finishCount').innerHTML=clickCount+'手目に完成！！ (赤' + clickCount_red + ', 緑' + clickCount_green + ')';
+      document.getElementById('TextFinishCount').innerHTML =
+        clickCount + '手目に完成！！' +
+        ' (赤' + clickCountRed + ', 緑' + clickCountGreen + ')';
       // 完成後のUndoやRedo時に毎回は更新しないようにする。
-      if (clickCount != clickCount_fin || clickCount_red != clickCount_fin_red || clickCount_green != clickCount_fin_green) {
-        clickCount_fin = clickCount;
-        clickCount_fin_red = clickCount_red;
-        clickCount_fin_green = clickCount_green;
+      if (clickCount != clickCountFin ||
+          clickCountRed != clickCountFinRed ||
+          clickCountGreen != clickCountFinGreen) {
+        clickCountFin = clickCount;
+        clickCountFinRed = clickCountRed;
+        clickCountFinGreen = clickCountGreen;
         addTweetButton(true);
       }
     }
@@ -1373,7 +1443,8 @@ function movePieces(clickID) {
 }
 
 function onClick(e) {
-  let x, y;
+  let x;
+  let y;
   let bcRect = canvas.getBoundingClientRect();
   if (isSmartPhone) {
     x = e.touches[0].clientX - bcRect.left;
@@ -1407,7 +1478,7 @@ function onClick(e) {
   }
 }
 
-function RandomMove() {
+function moveRandom() {
   let clickID = Math.floor(Math.random() * clickPoints.length);
   movePieces(clickID);
   calcClickPoints(-1);
@@ -1418,36 +1489,38 @@ function RandomMove() {
 
 let timerRandom;
 let bRandomInterval = false;
-let elem_rangeRandom = document.getElementById('RangeRandom');
-function onButtonClick_RandomInterval(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+let elemRangeRandom = document.getElementById('RangeRandom');
+function onButtonClickRandomInterval(event) {
+  // iOSで連続でボタンを押しているとダブルクリック判定されて
+  // 画面が移動してしまったりするので。
+  event.preventDefault();
   if (!bRandomInterval) {
     bRandomInterval = true;
-    let randomSpeed = Number(elem_rangeRandom.value);
-    timerRandom = setInterval('RandomMove()', randomSpeed);
+    let randomSpeed = Number(elemRangeRandom.value);
+    timerRandom = setInterval('moveRandom()', randomSpeed);
   }
 }
-function onButtonClick_RandomIntervalStop(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+function onButtonClickRandomIntervalStop(event) {
+  event.preventDefault();
   bRandomInterval = false;
   clearInterval(timerRandom);
 }
-function oninput_Range(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+function oninputRange(event) {
+  event.preventDefault();
 
   if (bRandomInterval) {
     clearInterval(timerRandom);
-    let randomSpeed = Number(elem_rangeRandom.value);
-    timerRandom = setInterval('RandomMove()', randomSpeed);
+    let randomSpeed = Number(550 - elemRangeRandom.value);
+    timerRandom = setInterval('moveRandom()', randomSpeed);
   }
 }
 
-function onButtonClick_Random(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  RandomMove();
+function onButtonClickRandom(event) {
+  event.preventDefault();
+  moveRandom();
 }
 
-function LoadData(dataStr) {
+function loadData(dataStr) {
   init();
   let calculatedFlag = true;
   for (let i = 0; i < dataStr.length; i++) {
@@ -1468,7 +1541,10 @@ function LoadData(dataStr) {
       calcClickPoints(-1);
       calculatedFlag = true;
       clickID = Math.floor(Math.random() * clickPoints.length);
-    } else if (dataStr.charAt(i) == '\n' || dataStr.charAt(i) == '\r' || dataStr.charAt(i) == '\t' || dataStr.charAt(i) == ' ') {
+    } else if (dataStr.charAt(i) == '\n' ||
+               dataStr.charAt(i) == '\r' ||
+               dataStr.charAt(i) == '\t' ||
+               dataStr.charAt(i) == ' ') {
       continue;
     } else {
       window.alert((i+1) + '文字目(' + dataStr.charAt(i) + ')が想定外です。');
@@ -1481,7 +1557,7 @@ function LoadData(dataStr) {
       calcClickPoints(clickID);
     }
     if (clickPoints[clickID] == null) {
-      window.alert((i+1) + '文字目(' + dataStr.charAt(i) + ')が不正です。\n※2016/05/18以前のセーブデータの取り扱いに関しては作者@tatt61880に訪ねてください。');
+      window.alert((i+1) + '文字目(' + dataStr.charAt(i) + ')が不正です。\n');
       break;
     }
     movePieces(clickID);
@@ -1499,17 +1575,17 @@ function setRedoData() {
 
 // ======================================================================
 // セーブデータ
-function onButtonClick_SavedataLoad(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  let dataStr = document.getElementById('Textarea_Savedata').value;
+function onButtonClickSavedataLoad(event) {
+  event.preventDefault();
+  let dataStr = document.getElementById('TextareaSavedata').value;
   console.time('LoadTimer');
-  LoadData(dataStr);
+  loadData(dataStr);
   setRedoData();
   console.timeEnd('LoadTimer');
 }
 
-function onButtonClick_SavedataUndo(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+function onButtonClickSavedataUndo(event) {
+  event.preventDefault();
   let dataStr = dataCurrent;
   if (dataStr.length == 0) {
     window.alert('0手目です。Undoできません。');
@@ -1520,18 +1596,18 @@ function onButtonClick_SavedataUndo(event) {
         len--;
       }
     }
-    LoadData(dataStr.substr(0, len));
+    loadData(dataStr.substr(0, len));
     document.getElementById('buttonRedo').style.visibility = 'visible';
   }
 }
 
-function onButtonClick_SavedataRedo(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+function onButtonClickSavedataRedo(event) {
+  event.preventDefault();
   if (dataRedo.indexOf('(') == -1) {
     if (dataRedo.length <= clickCount) {
       window.alert('これ以上Redoできません。');
     } else {
-      LoadData(dataRedo.substr(0, clickCount + 1));
+      loadData(dataRedo.substr(0, clickCount + 1));
     }
   } else {
     let len = 0;
@@ -1546,7 +1622,7 @@ function onButtonClick_SavedataRedo(event) {
       }
       len++;
     }
-    LoadData(dataRedo.substr(0, len));
+    loadData(dataRedo.substr(0, len));
   }
 
   if (redoCount == clickCount) {
@@ -1556,155 +1632,165 @@ function onButtonClick_SavedataRedo(event) {
 
 // ======================================================================
 // オプション
-function onRadioButtonChange_Target() {
-  let scrollDistance = -Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+function onRadioButtonChangeTarget() {
+  let scrollDistance = -Math.max.apply(null, [
+    document.body.clientHeight,
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.documentElement.clientHeight]);
   updateTargetLocation();
-  scrollDistance += Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]);
+  scrollDistance += Math.max.apply(null, [
+    document.body.clientHeight,
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.documentElement.clientHeight]);
   scrollBy(0, scrollDistance);
   draw();
 }
 
-function onCheckboxChange_ColoredProperPieces() {
+function onCheckboxChangeColoredProperPieces() {
   updateColordProperPieces();
   draw();
 }
-function onCheckboxChange_ShowPoints() {
+function onCheckboxChangeShowPoints() {
   updateShowPoints();
   draw();
 }
-function onCheckboxChange_ShowLozenge() {
+function onCheckboxChangeShowLozenge() {
   updateShowLogenzes();
   draw();
 }
-function onCheckboxChange_ShowLines() {
+function onCheckboxChangeShowLines() {
   updateShowLines();
   draw();
 }
-function onCheckboxChange_ShowUnusedPieces() {
+function onCheckboxChangeShowUnusedPieces() {
   updateShowUnusedPieces();
   draw();
 }
 
-function onCheckboxChange_ShowIndex() {
+function onCheckboxChangeShowIndex() {
   updateShowIndex();
   draw();
 }
-function RemoveShapeImage() {
+function removeShapeImage() {
   bShapeImage = false;
   document.getElementById('myFileImg').innerHTML = '';
 }
-function onRadioButtonChange_Shape() {
+function onRadioButtonChangeShape() {
   updateShapeType();
-  RemoveShapeImage();
+  removeShapeImage();
   draw();
 }
-function onCheckboxChange_ShowTweetButon() {
+function onCheckboxChangeShowTweetButon() {
   updateShowTweetButton();
 }
 
-function onButtonClick_ResetShape(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  let elems = document.getElementsByName('RadioButton_Shape');
+function onButtonClickResetShape(event) {
+  event.preventDefault();
+  let elems = document.getElementsByName('RadioButtonShape');
   let num = elems.length;
   for (let i = 0; i < num; i++) {
     elems[i].checked = false;
   }
-  onRadioButtonChange_Shape();
+  onRadioButtonChangeShape();
 }
 
-function onButtonClick_UncheckAll(event) {
-  event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  document.getElementById('RadioButton_TargetTopLeft').checked = false;
-  document.getElementById('RadioButton_TargetFront').checked = false;
-  document.getElementById('RadioButton_TargetBack').checked = false;
-  document.getElementById('RadioButton_TargetOther').checked = false;
-  document.getElementById('Checkbox_ColoredProperPieces').checked = false;
-  document.getElementById('Checkbox_ShowPoints').checked = false;
-  document.getElementById('Checkbox_ShowLozenge').checked = false;
-  document.getElementById('Checkbox_ShowUnusedPieces').checked = false;
-  document.getElementById('Checkbox_ShowIndex').checked = false;
-  document.getElementById('Checkbox_ShowLines').checked = false;
-  onButtonClick_ResetShape(event);
+function onButtonClickUncheckAll(event) {
+  event.preventDefault();
+  document.getElementById('RadioButtonTargetTopLeft').checked = false;
+  document.getElementById('RadioButtonTargetFront').checked = false;
+  document.getElementById('RadioButtonTargetBack').checked = false;
+  document.getElementById('RadioButtonTargetOther').checked = false;
+  document.getElementById('CheckboxColoredProperPieces').checked = false;
+  document.getElementById('CheckboxShowPoints').checked = false;
+  document.getElementById('CheckboxShowLozenge').checked = false;
+  document.getElementById('CheckboxShowUnusedPieces').checked = false;
+  document.getElementById('CheckboxShowIndex').checked = false;
+  document.getElementById('CheckboxShowLines').checked = false;
+  onButtonClickResetShape(event);
 
-  onRadioButtonChange_Target();
-  onCheckboxChange_ColoredProperPieces();
-  onCheckboxChange_ShowPoints();
-  onCheckboxChange_ShowLozenge();
-  onCheckboxChange_ShowUnusedPieces();
-  onCheckboxChange_ShowIndex();
-  onCheckboxChange_ShowLines();
-  onRadioButtonChange_Shape();
+  onRadioButtonChangeTarget();
+  onCheckboxChangeColoredProperPieces();
+  onCheckboxChangeShowPoints();
+  onCheckboxChangeShowLozenge();
+  onCheckboxChangeShowUnusedPieces();
+  onCheckboxChangeShowIndex();
+  onCheckboxChangeShowLines();
+  onRadioButtonChangeShape();
 }
 
 
 // ======================================================================
 // レベル
-function onRadioButtonChange_Level() {
-  if (document.getElementById('RadioButton_ModeNormal').checked) {
+function onRadioButtonChangeLevel() {
+  if (document.getElementById('RadioButtonModeNormal').checked) {
     num = 12;
-  } else if (document.getElementById('RadioButton_ModeEasy').checked) {
+  } else if (document.getElementById('RadioButtonModeEasy').checked) {
     num = 6;
   }
   numChanged();
 }
-let select_level = document.getElementById('selectLevel');
-select_level.onchange = function() {
+let selectLevel = document.getElementById('selectLevel');
+selectLevel.onchange = function() {
   let selectedItem = this.options[this.selectedIndex];
   num = Number(selectedItem.value);
   numChanged();
 };
 
 // ======================================================================
-let hue_r = 120;
-let hue_cx;
-let hue_cy;
-let hue_min_r_ratio = 0.6;
-let hue_max_r_ratio = 0.9;
-let hue_min_r = hue_r * hue_min_r_ratio;
-let hue_max_r = hue_r * hue_max_r_ratio;
-let hue_splitNum = 12;
-// let hue_splitNum = 120;
+let hueR = 120;
+let hueCx;
+let hueCy;
+let hueMinR = hueR * 0.6;
+let hueMaxR = hueR * 0.9;
+let hueSplitNum = 12;
+// let hueSplitNum = 120;
 let ctxColor;
 let canvasForColor;
 
-let sv_size = hue_min_r * Math.sqrt(2);
-let sv_x0;
-let sv_y0;
+let svSize = hueMinR * Math.sqrt(2);
+let svX0;
+let svY0;
 
-function CalcIndexColorText(c1) {
-  function calc_color_distance(c1, c2) {
-    return Math.abs((c1[0] - c2[0]) * 299 + (c1[1] - c2[1]) * 587 + (c1[2] - c2[2]) * 114) *
-      (Math.abs(c1[0] - c2[0]) + Math.abs(c1[1] - c2[1]) + Math.abs(c1[2] - c2[2]));
+function calcIndexColorText(c1) {
+  function calcColorDistance(c1, c2) {
+    return Math.abs((c1[0] - c2[0]) * 299 +
+                    (c1[1] - c2[1]) * 587 +
+                    (c1[2] - c2[2]) * 114) *
+                      (Math.abs(c1[0] - c2[0]) +
+                       Math.abs(c1[1] - c2[1]) +
+                       Math.abs(c1[2] - c2[2]));
   }
 
   let diff = 0;
   let diffMax = 0;
   let c2;
   let c = [0, 0, 0];
-  c2 = [0, 0, 0]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [255, 0, 0]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [0, 255, 0]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [0, 0, 255]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [0, 255, 255]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [255, 0, 255]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [255, 255, 0]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
-  c2 = [255, 255, 255]; diff = calc_color_distance(c1, c2); if (diff > diffMax) {
- diffMax = diff; c = c2;
-}
+  c2 = [0, 0, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [255, 0, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [0, 255, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [0, 0, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [0, 255, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [255, 0, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [255, 255, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
+  c2 = [255, 255, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
+    diffMax = diff; c = c2;
+  }
   return 'rgba('+(c[0])+','+(c[1])+','+(c[2])+','+1.0+')';
 }
 
@@ -1759,53 +1845,61 @@ function onColorSelectStart(e) {
   hueMode = false;
   svMode = false;
   let xy = getXYonColorCanvas(e);
-  let x = xy[0], y = xy[1];
-  let rr = ((hue_cx - x) * (hue_cx - x) + (hue_cy - y) * (hue_cy - y));
-  if (hue_min_r * hue_min_r < rr && rr < hue_max_r * hue_max_r) {
+  let x = xy[0];
+  let y = xy[1];
+  let rr = ((hueCx - x) * (hueCx - x) + (hueCy - y) * (hueCy - y));
+  if (hueMinR * hueMinR < rr && rr < hueMaxR * hueMaxR) {
     hueMode = true;
-  } else if (sv_x0 <= x && x <= sv_x0 + sv_size && sv_y0 <= y && y <= sv_y0 + sv_size) {
+  } else if (svX0 <= x && x <= svX0 + svSize &&
+             svY0 <= y && y <= svY0 + svSize) {
     svMode = true;
   }
   onColorSelecting(e);
 }
 function onColorSelecting(e) {
   if (!hueMode && !svMode) return;
-  e.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+  e.preventDefault();
 
   let xy = getXYonColorCanvas(e);
-  let x = xy[0], y = xy[1];
+  let x = xy[0];
+  let y = xy[1];
   let f = false;
   if (hueMode) {
     f = true;
-    let rad = Math.atan2(y - hue_cy, x - hue_cx);
+    let rad = Math.atan2(y - hueCy, x - hueCx);
     rad += Math.PI / 2; // (0, 1)を0度とするためにπ/2を足します。
-    rad += Math.PI / hue_splitNum;
-    let hue_i = Math.floor(rad / (2 * Math.PI / hue_splitNum));
-    hueRad = 2 * Math.PI / hue_splitNum * hue_i - Math.PI / 2;
-    hueValue = (360 * hue_i / hue_splitNum + 60);
+    rad += Math.PI / hueSplitNum;
+    let hueI = Math.floor(rad / (2 * Math.PI / hueSplitNum));
+    hueRad = 2 * Math.PI / hueSplitNum * hueI - Math.PI / 2;
+    hueValue = (360 * hueI / hueSplitNum + 60);
   } else if (svMode) {
     f = true;
-    satValue = Math.max(0, Math.min(255, (x - sv_x0) / sv_size * 255));
-    valValue = Math.max(0, Math.min(255, 255 - (y - sv_y0) / sv_size * 255));
+    satValue = Math.max(0, Math.min(255, (x - svX0) / svSize * 255));
+    valValue = Math.max(0, Math.min(255, 255 - (y - svY0) / svSize * 255));
   }
   if (f) {
     let rgb = hsv2rgb(hueValue, satValue, valValue);
-    let rgb_proper = hsv2rgb(hueValue, satValue / 2, (valValue + 255) / 2);
+    let rgbProper = hsv2rgb(hueValue, satValue / 2, (valValue + 255) / 2);
 
-    colorFillProperPiece = 'rgba('+rgb_proper[0]+','+rgb_proper[1]+','+rgb_proper[2]+','+1.0+')';
-    colorFillNormalPiece = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+1.0+')';
-    colorStrokeLozenge = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+0.5+')';
-    colorFillProperPieceIndex = CalcIndexColorText(rgb_proper);
-    colorFillNormalPieceIndex = CalcIndexColorText(rgb);
+    colorFillProperPiece =
+      'rgba(' + rgbProper[0] + ',' +
+                rgbProper[1] + ',' +
+                rgbProper[2] + ',' + 1.0 + ')';
+    colorFillNormalPiece =
+      'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + 1.0 + ')';
+    colorStrokeLozenge =
+      'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + 0.5 + ')';
+    colorFillProperPieceIndex = calcIndexColorText(rgbProper);
+    colorFillNormalPieceIndex = calcIndexColorText(rgb);
 
     ctxColor.clearRect(0, 0, canvasForColor.width, canvasForColor.height);
-    DrawHSV();
+    drawHSV();
     draw();
   }
 }
 
-function DrawHSV() {
-  function DrawSelectedCircle(x, y) {
+function drawHSV() {
+  function drawSelectedCircle(x, y) {
     ctxColor.save();
     ctxColor.strokeStyle = '#000000';
     ctxColor.beginPath();
@@ -1819,87 +1913,95 @@ function DrawHSV() {
     ctxColor.restore();
   }
 
-  function DrawHueCircle() {
+  function drawHueCircle() {
     ctxColor.save();
     ctxColor.beginPath();
-    ctxColor.arc(hue_cx, hue_cy, hue_min_r, 2 * Math.PI, 0, true);
-    ctxColor.arc(hue_cx, hue_cy, hue_max_r, 0, 2 * Math.PI, false);
+    ctxColor.arc(hueCx, hueCy, hueMinR, 2 * Math.PI, 0, true);
+    ctxColor.arc(hueCx, hueCy, hueMaxR, 0, 2 * Math.PI, false);
     ctxColor.clip();
 
-    for (let i = 0; i < hue_splitNum; ++i) {
-      let currRad = 2 * Math.PI / hue_splitNum * (i - 0.5);
-      let nextRad = 2 * Math.PI / hue_splitNum * (i + 0.5);
-      let rgb = hsv2rgb((360 * i / hue_splitNum + 60), 255, 255);
-      ctxColor.fillStyle = ctxColor.strokeStyle = 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+    for (let i = 0; i < hueSplitNum; ++i) {
+      let currRad = 2 * Math.PI / hueSplitNum * (i - 0.5);
+      let nextRad = 2 * Math.PI / hueSplitNum * (i + 0.5);
+      let rgb = hsv2rgb((360 * i / hueSplitNum + 60), 255, 255);
+      ctxColor.fillStyle = ctxColor.strokeStyle =
+        'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
 
       ctxColor.beginPath();
-      ctxColor.moveTo(hue_cx, hue_cy);
-      ctxColor.lineTo(hue_cx + 2 * hue_r * Math.sin(currRad), hue_cy - 2 * hue_r * Math.cos(currRad));
-      ctxColor.lineTo(hue_cx + 2 * hue_r * Math.sin(nextRad), hue_cy - 2 * hue_r * Math.cos(nextRad));
-      ctxColor.lineTo(hue_cx, hue_cy);
+      ctxColor.moveTo(hueCx, hueCy);
+      ctxColor.lineTo(hueCx + 2 * hueR * Math.sin(currRad),
+                      hueCy - 2 * hueR * Math.cos(currRad));
+      ctxColor.lineTo(hueCx + 2 * hueR * Math.sin(nextRad),
+                      hueCy - 2 * hueR * Math.cos(nextRad));
+      ctxColor.lineTo(hueCx, hueCy);
       ctxColor.fill();
       ctxColor.stroke();
     }
     ctxColor.restore();
   }
 
-  function DrawHSVStroke() {
+  function drawHSVStroke() {
     ctxColor.strokeStyle = '#888888';
 
     // H
     ctxColor.beginPath();
-    ctxColor.arc(hue_cx, hue_cy, hue_min_r, 2 * Math.PI, 0, true);
+    ctxColor.arc(hueCx, hueCy, hueMinR, 2 * Math.PI, 0, true);
     ctxColor.stroke();
     ctxColor.beginPath();
-    ctxColor.arc(hue_cx, hue_cy, hue_max_r, 0, 2 * Math.PI, true);
+    ctxColor.arc(hueCx, hueCy, hueMaxR, 0, 2 * Math.PI, true);
     ctxColor.stroke();
 
     // SV
-    ctxColor.strokeRect(sv_x0, sv_y0, sv_size, sv_size);
+    ctxColor.strokeRect(svX0, svY0, svSize, svSize);
   }
 
-  function DrawSVRect() {
+  function drawSVRect() {
     ctxColor.save();
-    let satGrad = ctxColor.createLinearGradient(sv_x0, 0, sv_x0 + sv_size, 0);
+    let satGrad = ctxColor.createLinearGradient(svX0, 0, svX0 + svSize, 0);
     satGrad.addColorStop(0.0, '#FFFFFF');
     let color = hsv2rgb(hueValue, 255, 255);
     satGrad.addColorStop(1.0, 'rgb('+color[0]+','+color[1]+','+color[2]+')');
     ctxColor.fillStyle = satGrad;
-    ctxColor.fillRect(sv_x0, sv_y0, sv_size, sv_size);
+    ctxColor.fillRect(svX0, svY0, svSize, svSize);
 
-    let valGrad = ctxColor.createLinearGradient(0, sv_y0, 0, sv_y0 + sv_size);
+    let valGrad = ctxColor.createLinearGradient(0, svY0, 0, svY0 + svSize);
     valGrad.addColorStop(0.0, 'rgba(0, 0, 0, 0)');
     valGrad.addColorStop(1.0, 'rgba(0, 0, 0, 1)');
     ctxColor.fillStyle = valGrad;
-    ctxColor.fillRect(sv_x0, sv_y0, sv_size, sv_size);
+    ctxColor.fillRect(svX0, svY0, svSize, svSize);
 
-    DrawSelectedCircle(sv_x0 + satValue / 255 * sv_size, sv_y0 + sv_size - valValue / 255 * sv_size);
+    drawSelectedCircle(svX0 + satValue / 255 * svSize,
+                       svY0 + svSize - valValue / 255 * svSize);
     ctxColor.restore();
   }
 
-  DrawHueCircle();
-  DrawSVRect();
-  DrawHSVStroke();
-  let r = (hue_min_r + hue_max_r) / 2;
-  DrawSelectedCircle(hue_cx + r * Math.cos(hueRad), hue_cy + r * Math.sin(hueRad));
+  drawHueCircle();
+  drawSVRect();
+  drawHSVStroke();
+  let r = (hueMinR + hueMaxR) / 2;
+  drawSelectedCircle(hueCx + r * Math.cos(hueRad),
+                     hueCy + r * Math.sin(hueRad));
 }
 
 
-function DrawColorSelector() {
+function drawColorSelector() {
   ctxColor = document.getElementById('canvasForColor').getContext('2d');
   canvasForColor = document.getElementById('canvasForColor');
-  hue_cx = canvasForColor.width / 2;
-  hue_cy = canvasForColor.height / 2;
-  sv_x0 = hue_cx - sv_size / 2;
-  sv_y0 = hue_cy - sv_size / 2;
+  hueCx = canvasForColor.width / 2;
+  hueCy = canvasForColor.height / 2;
+  svX0 = hueCx - svSize / 2;
+  svY0 = hueCy - svSize / 2;
 
-  canvasForColor.addEventListener(isSmartPhone ? 'touchstart' : 'mousedown', onColorSelectStart, false);
-  canvasForColor.addEventListener(isSmartPhone ? 'touchmove' : 'mousemove', onColorSelecting, false);
-  canvasForColor.addEventListener(isSmartPhone ? 'touchend' : 'mouseup', onColorSelectEnd, false);
+  canvasForColor.addEventListener(
+    isSmartPhone ? 'touchstart' : 'mousedown', onColorSelectStart, false);
+  canvasForColor.addEventListener(
+    isSmartPhone ? 'touchmove' : 'mousemove', onColorSelecting, false);
+  canvasForColor.addEventListener(
+    isSmartPhone ? 'touchend' : 'mouseup', onColorSelectEnd, false);
   if (!isSmartPhone) {
     canvasForColor.addEventListener('mouseout', onColorSelectEnd, false);
   }
-  DrawHSV();
+  drawHSV();
 }
 
 function onButtonClickDefaultColor() {
@@ -1915,7 +2017,7 @@ function onButtonClickDefaultColor() {
   hueValue = hueDefault;
   satValue = satDefault;
   valValue = valDefault;
-  DrawColorSelector();
+  drawColorSelector();
   draw();
 }
 
