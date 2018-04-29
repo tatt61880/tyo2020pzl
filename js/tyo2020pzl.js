@@ -114,10 +114,9 @@ let bShapeImage = false;
 let blobUrl = '';
 
 // 画像ファイル選択時の処理です。
-document.getElementById('myFile').addEventListener( 'change', function() {
+document.getElementById('myFile').addEventListener('change', function() {
   bShapeImage = true;
   let file = this.files[0];
-  // if(blobUrl != "") URL.revokeObjectURL(blobUrl);
   blobUrl = window.URL.createObjectURL(file);
   document.getElementById('myFileImg').innerHTML =
     '<img style="max-width:100%" src="' + blobUrl + '">';
@@ -125,7 +124,6 @@ document.getElementById('myFile').addEventListener( 'change', function() {
   myImg.onload = function() {
     draw();
   };
-  // setTimeout("draw()", 500)
 } );
 
 // document.addEventListener('DOMContentLoaded', function(){
@@ -1446,7 +1444,7 @@ function onClick(e) {
   let x;
   let y;
   let bcRect = canvas.getBoundingClientRect();
-  if (isSmartPhone) {
+  if (typeof e.touches !== 'undefined') {
     x = e.touches[0].clientX - bcRect.left;
     y = e.touches[0].clientY - bcRect.top;
   } else {
@@ -1827,7 +1825,7 @@ function getXYonColorCanvas(e) {
   let bcRect = canvasForColor.getBoundingClientRect();
   let x;
   let y;
-  if (isSmartPhone) {
+  if (typeof e.touches !== 'undefined') {
     x = e.touches[0].clientX - bcRect.left;
     y = e.touches[0].clientY - bcRect.top;
   } else {
