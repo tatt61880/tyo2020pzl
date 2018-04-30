@@ -113,10 +113,11 @@ let myImg = new Image();
 let bShapeImage = false;
 let blobUrl = '';
 
+let myFile = document.getElementById('myFile');
 // 画像ファイル選択時の処理です。
-document.getElementById('myFile').addEventListener('change', function() {
+myFile.addEventListener('change', function() {
   bShapeImage = true;
-  let file = this.files[0];
+  let file = myFile.files[0];
   blobUrl = window.URL.createObjectURL(file);
   document.getElementById('myFileImg').innerHTML =
     '<img style="max-width:100%" src="' + blobUrl + '">';
@@ -130,11 +131,44 @@ document.getElementById('myFile').addEventListener('change', function() {
 // ↑これだと、完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
 window.addEventListener('load', onLoad, false);
 
-function onLoad() {
+function initEventListener() {
   // iOSの場合とそれ以外とで画面回転時を判定するイベントを切り替える
   const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ?
     'orientationchange' : 'resize';
   window.addEventListener(rotateEvent, onOrientationchange, false);
+
+  document.getElementById('buttonLoad').
+    addEventListener('click', onButtonClickSavedataLoad, false);
+  document.getElementById('buttonUndo').
+    addEventListener('click', onButtonClickSavedataUndo, false);
+  document.getElementById('buttonRedo').
+    addEventListener('click', onButtonClickSavedataRedo, false);
+  document.getElementById('buttonDefaultColor').
+    addEventListener('click', onButtonClickDefaultColor, false);
+  document.getElementById('buttonUncheckAll').
+    addEventListener('click', onButtonClickUncheckAll, false);
+  document.getElementById('buttonRandom').
+    addEventListener('click', onButtonClickRandom, false);
+  document.getElementById('buttonRandomInterval').
+    addEventListener('click', onButtonClickRandomInterval, false);
+  document.getElementById('buttonRandomIntervalStop').
+    addEventListener('click', onButtonClickRandomIntervalStop, false);
+  document.getElementById('checkboxShowTweetButton').
+    addEventListener('click', onCheckboxChangeShowTweetButton, false);
+  document.getElementById('buttonResetShape').
+    addEventListener('click', onButtonClickResetShape, false);
+
+  document.getElementById('radioButtonModeEasy')
+    .onchange = onRadioButtonChangeLevel;
+  document.getElementById('radioButtonModeNormal')
+    .onchange = onRadioButtonChangeLevel;
+  elemRangeRandom = document.getElementById('rangeRandom');
+  elemRangeRandom.onchange = oninputRange;
+  elemRangeRandom.oninput = oninputRange;
+}
+
+function onLoad() {
+  initEventListener();
 
   let dataLoad = '';
   // analyzing url
@@ -175,13 +209,13 @@ function onLoad() {
       document.getElementById('upperTitle').style.display = 'block';
       document.getElementById('lowerTitle').style.display = 'none';
     } else {
-      document.getElementById('RadioButtonTargetTopLeft').checked = false;
-      document.getElementById('RadioButtonTargetFront').checked = false;
-      document.getElementById('RadioButtonTargetBack').checked = false;
-      document.getElementById('RadioButtonTargetOther').checked = false;
+      document.getElementById('radioButtonTargetTopLeft').checked = false;
+      document.getElementById('radioButtonTargetFront').checked = false;
+      document.getElementById('radioButtonTargetBack').checked = false;
+      document.getElementById('radioButtonTargetOther').checked = false;
       document.getElementById('targetLocation').style.display = 'none';
-      document.getElementById('ColoredProperPieces').style.display = 'none';
-      document.getElementById('CheckboxColoredProperPieces').checked = false;
+      document.getElementById('coloredProperPieces').style.display = 'none';
+      document.getElementById('checkboxColoredProperPieces').checked = false;
       document.getElementById('upperTitle').style.display = 'none';
       document.getElementById('lowerTitle').style.display = 'block';
     }
@@ -189,10 +223,9 @@ function onLoad() {
     numPrev = num;
     numChanged();
 
-    document.getElementById('Finish').style.display = 'none';
-    document.getElementById('RadioButtonModeEasy').checked = (num == 6);
-    document.getElementById('RadioButtonModeNormal').checked = (num == 12);
-    document.getElementById('RadioButtonModeNormal').checked = (num == 12);
+    document.getElementById('finish').style.display = 'none';
+    document.getElementById('radioButtonModeEasy').checked = (num == 6);
+    document.getElementById('radioButtonModeNormal').checked = (num == 12);
     for (let i = 0; i < selectLevel.length; ++i) {
       selectLevel.options[i].selected = (selectLevel.options[i].value == num);
     }
@@ -253,70 +286,70 @@ function initScale() {
 }
 
 function updateTargetLocation() {
-  bTargetTopLeft = document.getElementById('RadioButtonTargetTopLeft').checked;
-  bTargetFront = document.getElementById('RadioButtonTargetFront').checked;
-  bTargetBack = document.getElementById('RadioButtonTargetBack').checked;
-  bTargetOther = document.getElementById('RadioButtonTargetOther').checked;
+  bTargetTopLeft = document.getElementById('radioButtonTargetTopLeft').checked;
+  bTargetFront = document.getElementById('radioButtonTargetFront').checked;
+  bTargetBack = document.getElementById('radioButtonTargetBack').checked;
+  bTargetOther = document.getElementById('radioButtonTargetOther').checked;
   document.getElementById('TargetCanvas').style.display =
     bTargetOther ? 'block' : 'none';
 }
 
 function updateColordProperPieces() {
   bColoredProperPieces =
-    document.getElementById('CheckboxColoredProperPieces').checked;
+    document.getElementById('checkboxColoredProperPieces').checked;
 }
 function updateShowPoints() {
   bShowPoints =
-    document.getElementById('CheckboxShowPoints').checked;
+    document.getElementById('checkboxShowPoints').checked;
 }
 function updateShowLogenzes() {
   bShowLozenges =
-    document.getElementById('CheckboxShowLozenge').checked;
+    document.getElementById('checkboxShowLozenge').checked;
 }
 function updateShowUnusedPieces() {
   bShowUnusedPieces =
-    document.getElementById('CheckboxShowUnusedPieces').checked;
+    document.getElementById('checkboxShowUnusedPieces').checked;
 }
 function updateShowIndex() {
   bShowIndex =
-    document.getElementById('CheckboxShowIndex').checked;
+    document.getElementById('checkboxShowIndex').checked;
 }
 function updateShowLines() {
   bShowLines =
-    document.getElementById('CheckboxShowLines').checked;
+    document.getElementById('checkboxShowLines').checked;
 }
 function updateShapeType() {
-  bShapeEllipse = document.getElementById('RadioButtonShapeEllipse').checked;
-  bShapeOctagram = document.getElementById('RadioButtonShapeOctagram').checked;
-  bShapeOctangle = document.getElementById('RadioButtonShapeOctangle').checked;
-  bShapeEspille1 = document.getElementById('RadioButtonShapeEspille1').checked;
-  bShapeEspille2 = document.getElementById('RadioButtonShapeEspille2').checked;
-  bShapeCross1 = document.getElementById('RadioButtonShapeCross1').checked;
-  bShapeCross2 = document.getElementById('RadioButtonShapeCross2').checked;
-  bShapeFlower1 = document.getElementById('RadioButtonShapeFlower1').checked;
-  bShapeFlower2 = document.getElementById('RadioButtonShapeFlower2').checked;
-  bShapeRectS = document.getElementById('RadioButtonShapeRectS').checked;
-  bShapeRect = document.getElementById('RadioButtonShapeRect').checked;
-  bShapeRects = document.getElementById('RadioButtonShapeRects').checked;
-  bShapePlus1 = document.getElementById('RadioButtonShapePlus1').checked;
-  bShapePlus2 = document.getElementById('RadioButtonShapePlus2').checked;
-  bShapeCircle1 = document.getElementById('RadioButtonShapeCircle1').checked;
-  bShapeCircle2 = document.getElementById('RadioButtonShapeCircle2').checked;
-  bShapeCircle3 = document.getElementById('RadioButtonShapeCircle3').checked;
-  bShapeCircle4 = document.getElementById('RadioButtonShapeCircle4').checked;
-  bShapeCircle5 = document.getElementById('RadioButtonShapeCircle5').checked;
-  bShapeCircle6 = document.getElementById('RadioButtonShapeCircle6').checked;
-  bShapeLines = document.getElementById('RadioButtonShapeLines').checked;
-  bShapeLines2 = document.getElementById('RadioButtonShapeLines2').checked;
-  bShapeNone = document.getElementById('RadioButtonShapeNone').checked;
+  bShapeEllipse = document.getElementById('radioButtonShapeEllipse').checked;
+  bShapeOctagram = document.getElementById('radioButtonShapeOctagram').checked;
+  bShapeOctangle = document.getElementById('radioButtonShapeOctangle').checked;
+  bShapeEspille1 = document.getElementById('radioButtonShapeEspille1').checked;
+  bShapeEspille2 = document.getElementById('radioButtonShapeEspille2').checked;
+  bShapeCross1 = document.getElementById('radioButtonShapeCross1').checked;
+  bShapeCross2 = document.getElementById('radioButtonShapeCross2').checked;
+  bShapeFlower1 = document.getElementById('radioButtonShapeFlower1').checked;
+  bShapeFlower2 = document.getElementById('radioButtonShapeFlower2').checked;
+  bShapeRectS = document.getElementById('radioButtonShapeRectS').checked;
+  bShapeRect = document.getElementById('radioButtonShapeRect').checked;
+  bShapeRects = document.getElementById('radioButtonShapeRects').checked;
+  bShapePlus1 = document.getElementById('radioButtonShapePlus1').checked;
+  bShapePlus2 = document.getElementById('radioButtonShapePlus2').checked;
+  bShapeCircle1 = document.getElementById('radioButtonShapeCircle1').checked;
+  bShapeCircle2 = document.getElementById('radioButtonShapeCircle2').checked;
+  bShapeCircle3 = document.getElementById('radioButtonShapeCircle3').checked;
+  bShapeCircle4 = document.getElementById('radioButtonShapeCircle4').checked;
+  bShapeCircle5 = document.getElementById('radioButtonShapeCircle5').checked;
+  bShapeCircle6 = document.getElementById('radioButtonShapeCircle6').checked;
+  bShapeLines = document.getElementById('radioButtonShapeLines').checked;
+  bShapeLines2 = document.getElementById('radioButtonShapeLines2').checked;
+  bShapeNone = document.getElementById('radioButtonShapeNone').checked;
 }
 
 function updateShowTweetButton() {
-  bShowTweetButton = document.getElementById('CheckboxShowTweetButton').checked;
+  bShowTweetButton = document.getElementById('checkboxShowTweetButton').checked;
   if (bShowTweetButton) {
     addTweetButton(false);
   }
-  document.getElementById('ButtonTweet').style.display =
+  document.getElementById('buttonTweet').style.display =
     bShowTweetButton ? 'inline' : 'none';
 }
 
@@ -519,11 +552,11 @@ document.addEventListener('keydown', function(event) {
   if (document.getElementById('savedataStr').style.display != 'none' &&
       document.getElementById('savedataStr').style.display != 'none') return;
   let k = event.keyCode;
-  if (k == 37) {
+  if (k == 37) { // [←]キー
     if (document.getElementById('buttonUndo').style.visibility == 'visible') {
       onButtonClickSavedataUndo(event);
     }
-  } else if (k == 39) {
+  } else if (k == 39) { // [→]キー
     if (document.getElementById('buttonRedo').style.visibility == 'visible') {
       onButtonClickSavedataRedo(event);
     }
@@ -1252,7 +1285,7 @@ function isFinished() {
 
 function addTweetButton(finished) {
   if (!finished && !bShowTweetButton) return;
-  let buttonID = finished ? 'ButtonTweet2' : 'ButtonTweet';
+  let buttonID = finished ? 'buttonTweet2' : 'buttonTweet';
   let d = document.getElementById(buttonID);
   while (d.firstChild != null) d.removeChild(d.firstChild);
 
@@ -1422,7 +1455,7 @@ function movePieces(clickID) {
   if (isFinished()) {
     completedFlag = true;
     if (notYetCompletedFlag) {
-      document.getElementById('Finish').style.display = 'block';
+      document.getElementById('finish').style.display = 'block';
       notYetCompletedFlag = false;
       document.getElementById('TextFinishCount').innerHTML =
         clickCount + '手目に完成！！' +
@@ -1487,15 +1520,18 @@ function moveRandom() {
 
 let timerRandom;
 let bRandomInterval = false;
-let elemRangeRandom = document.getElementById('RangeRandom');
+let elemRangeRandom;
+function setTimerRandom(event) {
+  let randomSpeed = Number(550 - elemRangeRandom.value);
+  timerRandom = setInterval('moveRandom()', randomSpeed);
+}
 function onButtonClickRandomInterval(event) {
   // iOSで連続でボタンを押しているとダブルクリック判定されて
   // 画面が移動してしまったりするので。
   event.preventDefault();
   if (!bRandomInterval) {
     bRandomInterval = true;
-    let randomSpeed = Number(elemRangeRandom.value);
-    timerRandom = setInterval('moveRandom()', randomSpeed);
+    setTimerRandom();
   }
 }
 function onButtonClickRandomIntervalStop(event) {
@@ -1505,11 +1541,9 @@ function onButtonClickRandomIntervalStop(event) {
 }
 function oninputRange(event) {
   event.preventDefault();
-
   if (bRandomInterval) {
     clearInterval(timerRandom);
-    let randomSpeed = Number(550 - elemRangeRandom.value);
-    timerRandom = setInterval('moveRandom()', randomSpeed);
+    setTimerRandom();
   }
 }
 
@@ -1680,13 +1714,13 @@ function onRadioButtonChangeShape() {
   removeShapeImage();
   draw();
 }
-function onCheckboxChangeShowTweetButon() {
+function onCheckboxChangeShowTweetButton() {
   updateShowTweetButton();
 }
 
 function onButtonClickResetShape(event) {
   event.preventDefault();
-  let elems = document.getElementsByName('RadioButtonShape');
+  let elems = document.getElementsByName('radioButtonShape');
   let num = elems.length;
   for (let i = 0; i < num; i++) {
     elems[i].checked = false;
@@ -1696,16 +1730,16 @@ function onButtonClickResetShape(event) {
 
 function onButtonClickUncheckAll(event) {
   event.preventDefault();
-  document.getElementById('RadioButtonTargetTopLeft').checked = false;
-  document.getElementById('RadioButtonTargetFront').checked = false;
-  document.getElementById('RadioButtonTargetBack').checked = false;
-  document.getElementById('RadioButtonTargetOther').checked = false;
-  document.getElementById('CheckboxColoredProperPieces').checked = false;
-  document.getElementById('CheckboxShowPoints').checked = false;
-  document.getElementById('CheckboxShowLozenge').checked = false;
-  document.getElementById('CheckboxShowUnusedPieces').checked = false;
-  document.getElementById('CheckboxShowIndex').checked = false;
-  document.getElementById('CheckboxShowLines').checked = false;
+  document.getElementById('radioButtonTargetTopLeft').checked = false;
+  document.getElementById('radioButtonTargetFront').checked = false;
+  document.getElementById('radioButtonTargetBack').checked = false;
+  document.getElementById('radioButtonTargetOther').checked = false;
+  document.getElementById('checkboxColoredProperPieces').checked = false;
+  document.getElementById('checkboxShowPoints').checked = false;
+  document.getElementById('checkboxShowLozenge').checked = false;
+  document.getElementById('checkboxShowUnusedPieces').checked = false;
+  document.getElementById('checkboxShowIndex').checked = false;
+  document.getElementById('checkboxShowLines').checked = false;
   onButtonClickResetShape(event);
 
   onRadioButtonChangeTarget();
@@ -1722,9 +1756,9 @@ function onButtonClickUncheckAll(event) {
 // ======================================================================
 // レベル
 function onRadioButtonChangeLevel() {
-  if (document.getElementById('RadioButtonModeNormal').checked) {
+  if (document.getElementById('radioButtonModeNormal').checked) {
     num = 12;
-  } else if (document.getElementById('RadioButtonModeEasy').checked) {
+  } else if (document.getElementById('radioButtonModeEasy').checked) {
     num = 6;
   }
   numChanged();
