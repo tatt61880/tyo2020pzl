@@ -31,7 +31,7 @@ function onClickOpenClose(clickId, str){
 	<form>
 		<div id="left" style="float: left; max-width: 600px;">
 			<h1 id="upperTitle">東京オリンピック2020・エンブレム・パズル</h1>
-			<div id="TargetCanvas" style="display:none; ">
+			<div id="divTargetCanvas" style="display:none; ">
 				<canvas id="canvasTarget" height="0" width="0"></canvas>
 			</div>
 			<div style="display:block;">
@@ -41,7 +41,7 @@ function onClickOpenClose(clickId, str){
 			<span id="textClickCount">初期化中…</span>
 			<div id="buttonTweet" style="display:none;"></div>
 			<div id="finish" style="display:none;">
-				<span id="TextFinishCount" style="color:#FF0000"></span>
+				<span id="textFinishCount" style="color:#FF0000"></span>
 				<div id="buttonTweet2" style="display:inline"></div>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs'); </script>
 			</div>
@@ -61,7 +61,7 @@ function onClickOpenClose(clickId, str){
 					<a id="savedataStrTitle" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
 				</div>
 				<div id="savedataStr" style="display:none; clear:both;">
-					<textarea id="TextareaSavedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
+					<textarea id="textareaSavedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
 				</div>
 				<div onclick="onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
 					<a id="usageForSavedataTitle" style="cursor:pointer;">▼セーブデータの使い方 (クリックして開く)</a>

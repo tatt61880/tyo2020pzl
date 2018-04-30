@@ -257,7 +257,7 @@ function onLoad() {
         '自動では読み込みません。\n' +
         '読み込みたい場合は、セーブデータからロードしてください。');
     loadData('');
-    document.getElementById('TextareaSavedata').value = dataLoad;
+    document.getElementById('textareaSavedata').value = dataLoad;
   }
   setRedoData();
 }
@@ -290,7 +290,7 @@ function updateTargetLocation() {
   bTargetFront = document.getElementById('radioButtonTargetFront').checked;
   bTargetBack = document.getElementById('radioButtonTargetBack').checked;
   bTargetOther = document.getElementById('radioButtonTargetOther').checked;
-  document.getElementById('TargetCanvas').style.display =
+  document.getElementById('divTargetCanvas').style.display =
     bTargetOther ? 'block' : 'none';
 }
 
@@ -590,7 +590,7 @@ function init() {
 
   addTweetButton(false);
   dataCurrent = '';
-  document.getElementById('TextareaSavedata').value = '';
+  document.getElementById('textareaSavedata').value = '';
   document.getElementById('buttonUndo').style.visibility = 'hidden';
 
   let points = [];
@@ -1321,7 +1321,7 @@ function addTweetButton(finished) {
     (dataCurrent == '' ? '' : '&s=' + dataCurrent));
   ele.setAttribute('data-via', 'tatt61880');
   ele.setAttribute('data-hashtags', 'tyo2020pzl');
-  let str = document.createTextNode('Tweet');
+  let str = document.createTextNode('tweet');
   ele.appendChild(str);
   d.appendChild(ele);
 
@@ -1345,7 +1345,7 @@ function itoa(n) {
 function updateSavedata(clickID) {
   let c = itoa(clickID);
   dataCurrent += c;
-  document.getElementById('TextareaSavedata').value = dataCurrent;
+  document.getElementById('textareaSavedata').value = dataCurrent;
 }
 
 function movePieces(clickID) {
@@ -1457,7 +1457,7 @@ function movePieces(clickID) {
     if (notYetCompletedFlag) {
       document.getElementById('finish').style.display = 'block';
       notYetCompletedFlag = false;
-      document.getElementById('TextFinishCount').innerHTML =
+      document.getElementById('textFinishCount').innerHTML =
         clickCount + '手目に完成！！' +
         ' (赤' + clickCountRed + ', 緑' + clickCountGreen + ')';
       // 完成後のUndoやRedo時に毎回は更新しないようにする。
@@ -1609,11 +1609,11 @@ function setRedoData() {
 // セーブデータ
 function onButtonClickSavedataLoad(event) {
   event.preventDefault();
-  let dataStr = document.getElementById('TextareaSavedata').value;
-  console.time('LoadTimer');
+  let dataStr = document.getElementById('textareaSavedata').value;
+  console.time('loadTimer');
   loadData(dataStr);
   setRedoData();
-  console.timeEnd('LoadTimer');
+  console.timeEnd('loadTimer');
 }
 
 function onButtonClickSavedataUndo(event) {
