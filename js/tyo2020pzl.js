@@ -56,6 +56,7 @@ let bShapeRect = false;
 let bShapeRects = false;
 let bShapePlus1 = false;
 let bShapePlus2 = false;
+let bShapeDiv = false;
 let bShapeCircle1 = false;
 let bShapeCircle2 = false;
 let bShapeCircle3 = false;
@@ -333,6 +334,7 @@ function updateShapeType() {
   bShapeRects = document.getElementById('radioButtonShapeRects').checked;
   bShapePlus1 = document.getElementById('radioButtonShapePlus1').checked;
   bShapePlus2 = document.getElementById('radioButtonShapePlus2').checked;
+  bShapeDiv = document.getElementById('radioButtonShapeDiv').checked;
   bShapeCircle1 = document.getElementById('radioButtonShapeCircle1').checked;
   bShapeCircle2 = document.getElementById('radioButtonShapeCircle2').checked;
   bShapeCircle3 = document.getElementById('radioButtonShapeCircle3').checked;
@@ -810,7 +812,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * rate, 0);
     ctx.closePath();
   } else if (bShapeRect) {
-    let rate = 0.9;
+    let rate = 0.8;
     ctx.moveTo(0, h * rate);
     ctx.lineTo(w * rate, 0);
     ctx.lineTo(0, -h * rate);
@@ -897,7 +899,7 @@ function drawShape(ctx, rectType, strokeOn) {
       ctx.stroke();
     }
   } else if (bShapePlus1) {
-    let widthRate = 0.1;
+    let widthRate = 0.3;
     let wDiv2 = w / 2;
     let hDiv2 = h / 2;
     ctx.moveTo( wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
@@ -914,7 +916,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(0, h * widthRate);
     ctx.closePath();
   } else if (bShapePlus2) {
-    let widthRate = 0.1 / Math.sqrt(2.0);
+    let widthRate = 0.3 / Math.sqrt(2.0);
     ctx.moveTo(-w * widthRate, h * (1 - widthRate));
     ctx.lineTo( w * widthRate, h * (1 - widthRate));
     ctx.lineTo( w * widthRate, h * widthRate);
@@ -928,6 +930,46 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * (1 - widthRate), h * widthRate);
     ctx.lineTo(-w * widthRate, h * widthRate);
     ctx.closePath();
+  } else if (bShapeDiv) {
+    let paddingRate = 0.1;
+    /*
+    ctx.moveTo( w * 1/3, h * 2/3); // 1
+    ctx.lineTo( w * 2/3, h * 1/3); // 2
+    ctx.lineTo( w * 2/3, -h * 1/3); // 3
+    ctx.lineTo( w * 1/3, -h * 2/3); // 4
+    ctx.lineTo(-w * 1/3, -h * 2/3); // 5
+    ctx.lineTo(-w * 2/3, -h * 1/3); // 6
+    ctx.lineTo(-w * 2/3, h * 1/3); // 7
+    ctx.lineTo(-w * 1/3, h * 2/3); // 1
+    */
+
+    {
+      ctx.beginPath();
+      ctx.moveTo( w * 1/3,  h * 2/3);
+      ctx.lineTo( w * 2/3,  h * 1/3);
+      ctx.lineTo(-w * 1/3, -h * 2/3);
+      ctx.lineTo(-w * 2/3, -h * 1/3);
+      ctx.closePath();
+      ctx.fill();
+    }
+    {
+      ctx.beginPath();
+      ctx.moveTo( w * 2/3, -h * 1/3);
+      ctx.lineTo( w * 1/3, -h * 2/3);
+      ctx.lineTo( w * 1/3 * 0.72 - w * 2/3 * 0.28, -h * 2/3 * 0.72 + h * 1/3 * 0.28);
+      ctx.lineTo( w * 2/3 * 0.72 - w * 1/3 * 0.28, -h * 1/3 * 0.72 + h * 2/3 * 0.28);
+      ctx.closePath();
+      ctx.fill();
+    }
+    {
+      ctx.beginPath();
+      ctx.moveTo(-w * 2/3, h * 1/3);
+      ctx.lineTo(-w * 1/3, h * 2/3);
+      ctx.lineTo(-w * 1/3 * 0.72 + w * 2/3 * 0.28,  h * 2/3 * 0.72 - h * 1/3 * 0.28);
+      ctx.lineTo(-w * 2/3 * 0.72 + w * 1/3 * 0.28,  h * 1/3 * 0.72 - h * 2/3 * 0.28);
+      ctx.closePath();
+      ctx.fill();
+    }
   } else if (bShapeCircle1) {
     ctx.arc( 0, 0, 0.5 * h, 0, 2 * Math.PI, false);
   } else if (bShapeCircle2) {
@@ -996,7 +1038,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.rect(-w / 2, -h / 2, w, h);
   }
 
-  if (!bShapeRects && !bShapeImage) {
+  if (!bShapeRects && !bShapeImage && !bShapeDiv) {
     if (bShapeCircle5 || bShapeCircle6) {
       ctx.stroke();
     } else {
