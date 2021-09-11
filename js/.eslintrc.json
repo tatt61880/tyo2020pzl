@@ -4,6 +4,10 @@
     "rules": {
         "require-jsdoc": [
             "off"
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
         ]
     }
 }
