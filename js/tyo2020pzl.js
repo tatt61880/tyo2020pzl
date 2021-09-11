@@ -931,7 +931,6 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * widthRate, h * widthRate);
     ctx.closePath();
   } else if (bShapeDiv) {
-    const paddingRate = 0.1;
     /*
     ctx.moveTo( w * 1/3, h * 2/3); // 1
     ctx.lineTo( w * 2/3, h * 1/3); // 2
@@ -956,8 +955,10 @@ function drawShape(ctx, rectType, strokeOn) {
       ctx.beginPath();
       ctx.moveTo( w * 2/3, -h * 1/3);
       ctx.lineTo( w * 1/3, -h * 2/3);
-      ctx.lineTo( w * 1/3 * 0.72 - w * 2/3 * 0.28, -h * 2/3 * 0.72 + h * 1/3 * 0.28);
-      ctx.lineTo( w * 2/3 * 0.72 - w * 1/3 * 0.28, -h * 1/3 * 0.72 + h * 2/3 * 0.28);
+      ctx.lineTo( w * 1/3 * 0.72 - w * 2/3 * 0.28,
+          -h * 2/3 * 0.72 + h * 1/3 * 0.28);
+      ctx.lineTo( w * 2/3 * 0.72 - w * 1/3 * 0.28,
+          -h * 1/3 * 0.72 + h * 2/3 * 0.28);
       ctx.closePath();
       ctx.fill();
     }
@@ -965,8 +966,10 @@ function drawShape(ctx, rectType, strokeOn) {
       ctx.beginPath();
       ctx.moveTo(-w * 2/3, h * 1/3);
       ctx.lineTo(-w * 1/3, h * 2/3);
-      ctx.lineTo(-w * 1/3 * 0.72 + w * 2/3 * 0.28, h * 2/3 * 0.72 - h * 1/3 * 0.28);
-      ctx.lineTo(-w * 2/3 * 0.72 + w * 1/3 * 0.28, h * 1/3 * 0.72 - h * 2/3 * 0.28);
+      ctx.lineTo(-w * 1/3 * 0.72 + w * 2/3 * 0.28,
+          h * 2/3 * 0.72 - h * 1/3 * 0.28);
+      ctx.lineTo(-w * 2/3 * 0.72 + w * 1/3 * 0.28,
+          h * 1/3 * 0.72 - h * 2/3 * 0.28);
       ctx.closePath();
       ctx.fill();
     }
