@@ -722,7 +722,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.restore();
   } else if (bShapeEllipse) {
     ctx.scale(1, h / w);
-    ctx.arc(0, 0, w / Math.sqrt(2.0), 0, 2*Math.PI, false);
+    ctx.arc(0, 0, w / Math.sqrt(2.0), 0, 2 * Math.PI, false);
   } else if (bShapeOctagram) {
     const hDiv2 = h / 2;
     const wDiv2 = w / 2;
