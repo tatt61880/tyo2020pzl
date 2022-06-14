@@ -191,8 +191,8 @@ function onLoad() {
     let paravalsStr = location.href.split('?')[1];
     if (paravalsStr == null) paravalsStr = '';
     const paravalsArray = paravalsStr.split('&');
-    for (let i = 0; i < paravalsArray.length; i++) {
-      const paraval = paravalsArray[i].split('=');
+    for (const paravals of paravalsArray) {
+      const paraval = paravals.split('=');
       if (paraval.length == 2) {
         if (paraval[0] == 'level') {
           num = Number(paraval[1]);
@@ -618,8 +618,8 @@ function numChanged() {
   if (paravalsStr == null) paravalsStr = '';
   const paravalsArray = paravalsStr.split('&');
   let numUrl = -1;
-  for (let i = 0, len = paravalsArray.length; i < len; i++) {
-    const paraval = (paravalsArray[i]).split('=');
+  for (const paravals of paravalsArray) {
+    const paraval = paravals.split('=');
     if (paraval.length == 2) {
       if (paraval[0] == 'level') {
         numUrl = Number(paraval[1]);
@@ -1727,9 +1727,8 @@ function onCheckboxChangeShowTweetButton() {
 function onButtonClickResetShape(event) {
   event.preventDefault();
   const elems = document.getElementsByName('radioButtonShape');
-  const num = elems.length;
-  for (let i = 0; i < num; i++) {
-    elems[i].checked = false;
+  for (const elem of elems) {
+    elem.checked = false;
   }
   onRadioButtonChangeShape();
 }
