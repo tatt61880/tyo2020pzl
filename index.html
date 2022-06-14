@@ -150,23 +150,16 @@ function onClickOpenClose(clickId, str){
             <hr style="border:none;border-top:dashed 5px #BFB;">
           </div>
           <div id="coloredProperPieces">
-            <span class="nowrap"><input type="checkbox" id="checkboxColoredProperPieces" onclick="onCheckboxChangeColoredProperPieces()" checked>
-              <label for="checkboxColoredProperPieces">正しい位置のピースを薄い色で表示</label></span>
+            <span class="nowrap"><input type="checkbox" id="options-coloredProperPieces" checked><label for="options-coloredProperPieces">正しい位置のピースを薄い色で表示</label></span>
             <br>
           </div>
-          <span class="nowrap"><input type="checkbox" id="checkboxShowPoints" onclick="onCheckboxChangeShowPoints()" checked>
-            <label for="checkboxShowPoints">点</label></span>
-          <span class="nowrap"><input type="checkbox" id="checkboxShowLozenge" onclick="onCheckboxChangeShowLozenge()" checked>
-            <label for="checkboxShowLozenge">境界線</label></span>
-          <span class="nowrap"><input type="checkbox" id="checkboxShowUnusedPieces" onclick="onCheckboxChangeShowUnusedPieces()">
-            <label for="checkboxShowUnusedPieces">すべてのピースに模様を表示</label></span>
+          <span class="nowrap"><input type="checkbox" id="options-showPoints" checked><label for="options-showPoints">点</label></span>
+          <span class="nowrap"><input type="checkbox" id="options-showLozenges" checked><label for="options-showLozenges">境界線</label></span>
+          <span class="nowrap"><input type="checkbox" id="options-showUnusedPieces"><label for="options-showUnusedPieces">すべてのピースに模様を表示</label></span>
           <br>
-          <span class="nowrap"><input type="checkbox" id="checkboxShowIndex" onclick="onCheckboxChangeShowIndex()">
-            <label for="checkboxShowIndex">番号</label></span>
-          <span class="nowrap"><input type="checkbox" id="checkboxShowLines" onclick="onCheckboxChangeShowLines()">
-            <label for="checkboxShowLines">隣接ピースの中央を結ぶ線</label></span>
-          <div style="text-align:center;">
-            <input type="button" style="background-color:#BFB;" value="すべてオフ" id="buttonUncheckAll">
+          <span class="nowrap"><input type="checkbox" id="options-showIndex"><label for="options-showIndex">番号</label></span>
+          <span class="nowrap"><input type="checkbox" id="options-showLines"><label for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
+          <div style="text-align: center;">
             <input type="button" style="background-color:#BFB;" value="ランダムに1手動かす" id="buttonRandom">
             <input type="button" style="background-color:#BFB;" value="ランダムに動かし続ける" id="buttonRandomInterval">
             <input type="button" style="background-color:#BFB;" value="停止" id="buttonRandomIntervalStop">
@@ -375,7 +368,7 @@ function onClickOpenClose(clickId, str){
   </ul>
   </div>
 </div>
-<script src="./js/tyo2020pzl.js?v=20190324"></script>
+<script src="./js/tyo2020pzl.js?2022.06.14"></script>
 </body>
 </html>
 

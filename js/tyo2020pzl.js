@@ -32,16 +32,18 @@ let dataRedo = '';
 let dataCurrent = '';
 
 // for Options
+const options = {
+  coloredProperPieces: undefined,
+  showPoints: undefined,
+  showLozenges: undefined,
+  showUnusedPieces: undefined,
+  showIndex: undefined,
+  showLines: undefined,
+};
 let bTargetTopLeft = false;
 let bTargetFront = false;
 let bTargetBack = false;
 let bTargetOther = false;
-let bColoredProperPieces = false;
-let bShowPoints = false;
-let bShowLozenges = false;
-let bShowUnusedPieces = false;
-let bShowIndex = false;
-let bShowLines = false;
 let bShapeEllipse = false;
 let bShapeOctagram = false;
 let bShapeOctangle = false;
@@ -146,8 +148,6 @@ function initEventListener() {
       addEventListener('click', onButtonClickSavedataRedo, false);
   document.getElementById('buttonDefaultColor').
       addEventListener('click', onButtonClickDefaultColor, false);
-  document.getElementById('buttonUncheckAll').
-      addEventListener('click', onButtonClickUncheckAll, false);
   document.getElementById('buttonRandom').
       addEventListener('click', onButtonClickRandom, false);
   document.getElementById('buttonRandomInterval').
@@ -170,6 +170,20 @@ function initEventListener() {
 
 function onLoad() {
   initEventListener();
+
+  // オプションの初期化
+  for (const optionName in options) {
+    const elemOption = document.getElementById('options-' + optionName);
+    options[optionName] = elemOption.checked;
+    elemOption.addEventListener(
+      'change',
+      function() {
+        options[optionName] = elemOption.checked;
+        draw();
+      },
+      false
+    );
+  }
 
   let dataLoad = '';
   // analyzing url
@@ -216,7 +230,8 @@ function onLoad() {
       document.getElementById('radioButtonTargetOther').checked = false;
       document.getElementById('targetLocation').style.display = 'none';
       document.getElementById('coloredProperPieces').style.display = 'none';
-      document.getElementById('checkboxColoredProperPieces').checked = false;
+      document.getElementById('options-coloredProperPieces').checked = false;
+      options.coloredProperPieces = false;
       document.getElementById('upperTitle').style.display = 'none';
       document.getElementById('lowerTitle').style.display = 'block';
     }
@@ -239,12 +254,6 @@ function onLoad() {
       onClick, false);
 
   updateTargetLocation();
-  updateColordProperPieces();
-  updateShowPoints();
-  updateShowLogenzes();
-  updateShowUnusedPieces();
-  updateShowIndex();
-  updateShowLines();
   updateShapeType();
   updateShowTweetButton();
 
@@ -295,30 +304,6 @@ function updateTargetLocation() {
     bTargetOther ? 'block' : 'none';
 }
 
-function updateColordProperPieces() {
-  bColoredProperPieces =
-    document.getElementById('checkboxColoredProperPieces').checked;
-}
-function updateShowPoints() {
-  bShowPoints =
-    document.getElementById('checkboxShowPoints').checked;
-}
-function updateShowLogenzes() {
-  bShowLozenges =
-    document.getElementById('checkboxShowLozenge').checked;
-}
-function updateShowUnusedPieces() {
-  bShowUnusedPieces =
-    document.getElementById('checkboxShowUnusedPieces').checked;
-}
-function updateShowIndex() {
-  bShowIndex =
-    document.getElementById('checkboxShowIndex').checked;
-}
-function updateShowLines() {
-  bShowLines =
-    document.getElementById('checkboxShowLines').checked;
-}
 function updateShapeType() {
   bShapeEllipse = document.getElementById('radioButtonShapeEllipse').checked;
   bShapeOctagram = document.getElementById('radioButtonShapeOctagram').checked;
@@ -567,6 +552,7 @@ document.addEventListener('keydown', function(event) {
 
 function init() {
   document.getElementById('textClickCount').innerHTML='初期化中…';
+
   if (numPrev != num) {
     numPrev = num;
     numChanged();
@@ -665,7 +651,7 @@ function drawPiece(idx) {
   const cy = cys[idx];
   const rot = rots[idx];
   const unusedFlag = unusedFlags[idx];
-  const bProperFlag = bColoredProperPieces && properFlags[idx] != -1;
+  const bProperFlag = options.coloredProperPieces && properFlags[idx] != -1;
 
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -673,13 +659,13 @@ function drawPiece(idx) {
   ctx.rotate(rot * Math.PI / num);
 
   if (unusedFlag) {
-    if (bShowUnusedPieces) {
+    if (options.showUnusedPieces) {
       ctx.fillStyle = colorFillUnusedPiece;
       ctx.strokeStyle = colorStrokeUnusedPiece;
       drawShape(ctx, rectType, true);
     }
   } else {
-    if (bColoredProperPieces && bProperFlag) {
+    if (options.coloredProperPieces && bProperFlag) {
       ctx.fillStyle = ctx.strokeStyle = colorFillProperPiece;
     } else {
       ctx.fillStyle = ctx.strokeStyle = colorFillNormalPiece;
@@ -687,7 +673,7 @@ function drawPiece(idx) {
     drawShape(ctx, rectType, false);
   }
 
-  if (bShowLozenges) {
+  if (options.showLozenges) {
     ctx.strokeStyle = colorStrokeLozenge;
     ctx.beginPath();
     ctx.moveTo(0, rects[rectType].h);
@@ -699,7 +685,7 @@ function drawPiece(idx) {
   }
   ctx.restore();
 
-  if (bShowIndex) {
+  if (options.showIndex) {
     showIndex(idx, cx, cy, unusedFlag, bProperFlag);
   }
 }
@@ -1064,7 +1050,7 @@ function drawTarget(ctx, smallSize, normalColor) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (smallSize) ctx.scale(0.19, 0.19);
     if (normalColor) {
-      if (bColoredProperPieces && properFlagsTarget[idx] != -1) {
+      if (options.coloredProperPieces && properFlagsTarget[idx] != -1) {
         ctx.fillStyle = ctx.strokeStyle = colorFillProperPiece;
       } else {
         ctx.fillStyle = ctx.strokeStyle = colorFillNormalPiece;
@@ -1179,10 +1165,10 @@ function draw() {
     drawTarget(ctx, false, false);
   }
 
-  if (bShowPoints) {
+  if (options.showPoints) {
     drawPoints();
   }
-  if (bShowLines) {
+  if (options.showLines) {
     drawLines();
   }
 
@@ -1725,31 +1711,6 @@ function onRadioButtonChangeTarget() {
   draw();
 }
 
-function onCheckboxChangeColoredProperPieces() {
-  updateColordProperPieces();
-  draw();
-}
-function onCheckboxChangeShowPoints() {
-  updateShowPoints();
-  draw();
-}
-function onCheckboxChangeShowLozenge() {
-  updateShowLogenzes();
-  draw();
-}
-function onCheckboxChangeShowLines() {
-  updateShowLines();
-  draw();
-}
-function onCheckboxChangeShowUnusedPieces() {
-  updateShowUnusedPieces();
-  draw();
-}
-
-function onCheckboxChangeShowIndex() {
-  updateShowIndex();
-  draw();
-}
 function removeShapeImage() {
   bShapeImage = false;
   document.getElementById('myFileImg').innerHTML = '';
@@ -1772,31 +1733,6 @@ function onButtonClickResetShape(event) {
   }
   onRadioButtonChangeShape();
 }
-
-function onButtonClickUncheckAll(event) {
-  event.preventDefault();
-  document.getElementById('radioButtonTargetTopLeft').checked = false;
-  document.getElementById('radioButtonTargetFront').checked = false;
-  document.getElementById('radioButtonTargetBack').checked = false;
-  document.getElementById('radioButtonTargetOther').checked = false;
-  document.getElementById('checkboxColoredProperPieces').checked = false;
-  document.getElementById('checkboxShowPoints').checked = false;
-  document.getElementById('checkboxShowLozenge').checked = false;
-  document.getElementById('checkboxShowUnusedPieces').checked = false;
-  document.getElementById('checkboxShowIndex').checked = false;
-  document.getElementById('checkboxShowLines').checked = false;
-  onButtonClickResetShape(event);
-
-  onRadioButtonChangeTarget();
-  onCheckboxChangeColoredProperPieces();
-  onCheckboxChangeShowPoints();
-  onCheckboxChangeShowLozenge();
-  onCheckboxChangeShowUnusedPieces();
-  onCheckboxChangeShowIndex();
-  onCheckboxChangeShowLines();
-  onRadioButtonChangeShape();
-}
-
 
 // ======================================================================
 // レベル
