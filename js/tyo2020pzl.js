@@ -34,7 +34,7 @@ let dataCurrent = '';
 OptionType = {
   checkbox: 1,
   radio: 2,
-}
+};
 
 // for Options
 const options = {
@@ -50,29 +50,6 @@ let bTargetTopLeft = false;
 let bTargetFront = false;
 let bTargetBack = false;
 let bTargetOther = false;
-let bShapeOctagram = false;
-let bShapeOctangle = false;
-let bShapeEspille1 = false;
-let bShapeEspille2 = false;
-let bShapeCross1 = false;
-let bShapeCross2 = false;
-let bShapeFlower1 = false;
-let bShapeFlower2 = false;
-let bShapeRectS = false;
-let bShapeRect = false;
-let bShapeRects = false;
-let bShapePlus1 = false;
-let bShapePlus2 = false;
-let bShapeDiv = false;
-let bShapeCircle1 = false;
-let bShapeCircle2 = false;
-let bShapeCircle3 = false;
-let bShapeCircle4 = false;
-let bShapeCircle5 = false;
-let bShapeCircle6 = false;
-let bShapeLines = false;
-let bShapeLines2 = false;
-let bShapeNone = false;
 let bShowTweetButton = false;
 
 let redoCount = 0;
@@ -181,39 +158,39 @@ function onLoad() {
     const optionType = options[optionName];
     switch (optionType) {
       case OptionType.checkbox:
-      {
-        const elem = document.getElementById('options-' + optionName);
-        options[optionName] = elem.checked;
-        elem.addEventListener(
-          'change',
-          function() {
-            options[optionName] = elem.checked;
-            draw();
-          },
-          false
-        );
-      }
-      break;
-    case OptionType.radio:
-      {
-        const elems = document.getElementsByName('options-' + optionName);
-        for (const elem of elems) {
-          if (elem.checked) {
-            options[optionName] = elem.value;
-          }
+        {
+          const elem = document.getElementById('options-' + optionName);
+          options[optionName] = elem.checked;
           elem.addEventListener(
-            'change',
-            function() {
-              if (elem.checked) {
-                options[optionName] = elem.value;
-              }
-              draw();
-            },
-            false
+              'change',
+              function() {
+                options[optionName] = elem.checked;
+                draw();
+              },
+              false
           );
         }
-      }
-      break;
+        break;
+      case OptionType.radio:
+        {
+          const elems = document.getElementsByName('options-' + optionName);
+          for (const elem of elems) {
+            if (elem.checked) {
+              options[optionName] = elem.value;
+            }
+            elem.addEventListener(
+                'change',
+                function() {
+                  if (elem.checked) {
+                    options[optionName] = elem.value;
+                  }
+                  draw();
+                },
+                false
+            );
+          }
+        }
+        break;
     }
   }
 
