@@ -101,8 +101,7 @@ myFile.addEventListener('change', function() {
   bShapeImage = true;
   const file = myFile.files[0];
   blobUrl = window.URL.createObjectURL(file);
-  document.getElementById('myFileImg').innerHTML =
-    '<img style="max-width:100%" src="' + blobUrl + '">';
+  document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
   myImg.src = blobUrl;
   myImg.onload = function() {
     draw();
@@ -541,7 +540,7 @@ document.addEventListener('keydown', function(event) {
 }, false);
 
 function init() {
-  document.getElementById('textClickCount').innerHTML='初期化中…';
+  document.getElementById('textClickCount').innerText = '初期化中…';
 
   if (numPrev != num) {
     numPrev = num;
@@ -1133,9 +1132,7 @@ function drawLines() {
 }
 
 function draw() {
-  document.getElementById('textClickCount').innerHTML = '現在' +
-    clickCount + '手目です。' +
-    ' (赤' + clickCountRed + ', 緑' + clickCountGreen + ')';
+  document.getElementById('textClickCount').innerText = `現在${clickCount}手目です。 (赤${clickCountRed}, 緑${clickCountGreen})`;
   ctx.fillStyle = colorFillBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctxTarget.fillStyle = colorFillBackground;
@@ -1478,9 +1475,7 @@ function movePieces(clickID) {
     if (notYetCompletedFlag) {
       document.getElementById('finish').style.display = 'block';
       notYetCompletedFlag = false;
-      document.getElementById('textFinishCount').innerHTML =
-        clickCount + '手目に完成！！' +
-        ' (赤' + clickCountRed + ', 緑' + clickCountGreen + ')';
+      document.getElementById('textFinishCount').innerText = `${clickCount}手目に完成！！ (赤${clickCountRed}, 緑${clickCountGreen})`;
       // 完成後のUndoやRedo時に毎回は更新しないようにする。
       if (clickCount != clickCountFin ||
           clickCountRed != clickCountFinRed ||
@@ -1703,7 +1698,7 @@ function onOptionTargetChanged() {
 
 function removeShapeImage() {
   bShapeImage = false;
-  document.getElementById('myFileImg').innerHTML = '';
+  document.getElementById('myFileImg').innerText = '';
 }
 function onOptionShapeChanged() {
   updateShapeType();
