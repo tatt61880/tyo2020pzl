@@ -154,7 +154,7 @@ function onLoad() {
     switch (optionType) {
       case OptionType.checkbox:
         {
-          const elem = document.getElementById('options-' + optionName);
+          const elem = document.getElementById(`options-${optionName}`);
           options[optionName] = elem.checked;
           elem.addEventListener(
               'change',
@@ -168,7 +168,7 @@ function onLoad() {
         break;
       case OptionType.radio:
         {
-          const elems = document.getElementsByName('options-' + optionName);
+          const elems = document.getElementsByName(`options-${optionName}`);
           for (const elem of elems) {
             if (elem.checked) {
               options[optionName] = elem.value;
@@ -210,17 +210,16 @@ function onLoad() {
 
     const maxLevel = 70;
     if (num % 2 == 1) {
-      if (window.confirm('奇数レベルには未対応です。申し訳ありません。\n' +
-        '1つ下のレベル(レベル' + (num - 1) + ')を読み込みます。良いですか？\n' +
-          '(キャンセルするとレベル12を読み込みます。)')) {
+      if (window.confirm(`奇数レベルには未対応です。申し訳ありません。
+1つ下のレベル（レベル${num - 1}）を読み込みます。良いですか？
+（キャンセルした場合、レベル12を読み込みます。）`)) {
         num--;
       } else {
         num = 12;
       }
     } else if (num > maxLevel) {
-      window.alert('※レベル' + maxLevel +
-        'より上のレベルは、フリーズ等の対策のため制限しています。\n' +
-          'ご了承ください。');
+      window.alert(`※レベル${maxLevel}より上のレベルは、フリーズ等の対策のため制限しています。
+ご了承ください。`);
       num = 12;
     }
 
@@ -273,10 +272,10 @@ function onLoad() {
   if (step < maxStep) {
     loadData(dataLoad);
   } else {
-    window.alert('読み込もうとしたデータは' + step + '手のデータです。\n' +
-      '処理に時間がかかる可能性があるため、' + maxStep + '手以上のデータは' +
-        '自動では読み込みません。\n' +
-        '読み込みたい場合は、セーブデータからロードしてください。');
+    window.alert(`読み込もうとしたデータは${step}手のデータです。
+${maxStep}手以上のデータは自動では読み込みません。
+（処理に時間がかかる可能性があるためです。）
+読み込みたい場合は、セーブデータからロードしてください。`);
     loadData('');
     document.getElementById('textareaSavedata').value = dataLoad;
   }
@@ -622,7 +621,7 @@ function numChanged() {
     }
   }
   if (numUrl == -1) numUrl = 12;
-  if (numUrl != num) location.search = '?level=' + num;
+  if (numUrl != num) location.search = `?level=${num}`;
 }
 
 function showIndex(idx, cx, cy, unusedFlag, bProperFlag) {
@@ -1138,7 +1137,7 @@ function drawLines() {
 }
 
 function draw() {
-  document.getElementById('textClickCount').innerText = `現在${clickCount}手目です。 (赤${clickCountRed}, 緑${clickCountGreen})`;
+  document.getElementById('textClickCount').innerText = `現在${clickCount}手目です。（赤${clickCountRed}, 緑${clickCountGreen}）`;
   ctx.fillStyle = colorFillBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctxTarget.fillStyle = colorFillBackground;
@@ -1320,20 +1319,17 @@ function addTweetButton(finished) {
   if (num == 12) {
     title = '「東京オリンピック・エンブレム・パズル」';
   } else if (num == 6) {
-    title = '「東京オリンピック・エンブレム・パズル(イージーモード)」';
+    title = '「東京オリンピック・エンブレム・パズル（イージーモード）」';
   } else {
-    title = '「東京オリンピック・エンブレム・パズル(' + num + '角形ベース)」';
+    title = `「東京オリンピック・エンブレム・パズル（${num}角形ベース）」`;
   }
   if (finished) {
-    ele.setAttribute('data-text', title + 'を' +
-      clickCount + '手(赤' + clickCountRed + ', 緑' + clickCountGreen + ')' +
-        'で解きました！');
+    ele.setAttribute('data-text', `${title}を${clickCount}手（赤${clickCountRed}, 緑${clickCountGreen}）で解きました！`);
   } else {
     if (clickCount == 0) {
-      ele.setAttribute('data-text', '今から、' + title + 'に挑戦します！');
+      ele.setAttribute('data-text', `今から、${title}に挑戦します！`);
     } else {
-      ele.setAttribute('data-text', title + 'に挑戦中！ 現在' +
-        clickCount + '手目(赤' + clickCountRed + ', 緑' + clickCountGreen + ')');
+      ele.setAttribute('data-text', `${title}に挑戦中！ 現在${clickCount}手目（赤${clickCountRed}, 緑${clickCountGreen}）`);
     }
   }
   let buf = location.href;
@@ -1341,8 +1337,7 @@ function addTweetButton(finished) {
   if (questionPos != -1) {
     buf = buf.substr(0, questionPos);
   }
-  ele.setAttribute('data-url', buf + '?level=' + num +
-    (dataCurrent == '' ? '' : '&s=' + dataCurrent));
+  ele.setAttribute('data-url', `${buf}?level=${num}` + (dataCurrent == '' ? '' : `&s=${dataCurrent}`));
   ele.setAttribute('data-via', 'tatt61880');
   ele.setAttribute('data-hashtags', 'tyo2020pzl');
   const str = document.createTextNode('tweet');
@@ -1361,7 +1356,7 @@ function itoa(n) {
   } else if (n < 36 + 26) {
     c = String.fromCharCode(n - 36 + 97); // a-z
   } else {
-    c = '(' + n + ')';
+    c = `(${n})`;
   }
   return c;
 }
@@ -1481,7 +1476,7 @@ function movePieces(clickID) {
     if (notYetCompletedFlag) {
       document.getElementById('finish').style.display = 'block';
       notYetCompletedFlag = false;
-      document.getElementById('textFinishCount').innerText = `${clickCount}手目に完成！！ (赤${clickCountRed}, 緑${clickCountGreen})`;
+      document.getElementById('textFinishCount').innerText = `${clickCount}手目に完成！！（赤${clickCountRed}, 緑${clickCountGreen}）`;
       // 完成後のUndoやRedo時に毎回は更新しないようにする。
       if (clickCount != clickCountFin ||
           clickCountRed != clickCountFinRed ||
@@ -1601,7 +1596,7 @@ function loadData(dataStr) {
                dataStr.charAt(i) == ' ') {
       continue;
     } else {
-      window.alert((i+1) + '文字目(' + dataStr.charAt(i) + ')が想定外です。');
+      window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が想定外です。`);
       break;
     }
 
@@ -1611,7 +1606,7 @@ function loadData(dataStr) {
       calcClickPoints(clickID);
     }
     if (clickPoints[clickID] == null) {
-      window.alert((i+1) + '文字目(' + dataStr.charAt(i) + ')が不正です。\n');
+      window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が不正です。`);
       break;
     }
     movePieces(clickID);
@@ -1761,44 +1756,35 @@ function calcIndexColorText(c1) {
                        Math.abs(c1[2] - c2[2]));
   }
 
-  let diff = 0;
   let diffMax = 0;
-  let c2;
   let c = [0, 0, 0];
-  c2 = [0, 0, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
+  const c2s = [
+    [0, 0, 0],
+    [255, 0, 0],
+    [0, 255, 0],
+    [0, 0, 255],
+    [0, 255, 255],
+    [255, 0, 255],
+    [255, 255, 0],
+    [255, 255, 255],
+  ];
+  for (const c2 of c2s) {
+    const diff = calcColorDistance(c1, c2);
+    if (diff > diffMax) {
+      diffMax = diff;
+      c = c2;
+    }
   }
-  c2 = [255, 0, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [0, 255, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [0, 0, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [0, 255, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [255, 0, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [255, 255, 0]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  c2 = [255, 255, 255]; diff = calcColorDistance(c1, c2); if (diff > diffMax) {
-    diffMax = diff; c = c2;
-  }
-  return 'rgba('+(c[0])+','+(c[1])+','+(c[2])+','+1.0+')';
+  return `rgba(${c[0]},${c[1]},${c[2]},1.0)`;
 }
 
 function hsv2rgb(h, s, v) {
   const ii = h / 60 + 60; // ここでiiがマイナスになるようなhには非対応です。
   v = Math.floor(v);
   const f = ii - Math.floor(ii);
-  const p = Math.round(v*(1-(s/255)));
-  const q = Math.round(v*(1-(s/255)*f));
-  const t = Math.round(v*(1-(s/255)*(1-f)));
+  const p = Math.round(v * (1- (s / 255)));
+  const q = Math.round(v * (1- (s / 255) * f));
+  const t = Math.round(v * (1- (s / 255) * (1 - f)));
   switch (Math.floor(ii) % 6) {
     case 0: return [v, t, p];
     case 1: return [q, v, p];
@@ -1861,9 +1847,9 @@ function onColorSelecting(e) {
   const xy = getXYonColorCanvas(e);
   const x = xy[0];
   const y = xy[1];
-  let f = false;
+  let flag = false;
   if (hueMode) {
-    f = true;
+    flag = true;
     let rad = Math.atan2(y - hueCy, x - hueCx);
     rad += Math.PI / 2; // (0, 1)を0度とするためにπ/2を足します。
     rad += Math.PI / hueSplitNum;
@@ -1871,22 +1857,17 @@ function onColorSelecting(e) {
     hueRad = 2 * Math.PI / hueSplitNum * hueI - Math.PI / 2;
     hueValue = (360 * hueI / hueSplitNum + 60);
   } else if (svMode) {
-    f = true;
+    flag = true;
     satValue = Math.max(0, Math.min(255, (x - svX0) / svSize * 255));
     valValue = Math.max(0, Math.min(255, 255 - (y - svY0) / svSize * 255));
   }
-  if (f) {
+  if (flag) {
     const rgb = hsv2rgb(hueValue, satValue, valValue);
     const rgbProper = hsv2rgb(hueValue, satValue / 2, (valValue + 255) / 2);
 
-    colorFillProperPiece =
-      'rgba(' + rgbProper[0] + ',' +
-                rgbProper[1] + ',' +
-                rgbProper[2] + ',' + 1.0 + ')';
-    colorFillNormalPiece =
-      'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + 1.0 + ')';
-    colorStrokeLozenge =
-      'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + 0.5 + ')';
+    colorFillProperPiece = `rgba(${rgbProper[0]},${rgbProper[1]},${rgbProper[2]},1.0)`;
+    colorFillNormalPiece = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},1.0)`;
+    colorStrokeLozenge = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.5)`;
     colorFillProperPieceIndex = calcIndexColorText(rgbProper);
     colorFillNormalPieceIndex = calcIndexColorText(rgb);
 
