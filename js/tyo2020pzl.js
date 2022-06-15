@@ -95,19 +95,6 @@ const myImg = new Image();
 let bShapeImage = false;
 let blobUrl = '';
 
-const myFile = document.getElementById('myFile');
-// 画像ファイル選択時の処理です。
-myFile.addEventListener('change', function() {
-  bShapeImage = true;
-  const file = myFile.files[0];
-  blobUrl = window.URL.createObjectURL(file);
-  document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
-  myImg.src = blobUrl;
-  myImg.onload = function() {
-    draw();
-  };
-} );
-
 // document.addEventListener('DOMContentLoaded', function(){
 // ↑これだと、完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
 window.addEventListener('load', onLoad, false);
@@ -147,6 +134,19 @@ function initEventListener() {
 }
 
 function onLoad() {
+  const myFile = document.getElementById('myFile');
+  // 画像ファイル選択時の処理です。
+  myFile.addEventListener('change', function() {
+    bShapeImage = true;
+    const file = myFile.files[0];
+    blobUrl = window.URL.createObjectURL(file);
+    document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
+    myImg.src = blobUrl;
+    myImg.onload = function() {
+      draw();
+    };
+  }, false);
+
   initEventListener();
 
   // オプションの初期化
@@ -247,6 +247,13 @@ function onLoad() {
     document.getElementById('finish').style.display = 'none';
     document.getElementById('radioButtonModeEasy').checked = (num == 6);
     document.getElementById('radioButtonModeNormal').checked = (num == 12);
+
+    const selectLevel = document.getElementById('selectLevel');
+    selectLevel.onchange = function() {
+      const selectedItem = this.options[this.selectedIndex];
+      num = Number(selectedItem.value);
+      numChanged();
+    };
     for (let i = 0; i < selectLevel.length; ++i) {
       selectLevel.options[i].selected = (selectLevel.options[i].value == num);
     }
@@ -1729,12 +1736,6 @@ function onRadioButtonChangeLevel() {
   }
   numChanged();
 }
-const selectLevel = document.getElementById('selectLevel');
-selectLevel.onchange = function() {
-  const selectedItem = this.options[this.selectedIndex];
-  num = Number(selectedItem.value);
-  numChanged();
-};
 
 // ======================================================================
 const hueR = 120;
@@ -2019,4 +2020,9 @@ function onButtonClickDefaultColor() {
   draw();
 }
 
-// vim:set expandtab ts=2 sw=2 sts=2:
+function onClickOpenClose(clickId, str) {
+  obj = document.getElementById(clickId).style;
+  closedFlag = (obj.display == 'none');
+  obj.display = closedFlag ? 'block' : 'none';
+  document.getElementById(`${clickId}Title`).innerHTML = closedFlag ? `△${str} (クリックして閉じる)` : `▼${str} (クリックして開く)`;
+}

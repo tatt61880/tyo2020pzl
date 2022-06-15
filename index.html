@@ -10,28 +10,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <link rel="shortcut icon" href="./images/favicon.png">
   <link rel="apple-touch-icon" sizes="100x100" href="./images/apple-touch-icon.png">
-  <link rel="stylesheet" href="./style.css">
-  <style>
-    span.nowrap{white-space:nowrap; margin:0px 0px 0px 0px;}
-    input[type="radio"]{margin:3px 7px 7px 12px;}
-    input[type="checkbox"]{margin:3px 7px 7px 12px;}
-    input[type="button"]{border-radius:16px; padding:0px 10px 0px 10px; margin:15px 5px 15px 5px; height:32px;}
-    input[class="largeButton"]{border-radius:24px; height:48px; font-size:130%;}
-    div.round{border-radius:10px; margin:3px 5px 3px 5px;}
-  </style>
+  <link rel="stylesheet" href="./style.css?2022.06.15">
+ 
+  <script src="./js/tyo2020pzl.js?2022.06.15"></script>
 </head>
 
 <body>
-<script>
-<!--
-function onClickOpenClose(clickId, str){
-  obj = document.getElementById(clickId).style;
-  closedFlag = (obj.display == 'none');
-  obj.display = closedFlag ? 'block' : 'none';
-  document.getElementById(clickId + 'Title').innerHTML = closedFlag ? '△' + str + ' (クリックして閉じる)' : '▼' + str + ' (クリックして開く)';
-}
-//-->
-</script>
 <div id="container" style="padding: 0px 0px 5px 0px">
   <form>
     <div id="left" style="float: left; max-width: 600px;">
@@ -58,10 +42,10 @@ function onClickOpenClose(clickId, str){
       <div onclick="onClickOpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#fdf; padding:0px 5px;">
         <a id="savedataTitle" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
       </div>
-      <div id="savedata" style="display:none; clear:both;">
-        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Load" id="buttonLoad">
-        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Undo" id="buttonUndo">
-        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Redo" id="buttonRedo">
+      <div id="savedata" style="display: none; clear: both;">
+        <input type="button" class="savedata-button" value="Load" id="buttonLoad">
+        <input type="button" class="savedata-button" value="Undo" id="buttonUndo">
+        <input type="button" class="savedata-button" value="Redo" id="buttonRedo">
         <div onclick="onClickOpenClose('savedataStr', 'テキストエリア')" class="round" style="background-color:#fdf; padding:0px 5px 0px 5px;">
           <a id="savedataStrTitle" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
         </div>
@@ -98,7 +82,7 @@ function onClickOpenClose(clickId, str){
             <canvas id="canvasForColor" height="240" width="240"></canvas>
           </div>
           <div style="text-align:center;">
-            <input type="button" style="background-color:#bfb;" value="色を元に戻す" id="buttonDefaultColor">
+            <input type="button" class="option-button" value="色を元に戻す" id="buttonDefaultColor">
           </div>
         </div>
 
@@ -109,7 +93,7 @@ function onClickOpenClose(clickId, str){
           <div id="pattern" style="display:none; clear:both;">
             <input type="file" multiple id="myFile">
             <div style="text-align:center;">
-              <input type="button" style="background-color:#bfb;" value="模様を元に戻す" id="buttonResetShape">
+              <input type="button" class="option-button" value="模様を元に戻す" id="buttonResetShape">
             </div>
             <div id="myFileImg"></div>
             <span class="nowrap"><input type="radio" name="options-shape" onclick="onOptionShapeChanged()" value="ellipse"  id="options-shape-ellipse" ><label for="options-shape-ellipse">楕円</label></span>
@@ -160,9 +144,9 @@ function onClickOpenClose(clickId, str){
           <span class="nowrap"><input type="checkbox" id="options-showIndex"><label for="options-showIndex">番号</label></span>
           <span class="nowrap"><input type="checkbox" id="options-showLines"><label for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
           <div style="text-align: center;">
-            <input type="button" style="background-color: #bfb; border: solid 3px #383; color: #383;" value="ランダムに1手動かす" id="buttonRandom">
-            <input type="button" style="background-color: #bfb; border: solid 3px #383; color: #383;" value="ランダムに動かし続ける" id="buttonRandomInterval">
-            <input type="button" style="background-color: #bfb; border: solid 3px #383; color: #383;" value="停止" id="buttonRandomIntervalStop">
+            <input type="button" class="option-button" value="ランダムに1手動かす" id="buttonRandom">
+            <input type="button" class="option-button" value="ランダムに動かし続ける" id="buttonRandomInterval">
+            <input type="button" class="option-button" value="停止" id="buttonRandomIntervalStop">
             <p>←遅い <input type="range" id="rangeRandom" min="50" max="500"> 速い→</p>
           </div>
         </div>
@@ -189,8 +173,8 @@ function onClickOpenClose(clickId, str){
         <label for="radioButtonModeEasy">レベル6 (イージーモード)</label>
         <table style="margin-left:auto; margin-right:auto; border: 1px solid #ddf; border-collapse:collapse; background-color:#FFF;">
           <tr>
-            <th style="background-color:#bbf;">初期状態</th>
-            <th style="background-color:#bbf;">完成状態</th>
+            <th style="background-color: #bbf;">初期状態</th>
+            <th style="background-color: #bbf;">完成状態</th>
           </tr>
           <tr>
             <td style="text-align:center;">
@@ -205,8 +189,8 @@ function onClickOpenClose(clickId, str){
         <label for="radioButtonModeNormal">レベル12 (ノーマルモード)</label>
         <table style="margin-left:auto; margin-right:auto; border: 1px solid #ddf; border-collapse:collapse; background-color:#FFF;">
           <tr>
-            <th style="background-color:#bbf;">初期状態</th>
-            <th style="background-color:#bbf;">完成状態</th>
+            <th style="background-color: #bbf;">初期状態</th>
+            <th style="background-color: #bbf;">完成状態</th>
           </tr>
           <tr>
             <td style="text-align:center;">
@@ -368,8 +352,5 @@ function onClickOpenClose(clickId, str){
   </ul>
   </div>
 </div>
-<script src="./js/tyo2020pzl.js?2022.06.14-b"></script>
 </body>
 </html>
-
-<!-- vim:set expandtab ts=2 sw=2 sts=2: -->
