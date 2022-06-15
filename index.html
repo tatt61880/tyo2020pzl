@@ -108,30 +108,30 @@ function onClickOpenClose(clickId, str){
               <input type="button" style="background-color:#BFB;" value="模様を元に戻す" id="buttonResetShape">
             </div>
             <div id="myFileImg"></div>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeEllipse"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeEllipse">楕円</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeOctagram" onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeOctagram">八芒星</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeOctangle" onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeOctangle">八角形</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeEspille1" onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeEspille1">キラキラ1</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeEspille2" onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeEspille2">キラキラ2</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCross1"   onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCross1">手裏剣1</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCross2"   onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCross2">手裏剣2</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeFlower1"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeFlower1">花1</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeFlower2"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeFlower2">花2</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeRectS"    onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeRectS">□</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeRect"     onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeRect">口</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeRects"    onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeRects">田</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapePlus1"    onclick="onRadioButtonChangeShape()"><label for="radioButtonShapePlus1">十</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapePlus2"    onclick="onRadioButtonChangeShape()"><label for="radioButtonShapePlus2">×</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeDiv"      onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeDiv">÷</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle1"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle1">○1</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle2"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle2">○2</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle3"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle3">○3</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle4"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle4">○4</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle5"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle5">○5</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeCircle6"  onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeCircle6">○6</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeLines"    onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeLines">線</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeLines2"   onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeLines2">線2</label></span>
-            <span class="nowrap"><input type="radio" name="radioButtonShape" id="radioButtonShapeNone"     onclick="onRadioButtonChangeShape()"><label for="radioButtonShapeNone">なし</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="ellipse"  id="options-shape-ellipse"  onclick="onOptionShapeChanged()"><label for="options-shape-ellipse">楕円</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="octagram" id="options-shape-octagram" onclick="onOptionShapeChanged()"><label for="options-shape-octagram">八芒星</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="octangle" id="options-shape-octangle" onclick="onOptionShapeChanged()"><label for="options-shape-octangle">八角形</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="espille1" id="options-shape-espille1" onclick="onOptionShapeChanged()"><label for="options-shape-espille1">キラキラ1</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="espille2" id="options-shape-espille2" onclick="onOptionShapeChanged()"><label for="options-shape-espille2">キラキラ2</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="cross1"   id="options-shape-cross1"   onclick="onOptionShapeChanged()"><label for="options-shape-cross1">手裏剣1</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="cross2"   id="options-shape-cross2"   onclick="onOptionShapeChanged()"><label for="options-shape-cross2">手裏剣2</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="flower1"  id="options-shape-flower1"  onclick="onOptionShapeChanged()"><label for="options-shape-flower1">花1</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="flower2"  id="options-shape-flower2"  onclick="onOptionShapeChanged()"><label for="options-shape-flower2">花2</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="rectS"    id="options-shape-rectS"    onclick="onOptionShapeChanged()"><label for="options-shape-rectS">□</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="rect"     id="options-shape-rect"     onclick="onOptionShapeChanged()"><label for="options-shape-rect">口</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="rects"    id="options-shape-rects"    onclick="onOptionShapeChanged()"><label for="options-shape-rects">田</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="plus1"    id="options-shape-plus1"    onclick="onOptionShapeChanged()"><label for="options-shape-plus1">十</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="plus2"    id="options-shape-plus2"    onclick="onOptionShapeChanged()"><label for="options-shape-plus2">×</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="div"      id="options-shape-div"      onclick="onOptionShapeChanged()"><label for="options-shape-div">÷</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle1"  id="options-shape-circle1"  onclick="onOptionShapeChanged()"><label for="options-shape-circle1">○1</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle2"  id="options-shape-circle2"  onclick="onOptionShapeChanged()"><label for="options-shape-circle2">○2</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle3"  id="options-shape-circle3"  onclick="onOptionShapeChanged()"><label for="options-shape-circle3">○3</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle4"  id="options-shape-circle4"  onclick="onOptionShapeChanged()"><label for="options-shape-circle4">○4</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle5"  id="options-shape-circle5"  onclick="onOptionShapeChanged()"><label for="options-shape-circle5">○5</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="circle6"  id="options-shape-circle6"  onclick="onOptionShapeChanged()"><label for="options-shape-circle6">○6</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="lines"    id="options-shape-lines"    onclick="onOptionShapeChanged()"><label for="options-shape-lines">線</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="lines2"   id="options-shape-lines2"   onclick="onOptionShapeChanged()"><label for="options-shape-lines2">線2</label></span>
+            <span class="nowrap"><input type="radio" name="options-shape" value="none"     id="options-shape-none"     onclick="onOptionShapeChanged()"><label for="options-shape-none">なし</label></span>
           </div>
           <hr style="border:none;border-top:dashed 5px #BFB;">
 
@@ -160,9 +160,9 @@ function onClickOpenClose(clickId, str){
           <span class="nowrap"><input type="checkbox" id="options-showIndex"><label for="options-showIndex">番号</label></span>
           <span class="nowrap"><input type="checkbox" id="options-showLines"><label for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
           <div style="text-align: center;">
-            <input type="button" style="background-color:#BFB;" value="ランダムに1手動かす" id="buttonRandom">
-            <input type="button" style="background-color:#BFB;" value="ランダムに動かし続ける" id="buttonRandomInterval">
-            <input type="button" style="background-color:#BFB;" value="停止" id="buttonRandomIntervalStop">
+            <input type="button" style="background-color:#bfb;" value="ランダムに1手動かす" id="buttonRandom">
+            <input type="button" style="background-color:#bfb;" value="ランダムに動かし続ける" id="buttonRandomInterval">
+            <input type="button" style="background-color:#bfb;" value="停止" id="buttonRandomIntervalStop">
             <p>←遅い <input type="range" id="rangeRandom" min="50" max="500"> 速い→</p>
           </div>
         </div>

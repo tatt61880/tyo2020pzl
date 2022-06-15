@@ -31,20 +31,25 @@ let colorFillNormalPieceIndex = colorFillNormalPieceIndexDefault;
 let dataRedo = '';
 let dataCurrent = '';
 
+OptionType = {
+  checkbox: 1,
+  radio: 2,
+}
+
 // for Options
 const options = {
-  coloredProperPieces: undefined,
-  showPoints: undefined,
-  showLozenges: undefined,
-  showUnusedPieces: undefined,
-  showIndex: undefined,
-  showLines: undefined,
+  coloredProperPieces: OptionType.checkbox,
+  showPoints: OptionType.checkbox,
+  showLozenges: OptionType.checkbox,
+  showUnusedPieces: OptionType.checkbox,
+  showIndex: OptionType.checkbox,
+  showLines: OptionType.checkbox,
+  shape: OptionType.radio,
 };
 let bTargetTopLeft = false;
 let bTargetFront = false;
 let bTargetBack = false;
 let bTargetOther = false;
-let bShapeEllipse = false;
 let bShapeOctagram = false;
 let bShapeOctangle = false;
 let bShapeEspille1 = false;
@@ -173,16 +178,43 @@ function onLoad() {
 
   // オプションの初期化
   for (const optionName in options) {
-    const elemOption = document.getElementById('options-' + optionName);
-    options[optionName] = elemOption.checked;
-    elemOption.addEventListener(
-      'change',
-      function() {
-        options[optionName] = elemOption.checked;
-        draw();
-      },
-      false
-    );
+    const optionType = options[optionName];
+    switch (optionType) {
+      case OptionType.checkbox:
+      {
+        const elem = document.getElementById('options-' + optionName);
+        options[optionName] = elem.checked;
+        elem.addEventListener(
+          'change',
+          function() {
+            options[optionName] = elem.checked;
+            draw();
+          },
+          false
+        );
+      }
+      break;
+    case OptionType.radio:
+      {
+        const elems = document.getElementsByName('options-' + optionName);
+        for (const elem of elems) {
+          if (elem.checked) {
+            options[optionName] = elem.value;
+          }
+          elem.addEventListener(
+            'change',
+            function() {
+              if (elem.checked) {
+                options[optionName] = elem.value;
+              }
+              draw();
+            },
+            false
+          );
+        }
+      }
+      break;
+    }
   }
 
   let dataLoad = '';
@@ -305,30 +337,12 @@ function updateTargetLocation() {
 }
 
 function updateShapeType() {
-  bShapeEllipse = document.getElementById('radioButtonShapeEllipse').checked;
-  bShapeOctagram = document.getElementById('radioButtonShapeOctagram').checked;
-  bShapeOctangle = document.getElementById('radioButtonShapeOctangle').checked;
-  bShapeEspille1 = document.getElementById('radioButtonShapeEspille1').checked;
-  bShapeEspille2 = document.getElementById('radioButtonShapeEspille2').checked;
-  bShapeCross1 = document.getElementById('radioButtonShapeCross1').checked;
-  bShapeCross2 = document.getElementById('radioButtonShapeCross2').checked;
-  bShapeFlower1 = document.getElementById('radioButtonShapeFlower1').checked;
-  bShapeFlower2 = document.getElementById('radioButtonShapeFlower2').checked;
-  bShapeRectS = document.getElementById('radioButtonShapeRectS').checked;
-  bShapeRect = document.getElementById('radioButtonShapeRect').checked;
-  bShapeRects = document.getElementById('radioButtonShapeRects').checked;
-  bShapePlus1 = document.getElementById('radioButtonShapePlus1').checked;
-  bShapePlus2 = document.getElementById('radioButtonShapePlus2').checked;
-  bShapeDiv = document.getElementById('radioButtonShapeDiv').checked;
-  bShapeCircle1 = document.getElementById('radioButtonShapeCircle1').checked;
-  bShapeCircle2 = document.getElementById('radioButtonShapeCircle2').checked;
-  bShapeCircle3 = document.getElementById('radioButtonShapeCircle3').checked;
-  bShapeCircle4 = document.getElementById('radioButtonShapeCircle4').checked;
-  bShapeCircle5 = document.getElementById('radioButtonShapeCircle5').checked;
-  bShapeCircle6 = document.getElementById('radioButtonShapeCircle6').checked;
-  bShapeLines = document.getElementById('radioButtonShapeLines').checked;
-  bShapeLines2 = document.getElementById('radioButtonShapeLines2').checked;
-  bShapeNone = document.getElementById('radioButtonShapeNone').checked;
+  const elems = document.getElementsByName('options-shape');
+  for (const elem of elems) {
+    if (elem.checked) {
+      options.shape = elem.value;
+    }
+  }
 }
 
 function updateShowTweetButton() {
@@ -706,10 +720,10 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.clip();
     ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w, -h, w * 2, h * 2);
     ctx.restore();
-  } else if (bShapeEllipse) {
+  } else if (options.shape == 'ellipse') {
     ctx.scale(1, h / w);
     ctx.arc(0, 0, w / Math.sqrt(2.0), 0, 2 * Math.PI, false);
-  } else if (bShapeOctagram) {
+  } else if (options.shape == 'octagram') {
     const hDiv2 = h / 2;
     const wDiv2 = w / 2;
     ctx.moveTo(0, h);
@@ -721,7 +735,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(w, 0);
     ctx.lineTo(-wDiv2, -hDiv2);
     ctx.closePath();
-  } else if (bShapeOctangle) {
+  } else if (options.shape == 'octangle') {
     ctx.moveTo( w * 1/3, h * 2/3);
     ctx.lineTo( w * 2/3, h * 1/3);
     ctx.lineTo( w * 2/3, -h * 1/3);
@@ -731,7 +745,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * 2/3, h * 1/3);
     ctx.lineTo(-w * 1/3, h * 2/3);
     ctx.closePath();
-  } else if (bShapeEspille1) {
+  } else if (options.shape == 'espille1') { // ※ellipseの逆スペル
     ctx.scale(1, h / w);
     const r = w / Math.sqrt(2.0);
     const piDiv4 = Math.PI / 4;
@@ -739,7 +753,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc( w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
     ctx.arc( 0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
     ctx.arc(-w, 0, r, -1 * piDiv4, 1 * piDiv4, false);
-  } else if (bShapeEspille2) {
+  } else if (options.shape == 'espille2') {
     ctx.scale(1, h / w);
     const r = w;
     const piDiv2 = Math.PI / 2;
@@ -747,7 +761,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc( w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
     ctx.arc(-w, -w, r, 0 * piDiv2, 1 * piDiv2, false);
     ctx.arc(-w, w, r, -1 * piDiv2, 0 * piDiv2, false);
-  } else if (bShapeCross1) {
+  } else if (options.shape == 'cross1') {
     const wDiv2 = w / 2;
     const r = w;
     ctx.scale(1, h / w);
@@ -760,7 +774,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc(-wDiv2, wDiv2, r, 11 * piDiv6, 12 * piDiv6, false);
     ctx.arc( wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
     ctx.arc(-wDiv2, -wDiv2, r, 2 * piDiv6, 3 * piDiv6, false);
-  } else if (bShapeCross2) {
+  } else if (options.shape == 'cross2') {
     const r = w * Math.sqrt(2.0);
     ctx.scale(1, h / w);
     const piDiv12 = Math.PI / 12;
@@ -772,7 +786,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc(-w, 0, r, 25 * piDiv12, 27 * piDiv12, false);
     ctx.arc( w, 0, r, 9 * piDiv12, 11 * piDiv12, false);
     ctx.arc( 0, -w, r, 7 * piDiv12, 9 * piDiv12, false);
-  } else if (bShapeFlower1) {
+  } else if (options.shape == 'flower1') {
     const wDiv2 = w / 2;
     const r = wDiv2;
     ctx.scale(1, h / w);
@@ -781,7 +795,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc( wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
     ctx.arc( 0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
     ctx.arc(-wDiv2, 0, r, 3 * piDiv2, 1 * piDiv2, false);
-  } else if (bShapeFlower2) {
+  } else if (options.shape == 'flower2') {
     const wDiv2 = w / 2;
     const r = wDiv2 * Math.sqrt(2.0);
     ctx.scale(1, h / w);
@@ -790,21 +804,21 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.arc( wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
     ctx.arc(-wDiv2, -wDiv2, r, 7 * piDiv4, 3 * piDiv4, false);
     ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, 1 * piDiv4, false);
-  } else if (bShapeRectS) {
+  } else if (options.shape == 'rectS') {
     const rate = 0.5;
     ctx.moveTo(0, h * rate);
     ctx.lineTo(w * rate, 0);
     ctx.lineTo(0, -h * rate);
     ctx.lineTo(-w * rate, 0);
     ctx.closePath();
-  } else if (bShapeRect) {
+  } else if (options.shape == 'rect') {
     const rate = 0.8;
     ctx.moveTo(0, h * rate);
     ctx.lineTo(w * rate, 0);
     ctx.lineTo(0, -h * rate);
     ctx.lineTo(-w * rate, 0);
     ctx.closePath();
-  } else if (bShapeRects) {
+  } else if (options.shape == 'rects') {
     const paddingRate = 0.1;
     const wDiv2 = w / 2;
     const hDiv2 = h / 2;
@@ -884,7 +898,7 @@ function drawShape(ctx, rectType, strokeOn) {
       }
       ctx.stroke();
     }
-  } else if (bShapePlus1) {
+  } else if (options.shape == 'plus1') {
     const widthRate = 0.3;
     const wDiv2 = w / 2;
     const hDiv2 = h / 2;
@@ -901,7 +915,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
     ctx.lineTo(0, h * widthRate);
     ctx.closePath();
-  } else if (bShapePlus2) {
+  } else if (options.shape == 'plus2') {
     const widthRate = 0.3 / Math.sqrt(2.0);
     ctx.moveTo(-w * widthRate, h * (1 - widthRate));
     ctx.lineTo( w * widthRate, h * (1 - widthRate));
@@ -916,7 +930,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * (1 - widthRate), h * widthRate);
     ctx.lineTo(-w * widthRate, h * widthRate);
     ctx.closePath();
-  } else if (bShapeDiv) {
+  } else if (options.shape == 'div') {
     /*
     ctx.moveTo( w * 1/3, h * 2/3); // 1
     ctx.lineTo( w * 2/3, h * 1/3); // 2
@@ -959,22 +973,22 @@ function drawShape(ctx, rectType, strokeOn) {
       ctx.closePath();
       ctx.fill();
     }
-  } else if (bShapeCircle1) {
+  } else if (options.shape == 'circle1') {
     ctx.arc( 0, 0, 0.5 * h, 0, 2 * Math.PI, false);
-  } else if (bShapeCircle2) {
+  } else if (options.shape == 'circle2') {
     ctx.arc( 0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
-  } else if (bShapeCircle3) {
+  } else if (options.shape == 'circle3') {
     h = rects[0].h;
     ctx.arc( 0, 0, 0.5 * h, 0, 2 * Math.PI, false);
-  } else if (bShapeCircle4) {
+  } else if (options.shape == 'circle4') {
     h = rects[0].h;
     w = rects[0].w;
     ctx.arc( 0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
-  } else if (bShapeCircle5) {
+  } else if (options.shape == 'circle5') {
     ctx.arc( 0, 0, h, 0, 2 * Math.PI, false);
-  } else if (bShapeCircle6) {
+  } else if (options.shape == 'circle6') {
     ctx.arc( 0, 0, w, 0, 2 * Math.PI, false);
-  } else if (bShapeLines) {
+  } else if (options.shape == 'lines') {
     const widthRate = 0.25;
     const rate = 1 - widthRate;
     ctx.beginPath();
@@ -1002,7 +1016,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.fill();
 
     ctx.beginPath();
-  } else if (bShapeLines2) {
+  } else if (options.shape == 'lines2') {
     const widthRate = 0.25;
     const rate = 1 - widthRate;
     ctx.beginPath();
@@ -1021,14 +1035,14 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.closePath();
     ctx.fill();
     ctx.beginPath();
-  } else if (bShapeNone) {
+  } else if (options.shape == 'none') {
     1;
   } else {
     ctx.rect(-w / 2, -h / 2, w, h);
   }
 
   if (!bShapeRects && !bShapeImage && !bShapeDiv) {
-    if (bShapeCircle5 || bShapeCircle6) {
+    if (options.shape == 'circle5' || options.shape == 'circle6') {
       ctx.stroke();
     } else {
       ctx.fill();
@@ -1715,7 +1729,7 @@ function removeShapeImage() {
   bShapeImage = false;
   document.getElementById('myFileImg').innerHTML = '';
 }
-function onRadioButtonChangeShape() {
+function onOptionShapeChanged() {
   updateShapeType();
   removeShapeImage();
   draw();
@@ -1726,11 +1740,11 @@ function onCheckboxChangeShowTweetButton() {
 
 function onButtonClickResetShape(event) {
   event.preventDefault();
-  const elems = document.getElementsByName('radioButtonShape');
+  const elems = document.getElementsByName('options-shape');
   for (const elem of elems) {
     elem.checked = false;
   }
-  onRadioButtonChangeShape();
+  onOptionShapeChanged();
 }
 
 // ======================================================================
