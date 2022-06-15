@@ -1740,6 +1740,7 @@ function onCheckboxChangeShowTweetButton() {
 
 function onButtonClickResetShape(event) {
   event.preventDefault();
+  options.shape = '';
   const elems = document.getElementsByName('options-shape');
   for (const elem of elems) {
     elem.checked = false;
