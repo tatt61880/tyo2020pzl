@@ -48,23 +48,23 @@ function onClickOpenClose(clickId, str){
       </div>
     </div>
 
-    <div id="right" style="float:left; max-width:400px;">
+    <div id="right" style="float: left; max-width: 400px;">
     <!-- セーブデータ -->
-    <div class="round" style="background-color:#FFF0FF; margin-bottom:5px; padding:1px 0px 1px 0px;">
-      <div onclick="onClickOpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+    <div class="round" style="background-color: #fff0ff; margin-bottom: 5px; padding: 1px 0px;">
+      <div onclick="onClickOpenClose('savedata', 'セーブデータ')" class="round" style="background-color:#fdf; padding:0px 5px;">
         <a id="savedataTitle" style="cursor:pointer;">▼セーブデータ (クリックして開く)</a>
       </div>
       <div id="savedata" style="display:none; clear:both;">
-        <input type="button" class="largeButton" style="background-color:#FDF;" value="Load" id="buttonLoad">
-        <input type="button" class="largeButton" style="background-color:#FDF;" value="Undo" id="buttonUndo">
-        <input type="button" class="largeButton" style="background-color:#FDF;" value="Redo" id="buttonRedo">
-        <div onclick="onClickOpenClose('savedataStr', 'テキストエリア')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Load" id="buttonLoad">
+        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Undo" id="buttonUndo">
+        <input type="button" class="largeButton" style="background-color: #fdf; border: solid 3px #838; color: #838; type-weight: bold;" value="Redo" id="buttonRedo">
+        <div onclick="onClickOpenClose('savedataStr', 'テキストエリア')" class="round" style="background-color:#fdf; padding:0px 5px 0px 5px;">
           <a id="savedataStrTitle" style="cursor:pointer;">▼テキストエリア (クリックして開く)</a>
         </div>
         <div id="savedataStr" style="display:none; clear:both;">
-          <textarea id="textareaSavedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#B0D4E5"></textarea>
+          <textarea id="textareaSavedata" rows="5" style="width:98%; margin:5px 1% 5px 1%; border:1px solid; border-color:#b0d4e5"></textarea>
         </div>
-        <div onclick="onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round" style="background-color:#FDF; padding:0px 5px 0px 5px;">
+        <div onclick="onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round" style="background-color:#fdf; padding:0px 5px 0px 5px;">
           <a id="usageForSavedataTitle" style="cursor:pointer;">▼セーブデータの使い方 (クリックして開く)</a>
         </div>
         <div id="usageForSavedata" style="display:none; clear:both;">
@@ -81,7 +81,7 @@ function onClickOpenClose(clickId, str){
     </div>
 
     <!-- オプション -->
-    <div class="round" style="background-color:#DFD; margin-bottom:5px; padding:1px 0px 1px 0px;">
+    <div class="round" style="background-color:#dfd; margin-bottom:5px; padding:1px 0px 1px 0px;">
       <div onclick="onClickOpenClose('option', 'オプション')" class="round" style="background-color:#BFB; padding:0px 5px 0px 5px;">
         <a id="optionTitle" style="cursor:pointer;">△オプション (クリックして閉じる)</a>
       </div>
@@ -139,15 +139,15 @@ function onClickOpenClose(clickId, str){
             <div style="margin:1px 10px 1px 10px">
               完成状態の表示位置
             </div>
-            <input type="radio" name="radioButtonTarget" onchange="onRadioButtonChangeTarget()" id="radioButtonTargetTopLeft" checked/>
-            <label for="radioButtonTargetTopLeft">左上</label>
-            <input type="radio" name="radioButtonTarget" onchange="onRadioButtonChangeTarget()" id="radioButtonTargetFront"/>
-            <label for="radioButtonTargetFront">前面</label>
-            <input type="radio" name="radioButtonTarget" onchange="onRadioButtonChangeTarget()" id="radioButtonTargetBack"/>
-            <label for="radioButtonTargetBack">背面</label>
-            <input type="radio" name="radioButtonTarget" onchange="onRadioButtonChangeTarget()" id="radioButtonTargetOther"/>
-            <label for="radioButtonTargetOther">上</label>
-            <hr style="border:none;border-top:dashed 5px #BFB;">
+            <input type="radio" name="options-target" onchange="onOptionTargetChanged()" value="topLeft" id="options-target-topLeft" checked/>
+            <label for="options-target-topLeft">左上</label>
+            <input type="radio" name="options-target" onchange="onOptionTargetChanged()" value="front" id="options-target-front"/>
+            <label for="options-target-front">前面</label>
+            <input type="radio" name="options-target" onchange="onOptionTargetChanged()" value="back" id="options-target-back"/>
+            <label for="options-target-back">背面</label>
+            <input type="radio" name="options-target" onchange="onOptionTargetChanged()" value="other" id="options-target-other"/>
+            <label for="options-target-other">上</label>
+            <hr style="border:none; border-top: dashed 5px #BFB;">
           </div>
           <div id="coloredProperPieces">
             <span class="nowrap"><input type="checkbox" id="options-coloredProperPieces" checked><label for="options-coloredProperPieces">正しい位置のピースを薄い色で表示</label></span>
@@ -177,8 +177,8 @@ function onClickOpenClose(clickId, str){
     </div>
 
     <!-- レベル -->
-    <div class="round" style="background-color:#DDF; margin-bottom:5px; padding:1px 0px 1px 0px;">
-      <div onclick="onClickOpenClose('levelSelect', 'レベル')" class="round" style="background-color:#BBF; padding:0px 5px 0px 5px;">
+    <div class="round" style="background-color:#ddf; margin-bottom:5px; padding:1px 0px 1px 0px;">
+      <div onclick="onClickOpenClose('levelSelect', 'レベル')" class="round" style="background-color:#bbf; padding:0px 5px 0px 5px;">
         <a id="levelSelectTitle" style="cursor:pointer;">▼レベル (クリックして開く)</a>
       </div>
       <div id="levelSelect" style="display:none; clear:both; padding-bottom:5px">
@@ -187,10 +187,10 @@ function onClickOpenClose(clickId, str){
         </p>
         <input type="radio" name="radioButtonLevel" id="radioButtonModeEasy"/>
         <label for="radioButtonModeEasy">レベル6 (イージーモード)</label>
-        <table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
+        <table style="margin-left:auto; margin-right:auto; border:1px solid #ddf; border-collapse:collapse; background-color:#FFF;">
           <tr>
-            <th style="background-color:#BBF;">初期状態</th>
-            <th style="background-color:#BBF;">完成状態</th>
+            <th style="background-color:#bbf;">初期状態</th>
+            <th style="background-color:#bbf;">完成状態</th>
           </tr>
           <tr>
             <td style="text-align:center;">
@@ -203,10 +203,10 @@ function onClickOpenClose(clickId, str){
         </table>
         <input type="radio" name="radioButtonLevel" id="radioButtonModeNormal" checked/>
         <label for="radioButtonModeNormal">レベル12 (ノーマルモード)</label>
-        <table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#FFF;">
+        <table style="margin-left:auto; margin-right:auto; border:1px solid #ddf; border-collapse:collapse; background-color:#FFF;">
           <tr>
-            <th style="background-color:#BBF;">初期状態</th>
-            <th style="background-color:#BBF;">完成状態</th>
+            <th style="background-color:#bbf;">初期状態</th>
+            <th style="background-color:#bbf;">完成状態</th>
           </tr>
           <tr>
             <td style="text-align:center;">
@@ -268,10 +268,10 @@ function onClickOpenClose(clickId, str){
     </li>
     <li>
     藍色の長方形だけに注目したときにオリンピックのエンブレムの模様になっていれば完成です。
-    <table style="margin-left:auto; margin-right:auto; border:1px solid #DDF; border-collapse:collapse; background-color:#DDF">
+    <table style="margin-left:auto; margin-right:auto; border:1px solid #ddf; border-collapse:collapse; background-color:#ddf">
       <tr>
-        <th style="background-color:#BBF; text-align:center;">初期状態</th>
-        <th style="background-color:#BBF; text-align:center;">完成状態</th>
+        <th style="background-color:#bbf; text-align:center;">初期状態</th>
+        <th style="background-color:#bbf; text-align:center;">完成状態</th>
       </tr>
       <tr>
         <td style="text-align:center;">パラリンピックの<br>エンブレム</td>

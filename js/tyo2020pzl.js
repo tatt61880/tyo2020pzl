@@ -45,11 +45,8 @@ const options = {
   showIndex: OptionType.checkbox,
   showLines: OptionType.checkbox,
   shape: OptionType.radio,
+  target: OptionType.radio,
 };
-let bTargetTopLeft = false;
-let bTargetFront = false;
-let bTargetBack = false;
-let bTargetOther = false;
 let bShowTweetButton = false;
 
 let redoCount = 0;
@@ -233,10 +230,10 @@ function onLoad() {
       document.getElementById('upperTitle').style.display = 'block';
       document.getElementById('lowerTitle').style.display = 'none';
     } else {
-      document.getElementById('radioButtonTargetTopLeft').checked = false;
-      document.getElementById('radioButtonTargetFront').checked = false;
-      document.getElementById('radioButtonTargetBack').checked = false;
-      document.getElementById('radioButtonTargetOther').checked = false;
+      options.target = '';
+      for (const elem of document.getElementsByName('options-target')) {
+        elem.checked = false;
+      }
       document.getElementById('targetLocation').style.display = 'none';
       document.getElementById('coloredProperPieces').style.display = 'none';
       document.getElementById('options-coloredProperPieces').checked = false;
@@ -305,12 +302,14 @@ function initScale() {
 }
 
 function updateTargetLocation() {
-  bTargetTopLeft = document.getElementById('radioButtonTargetTopLeft').checked;
-  bTargetFront = document.getElementById('radioButtonTargetFront').checked;
-  bTargetBack = document.getElementById('radioButtonTargetBack').checked;
-  bTargetOther = document.getElementById('radioButtonTargetOther').checked;
+  options.target = '';
+  for (const elem of document.getElementsByName('options-target')) {
+    if (elem.checked) {
+      options.target = elem.value;
+    }
+  }
   document.getElementById('divTargetCanvas').style.display =
-    bTargetOther ? 'block' : 'none';
+    options.target == 'other' ? 'block' : 'none';
 }
 
 function updateShapeType() {
@@ -1018,7 +1017,7 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.rect(-w / 2, -h / 2, w, h);
   }
 
-  if (!bShapeRects && !bShapeImage && !bShapeDiv) {
+  if (options.shape != 'rects' && options.shape != 'div' && !bShapeImage) {
     if (options.shape == 'circle5' || options.shape == 'circle6') {
       ctx.stroke();
     } else {
@@ -1142,17 +1141,17 @@ function draw() {
   ctxTarget.fillStyle = colorFillBackground;
   ctxTarget.fillRect(0, 0, canvasTarget.width, canvasTarget.height);
 
-  if (bTargetTopLeft && !completedFlag) {
+  if (options.target == 'topLeft' && !completedFlag) {
     drawTarget(ctx, true, true);
-  } else if (bTargetOther) {
+  } else if (options.target == 'other') {
     drawTarget(ctxTarget, false, true);
-  } else if (bTargetBack) {
+  } else if (options.target == 'back') {
     drawTarget(ctx, false, false);
   }
   for (let i = 0; i < pieceNum; i++) {
     drawPiece(i, false);
   }
-  if (bTargetFront) {
+  if (options.target == 'front') {
     drawTarget(ctx, false, false);
   }
 
@@ -1686,7 +1685,7 @@ function onButtonClickSavedataRedo(event) {
 
 // ======================================================================
 // オプション
-function onRadioButtonChangeTarget() {
+function onOptionTargetChanged() {
   let scrollDistance = -Math.max.apply(null, [
     document.body.clientHeight,
     document.body.scrollHeight,
