@@ -93,7 +93,6 @@ const isSmartPhone = navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/);
 
 const myImg = new Image();
 let bShapeImage = false;
-let blobUrl = '';
 
 // document.addEventListener('DOMContentLoaded', function(){
 // ↑これだと、完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
@@ -139,7 +138,7 @@ function onLoad() {
   myFile.addEventListener('change', function() {
     bShapeImage = true;
     const file = myFile.files[0];
-    blobUrl = window.URL.createObjectURL(file);
+    const blobUrl = window.URL.createObjectURL(file);
     document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
     myImg.src = blobUrl;
     myImg.onload = function() {
