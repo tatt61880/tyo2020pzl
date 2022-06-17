@@ -58,7 +58,18 @@ body {
   background-color: white;
 }
 
-.savedata-button {
+div.savedata {
+  background-color: #fff0ff;
+}
+
+div.savedata-category {
+  background-color: #fdf;
+  padding: 0px 5px;
+  color: #838;
+  font-weight: bold;
+}
+
+input[type="button"].savedata {
   height: 48px;
   margin: 15px 0 15px 10px;
   padding: 0px 10px;
@@ -71,16 +82,38 @@ body {
   cursor: pointer;
 }
 
-.option-button {
-  height: 32px;
+div.option {
+  background-color: #dfd; 
+}
+
+div.option-category {
+  background-color: #bfb;
+  padding: 0px 5px;
+  color: #383;
+  font-weight: bold;
+}
+
+input[type="button"].option {
+  height: 48px;
   margin: 15px 5px;
   padding: 0px 10px;
   background-color: #bfb;
   border: 3px solid #383;
-  border-radius: 16px;
+  border-radius: 24px;
   color: #383;
   font-weight: bold;
   cursor: pointer;
+}
+
+div.level {
+  background-color: #ddf;
+}
+
+div.level-category {
+  background-color: #bbf;
+  padding: 0px 5px;
+  color: #338;
+  font-weight: bold;
 }
 
 input[type="radio"] {
