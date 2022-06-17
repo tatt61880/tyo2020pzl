@@ -68,6 +68,7 @@ body {
   background-color: #fdf;
   color: #838;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .option-button {
@@ -79,6 +80,7 @@ body {
   border-radius: 16px;
   color: #383;
   font-weight: bold;
+  cursor: pointer;
 }
 
 input[type="radio"] {

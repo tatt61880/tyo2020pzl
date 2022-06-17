@@ -1,3 +1,4 @@
+'use strict';
 let num = -1; // ベースとなる多角形の頂点数
 let numPrev; // コンソールからnumの値を変更してinitした時にも再読み込みされるように。
 let pieceNum;
@@ -31,7 +32,7 @@ let colorFillNormalPieceIndex = colorFillNormalPieceIndexDefault;
 let dataRedo = '';
 let dataCurrent = '';
 
-OptionType = {
+const OptionType = {
   checkbox: 1,
   radio: 2,
 };
@@ -911,17 +912,6 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-w * widthRate, h * widthRate);
     ctx.closePath();
   } else if (options.shape == 'div') {
-    /*
-    ctx.moveTo( w * 1/3, h * 2/3); // 1
-    ctx.lineTo( w * 2/3, h * 1/3); // 2
-    ctx.lineTo( w * 2/3, -h * 1/3); // 3
-    ctx.lineTo( w * 1/3, -h * 2/3); // 4
-    ctx.lineTo(-w * 1/3, -h * 2/3); // 5
-    ctx.lineTo(-w * 2/3, -h * 1/3); // 6
-    ctx.lineTo(-w * 2/3, h * 1/3); // 7
-    ctx.lineTo(-w * 1/3, h * 2/3); // 1
-    */
-
     {
       ctx.beginPath();
       ctx.moveTo( w * 1/3, h * 2/3);
@@ -1681,7 +1671,7 @@ function onButtonClickSavedataRedo(event) {
 
 // ======================================================================
 // オプション
-function onOptionTargetChanged() {
+function onOptionTargetChanged() { // eslint-disable-line no-unused-vars
   let scrollDistance = -Math.max.apply(null, [
     document.body.clientHeight,
     document.body.scrollHeight,
@@ -2001,8 +1991,8 @@ function onButtonClickDefaultColor() {
 }
 
 function onClickOpenClose(clickId, str) {
-  obj = document.getElementById(clickId).style;
-  closedFlag = (obj.display == 'none');
+  const obj = document.getElementById(clickId).style;
+  const closedFlag = (obj.display == 'none');
   obj.display = closedFlag ? 'block' : 'none';
   document.getElementById(`${clickId}Title`).innerHTML = closedFlag ? `△${str} (クリックして閉じる)` : `▼${str} (クリックして開く)`;
 }
