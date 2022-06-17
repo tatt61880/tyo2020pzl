@@ -228,6 +228,8 @@ function onLoad() {
       document.getElementById('upperTitle').style.display = 'block';
       document.getElementById('lowerTitle').style.display = 'none';
     } else {
+      document.getElementById('upperTitle').style.display = 'none';
+      document.getElementById('lowerTitle').style.display = 'block';
       options.target = '';
       for (const elem of document.getElementsByName('options-target')) {
         elem.checked = false;
@@ -236,8 +238,6 @@ function onLoad() {
       document.getElementById('coloredProperPieces').style.display = 'none';
       document.getElementById('options-coloredProperPieces').checked = false;
       options.coloredProperPieces = false;
-      document.getElementById('upperTitle').style.display = 'none';
-      document.getElementById('lowerTitle').style.display = 'block';
     }
     // console.log("level = " + num);
     numPrev = num;
@@ -1864,12 +1864,12 @@ function onColorSelecting(e) {
 function drawHSV() {
   function drawSelectedCircle(x, y) {
     ctxColor.save();
-    ctxColor.strokeStyle = '#000000';
+    ctxColor.strokeStyle = 'black';
     ctxColor.beginPath();
     ctxColor.arc(x, y, 7, 0, 2 * Math.PI, false);
     ctxColor.stroke();
 
-    ctxColor.strokeStyle = '#FFFFFF';
+    ctxColor.strokeStyle = 'white';
     ctxColor.beginPath();
     ctxColor.arc(x, y, 8, 0, 2 * Math.PI, false);
     ctxColor.stroke();
