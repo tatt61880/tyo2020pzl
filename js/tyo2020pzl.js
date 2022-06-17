@@ -1095,10 +1095,10 @@ function drawCongratulations() {
 
   ctx.font = 'bold 14px sans-serif';
   ctx.translate(5, 15);
-  ctx.fillStyle = '#FF0000';
+  ctx.fillStyle = 'red';
   ctx.fillText('Congratulations!', 0, 0);
 
-  ctx.fillStyle = '#004080';
+  ctx.fillStyle = 'navy';
   ctx.fillText('TOKYO 2020', 0, 16);
   ctx.restore();
 
