@@ -39,14 +39,14 @@ const OptionType = {
 
 // for Options
 const options = {
-  coloredProperPieces: OptionType.checkbox,
-  showPoints: OptionType.checkbox,
-  showLozenges: OptionType.checkbox,
-  showUnusedPieces: OptionType.checkbox,
-  showIndex: OptionType.checkbox,
-  showLines: OptionType.checkbox,
-  shape: OptionType.radio,
-  target: OptionType.radio,
+  coloredProperPieces: {type: OptionType.checkbox, onchange: draw},
+  showPoints: {type: OptionType.checkbox, onchange: draw},
+  showLozenges: {type: OptionType.checkbox, onchange: draw},
+  showUnusedPieces: {type: OptionType.checkbox, onchange: draw},
+  showIndex: {type: OptionType.checkbox, onchange: draw},
+  showLines: {type: OptionType.checkbox, onchange: draw},
+  shape: {type: OptionType.radio, onchange: onOptionShapeChanged},
+  target: {type: OptionType.radio, onchange: onOptionTargetChanged},
 };
 let bShowTweetButton = false;
 
@@ -131,9 +131,7 @@ function initEventListener() {
   elemRangeRandom = document.getElementById('rangeRandom');
   elemRangeRandom.onchange = oninputRange;
   elemRangeRandom.oninput = oninputRange;
-}
 
-function onLoad() {
   const myFile = document.getElementById('myFile');
   // 画像ファイル選択時の処理です。
   myFile.addEventListener('change', function() {
@@ -146,12 +144,13 @@ function onLoad() {
       draw();
     };
   }, false);
+}
 
-  initEventListener();
-
-  // オプションの初期化
+// オプションの初期化
+function initOptions() {
   for (const optionName in options) {
-    const optionType = options[optionName];
+    const optionType = options[optionName].type;
+    const optionOnchange = options[optionName].onchange;
     switch (optionType) {
       case OptionType.checkbox:
         {
@@ -161,7 +160,7 @@ function onLoad() {
               'change',
               function() {
                 options[optionName] = elem.checked;
-                draw();
+                optionOnchange();
               },
               false
           );
@@ -180,7 +179,7 @@ function onLoad() {
                   if (elem.checked) {
                     options[optionName] = elem.value;
                   }
-                  draw();
+                  optionOnchange();
                 },
                 false
             );
@@ -189,6 +188,11 @@ function onLoad() {
         break;
     }
   }
+}
+
+function onLoad() {
+  initOptions();
+  initEventListener();
 
   let dataLoad = '';
   // analyzing url
@@ -1671,7 +1675,7 @@ function onButtonClickSavedataRedo(event) {
 
 // ======================================================================
 // オプション
-function onOptionTargetChanged() { // eslint-disable-line no-unused-vars
+function onOptionTargetChanged() {
   let scrollDistance = -Math.max.apply(null, [
     document.body.clientHeight,
     document.body.scrollHeight,
