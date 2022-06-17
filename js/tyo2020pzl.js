@@ -48,7 +48,7 @@ const options = {
   showUnusedPieces: {type: OptionType.checkbox, onchange: draw},
   showIndex: {type: OptionType.checkbox, onchange: draw},
   showLines: {type: OptionType.checkbox, onchange: draw},
-  showTweetButton: {type: OptionType.checkbox, onchange: onCheckboxChangeShowTweetButton},
+  showTweetButton: {type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged},
 };
 
 let redoCount = 0;
@@ -1699,7 +1699,7 @@ function onOptionShapeChanged() {
   removeShapeImage();
   draw();
 }
-function onCheckboxChangeShowTweetButton() {
+function onOptionShowTweetButtonChanged() {
   updateShowTweetButton();
 }
 
