@@ -48,16 +48,13 @@ const options = {
   showUnusedPieces: {type: OptionType.checkbox, onchange: draw},
   showIndex: {type: OptionType.checkbox, onchange: draw},
   showLines: {type: OptionType.checkbox, onchange: draw},
+
   showTweetButton: {type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged},
 };
 
 let redoCount = 0;
-let clickCount = 0;
-let clickCountRed = 0;
-let clickCountGreen = 0;
-let clickCountFin = 0;
-let clickCountFinRed = 0;
-let clickCountFinGreen = 0;
+let clickCount = {total: 0, red: 0, green: 0};
+let clickCountFin = {total: 0, red: 0, green: 0};
 let completedFlag = false;
 let notYetCompletedFlag = true;
 
@@ -91,7 +88,7 @@ const targetCxs = [];
 const targetCys = [];
 const targetUnusedFlags = [];
 
-const isSmartPhone = navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/);
+const isTouchDevice = navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/);
 
 const myImg = new Image();
 let bShapeImage = false;
@@ -264,7 +261,7 @@ function onLoad() {
   document.getElementById('buttonRedo').style.visibility = 'hidden';
   canvas = document.getElementById('canvasMain');
   canvasTarget = document.getElementById('canvasTarget');
-  canvas.addEventListener(isSmartPhone ? 'touchstart' : 'click',
+  canvas.addEventListener(isTouchDevice ? 'touchstart' : 'click',
       onClick, false);
 
   updateTargetLocation();
@@ -295,8 +292,6 @@ function initScale() {
   if (num <= 12 && canvasSize > bodyWidth) canvasSize = bodyWidth;
   canvas.setAttribute('width', canvasSize);
   canvas.setAttribute('height', canvasSize);
-  // canvas.style.marginLeft = (bodyWidth - canvasSize) / 2 + "px";
-  // canvas.style.marginRight = (bodyWidth - canvasSize) / 2 + "px";
   canvasTarget.setAttribute('width', canvasSize);
   canvasTarget.setAttribute('height', canvasSize);
   centerX = canvas.width / 2;
@@ -557,9 +552,7 @@ function init() {
   initScale();
 
   {
-    clickCount = 0;
-    clickCountRed = 0;
-    clickCountGreen = 0;
+    clickCount = {total: 0, red: 0, green: 0};
     completedFlag = false;
     notYetCompletedFlag = true;
   }
@@ -1130,7 +1123,7 @@ function drawLines() {
 }
 
 function draw() {
-  document.getElementById('textClickCount').innerText = `現在${clickCount}手目です。（赤${clickCountRed}, 緑${clickCountGreen}）`;
+  document.getElementById('textClickCount').innerText = `現在${clickCount.total}手目です。（赤${clickCount.red}, 緑${clickCount.green}）`;
   ctx.fillStyle = colorFillBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctxTarget.fillStyle = colorFillBackground;
@@ -1317,12 +1310,12 @@ function addTweetButton(finished) {
     title = `「東京オリンピック・エンブレム・パズル（${num}角形ベース）」`;
   }
   if (finished) {
-    ele.setAttribute('data-text', `${title}を${clickCount}手（赤${clickCountRed}, 緑${clickCountGreen}）で解きました！`);
+    ele.setAttribute('data-text', `${title}を${clickCount.total}手（赤${clickCount.red}, 緑${clickCount.green}）で解きました！`);
   } else {
-    if (clickCount == 0) {
+    if (clickCount.total == 0) {
       ele.setAttribute('data-text', `今から、${title}に挑戦します！`);
     } else {
-      ele.setAttribute('data-text', `${title}に挑戦中！ 現在${clickCount}手目（赤${clickCountRed}, 緑${clickCountGreen}）`);
+      ele.setAttribute('data-text', `${title}に挑戦中！ 現在${clickCount.total}手目（赤${clickCount.red}, 緑${clickCount.green}）`);
     }
   }
   let buf = location.href;
@@ -1361,7 +1354,7 @@ function updateSavedata(clickID) {
 }
 
 function movePieces(clickID) {
-  clickCount++;
+  clickCount.total++;
   updateSavedata(clickID);
   document.getElementById('buttonUndo').style.visibility = 'visible';
 
@@ -1375,7 +1368,7 @@ function movePieces(clickID) {
     if (bId != -1) pairVertex[bId] = aId;
   }
   if (clickPoints[clickID].trio) {
-    clickCountRed++;
+    clickCount.red++;
     const px = clickPoints[clickID].px;
     const py = clickPoints[clickID].py;
     const piece1id = Math.floor(clickPoints[clickID].id1 / 4);
@@ -1424,7 +1417,7 @@ function movePieces(clickID) {
     g(p23, p14);
     g(p33, p24);
   } else {
-    clickCountGreen++;
+    clickCount.green++;
     const piece1id = Math.floor(clickPoints[clickID].id1 / 4);
     const piece2id = Math.floor(clickPoints[clickID].id2 / 4);
     cxs[piece1id] = [cxs[piece2id], cxs[piece2id] = cxs[piece1id]][0];
@@ -1469,14 +1462,12 @@ function movePieces(clickID) {
     if (notYetCompletedFlag) {
       document.getElementById('finish').style.display = 'block';
       notYetCompletedFlag = false;
-      document.getElementById('textFinishCount').innerText = `${clickCount}手目に完成！！（赤${clickCountRed}, 緑${clickCountGreen}）`;
+      document.getElementById('textFinishCount').innerText = `${clickCount.total}手目に完成！！（赤${clickCount.red}, 緑${clickCount.green}）`;
       // 完成後のUndoやRedo時に毎回は更新しないようにする。
-      if (clickCount != clickCountFin ||
-          clickCountRed != clickCountFinRed ||
-          clickCountGreen != clickCountFinGreen) {
+      if (clickCount.total != clickCountFin.total ||
+          clickCount.red != clickCountFin.red ||
+          clickCount.green != clickCountFin.green) {
         clickCountFin = clickCount;
-        clickCountFinRed = clickCountRed;
-        clickCountFinGreen = clickCountGreen;
         addTweetButton(true);
       }
     }
@@ -1611,7 +1602,7 @@ function loadData(dataStr) {
 
 function setRedoData() {
   dataRedo = dataCurrent;
-  redoCount = clickCount;
+  redoCount = clickCount.total;
   document.getElementById('buttonRedo').style.visibility = 'hidden';
 }
 
@@ -1646,15 +1637,15 @@ function onButtonClickSavedataUndo(event) {
 function onButtonClickSavedataRedo(event) {
   event.preventDefault();
   if (dataRedo.indexOf('(') == -1) {
-    if (dataRedo.length <= clickCount) {
+    if (dataRedo.length <= clickCount.total) {
       window.alert('これ以上Redoできません。');
     } else {
-      loadData(dataRedo.substr(0, clickCount + 1));
+      loadData(dataRedo.substr(0, clickCount.total + 1));
     }
   } else {
     let len = 0;
     let count = 0;
-    while (count++ != clickCount + 1) {
+    while (count++ != clickCount.total + 1) {
       if (len > dataRedo.length) {
         window.alert('これ以上Redoできません。');
         return;
@@ -1667,7 +1658,7 @@ function onButtonClickSavedataRedo(event) {
     loadData(dataRedo.substr(0, len));
   }
 
-  if (redoCount == clickCount) {
+  if (redoCount == clickCount.total) {
     document.getElementById('buttonRedo').style.visibility = 'hidden';
   }
 }
@@ -1964,13 +1955,13 @@ function drawColorSelector() {
   svX0 = hueCx - svSize / 2;
   svY0 = hueCy - svSize / 2;
 
-  canvasForColor.addEventListener(
-    isSmartPhone ? 'touchstart' : 'mousedown', onColorSelectStart, false);
-  canvasForColor.addEventListener(
-    isSmartPhone ? 'touchmove' : 'mousemove', onColorSelecting, false);
-  canvasForColor.addEventListener(
-    isSmartPhone ? 'touchend' : 'mouseup', onColorSelectEnd, false);
-  if (!isSmartPhone) {
+  const eventNameDown = isTouchDevice ? 'touchstart' : 'mousedown';
+  const eventNameMove = isTouchDevice ? 'touchmove' : 'mousemove';
+  const eventNameUp = isTouchDevice ? 'touchend' : 'mouseup';
+  canvasForColor.addEventListener(eventNameDown, onColorSelectStart, false);
+  canvasForColor.addEventListener(eventNameMove, onColorSelecting, false);
+  canvasForColor.addEventListener(eventNameUp, onColorSelectEnd, false);
+  if (!isTouchDevice) {
     canvasForColor.addEventListener('mouseout', onColorSelectEnd, false);
   }
   drawHSV();
