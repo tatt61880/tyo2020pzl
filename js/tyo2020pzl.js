@@ -1887,8 +1887,8 @@ function drawHSV() {
       const currRad = 2 * Math.PI / hueSplitNum * (i - 0.5);
       const nextRad = 2 * Math.PI / hueSplitNum * (i + 0.5);
       const rgb = hsv2rgb((360 * i / hueSplitNum + 60), 255, 255);
-      ctxColor.fillStyle = ctxColor.strokeStyle =
-        'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+      ctxColor.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+      ctxColor.strokeStyle = ctxColor.fillStyle;
 
       ctxColor.beginPath();
       ctxColor.moveTo(hueCx, hueCy);
@@ -1904,7 +1904,7 @@ function drawHSV() {
   }
 
   function drawHSVStroke() {
-    ctxColor.strokeStyle = '#888888';
+    ctxColor.strokeStyle = 'gray';
 
     // H
     ctxColor.beginPath();
@@ -1921,9 +1921,9 @@ function drawHSV() {
   function drawSVRect() {
     ctxColor.save();
     const satGrad = ctxColor.createLinearGradient(svX0, 0, svX0 + svSize, 0);
-    satGrad.addColorStop(0.0, '#FFFFFF');
+    satGrad.addColorStop(0.0, 'white');
     const color = hsv2rgb(hueValue, 255, 255);
-    satGrad.addColorStop(1.0, 'rgb('+color[0]+','+color[1]+','+color[2]+')');
+    satGrad.addColorStop(1.0, `rgb(${color[0]},${color[1]},${color[2]})`);
     ctxColor.fillStyle = satGrad;
     ctxColor.fillRect(svX0, svY0, svSize, svSize);
 
