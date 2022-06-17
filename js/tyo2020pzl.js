@@ -1108,7 +1108,7 @@ function drawCongratulations() {
 
 function drawLines() {
   ctx.save();
-  ctx.strokeStyle = '#FF80FF';
+  ctx.strokeStyle = 'magenta';
   for (let i = 0; i < pieceNum * 4; i++) {
     const j = pairVertex[i];
     if (j == -1) continue;
