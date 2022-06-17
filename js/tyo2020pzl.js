@@ -39,16 +39,17 @@ const OptionType = {
 
 // for Options
 const options = {
+  target: {type: OptionType.radio, onchange: onOptionTargetChanged},
+  shape: {type: OptionType.radio, onchange: onOptionShapeChanged},
+
   coloredProperPieces: {type: OptionType.checkbox, onchange: draw},
   showPoints: {type: OptionType.checkbox, onchange: draw},
   showLozenges: {type: OptionType.checkbox, onchange: draw},
   showUnusedPieces: {type: OptionType.checkbox, onchange: draw},
   showIndex: {type: OptionType.checkbox, onchange: draw},
   showLines: {type: OptionType.checkbox, onchange: draw},
-  shape: {type: OptionType.radio, onchange: onOptionShapeChanged},
-  target: {type: OptionType.radio, onchange: onOptionTargetChanged},
+  showTweetButton: {type: OptionType.checkbox, onchange: onCheckboxChangeShowTweetButton},
 };
-let bShowTweetButton = false;
 
 let redoCount = 0;
 let clickCount = 0;
@@ -119,8 +120,6 @@ function initEventListener() {
       addEventListener('click', onButtonClickRandomInterval, false);
   document.getElementById('buttonRandomIntervalStop').
       addEventListener('click', onButtonClickRandomIntervalStop, false);
-  document.getElementById('checkboxShowTweetButton').
-      addEventListener('click', onCheckboxChangeShowTweetButton, false);
   document.getElementById('buttonResetShape').
       addEventListener('click', onButtonClickResetShape, false);
 
@@ -331,12 +330,11 @@ function updateShapeType() {
 }
 
 function updateShowTweetButton() {
-  bShowTweetButton = document.getElementById('checkboxShowTweetButton').checked;
-  if (bShowTweetButton) {
+  if (options.showTweetButton) {
     addTweetButton(false);
   }
   document.getElementById('buttonTweet').style.display =
-    bShowTweetButton ? 'inline' : 'none';
+    options.showTweetButton ? 'inline' : 'none';
 }
 
 function initializePairVartex() {
@@ -1301,7 +1299,7 @@ function isFinished() {
 }
 
 function addTweetButton(finished) {
-  if (!finished && !bShowTweetButton) return;
+  if (!finished && !options.showTweetButton) return;
   const buttonID = finished ? 'buttonTweet2' : 'buttonTweet';
   const d = document.getElementById(buttonID);
   while (d.firstChild != null) d.removeChild(d.firstChild);
