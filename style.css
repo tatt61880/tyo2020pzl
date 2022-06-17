@@ -97,6 +97,10 @@ label {
   cursor: pointer;
 }
 
+select {
+  cursor: pointer;
+}
+
 div.round {
   margin: 3px 5px;
   border-radius: 10px;

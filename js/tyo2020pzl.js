@@ -1072,7 +1072,7 @@ function drawCircle(x, y, rotStart, rotEnd, strokeStyle) {
   ctx.beginPath();
   ctx.arc(x, y, radius, rotStart, rotEnd, false);
 
-  ctx.strokeStyle = '#FFFFFF';
+  ctx.strokeStyle = 'white';
   ctx.lineWidth = radius / 3.0;
   ctx.stroke();
 
