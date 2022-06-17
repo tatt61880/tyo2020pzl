@@ -1103,7 +1103,7 @@ function drawCongratulations() {
   ctx.restore();
 
   ctx.save();
-  ctx.translate(-3, 45);
+  ctx.translate(-3, 50);
   drawCircle(2 + 0/60, 0, Math.PI * 0.00, Math.PI * 2.00, '#0000FF');
   drawCircle(3 + 12/60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#FFAA00');
   drawCircle(4 + 24/60, 0, -Math.PI * 0.95, Math.PI * 0.95, '#000000');
