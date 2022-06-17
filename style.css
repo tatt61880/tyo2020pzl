@@ -85,10 +85,16 @@ body {
 
 input[type="radio"] {
   margin: 3px 7px 7px 12px;
+  cursor: pointer;
 }
 
 input[type="checkbox"] {
   margin: 3px 7px 7px 12px;
+  cursor: pointer;
+}
+
+label {
+  cursor: pointer;
 }
 
 div.round {

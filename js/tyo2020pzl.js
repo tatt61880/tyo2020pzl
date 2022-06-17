@@ -1104,11 +1104,12 @@ function drawCongratulations() {
 
   ctx.save();
   ctx.translate(-3, 50);
-  drawCircle(2 + 0/60, 0, Math.PI * 0.00, Math.PI * 2.00, '#0000FF');
-  drawCircle(3 + 12/60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#FFAA00');
-  drawCircle(4 + 24/60, 0, -Math.PI * 0.95, Math.PI * 0.95, '#000000');
-  drawCircle(5 + 36/60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#008000');
-  drawCircle(6 + 48/60, 0, -Math.PI * 0.95, Math.PI * 0.95, '#FF0000');
+  // 五輪マークを描画
+  drawCircle(2 + 0 / 60, 0, Math.PI * 0.00, Math.PI * 2.00, '#0081c8'); // 青
+  drawCircle(3 + 12 / 60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#fcb131'); // 黄
+  drawCircle(4 + 24 / 60, 0, -Math.PI * 0.95, Math.PI * 0.95, 'black'); // 黒
+  drawCircle(5 + 36 / 60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#00a651'); // 緑
+  drawCircle(6 + 48 / 60, 0, -Math.PI * 0.95, Math.PI * 0.95, '#ee334e'); // 赤
   ctx.restore();
 }
 
