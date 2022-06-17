@@ -85,6 +85,9 @@ input[type="button"].savedata {
 div.option {
   background-color: #dfd; 
 }
+div.option-sub {
+  border: 5px solid #bfb;
+}
 
 div.option-category {
   background-color: #bfb;
@@ -105,6 +108,11 @@ input[type="button"].option {
   cursor: pointer;
 }
 
+hr.option {
+  border: none;
+  border-top: dashed 5px #bfb;
+}
+
 div.level {
   background-color: #ddf;
 }
@@ -114,6 +122,10 @@ div.level-category {
   padding: 0px 5px;
   color: #338;
   font-weight: bold;
+}
+
+th.level {
+  background-color: #bbf;
 }
 
 input[type="radio"] {
@@ -142,4 +154,8 @@ div.round {
 span.nowrap {
   margin: 0px;
   white-space: nowrap;
+}
+
+img.vertical-middle {
+  vertical-align: middle;
 }

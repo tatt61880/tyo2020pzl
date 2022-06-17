@@ -11,9 +11,9 @@
   <link rel="shortcut icon" href="./images/favicon.png">
   <link rel="apple-touch-icon" sizes="100x100" href="./images/apple-touch-icon.png">
 
-  <link rel="stylesheet" href="./style.css?2022.06.17">
+  <link rel="stylesheet" href="./style.css?2022.06.18">
 
-  <script src="./js/tyo2020pzl.js?2022.06.17-b"></script>
+  <script src="./js/tyo2020pzl.js?2022.06.18"></script>
 </head>
 
 <body>
@@ -87,7 +87,7 @@
           </div>
         </div>
 
-        <div class="round" style="border: 5px solid #bfb;">
+        <div class="round option-sub">
           <div onclick="onClickOpenClose('pattern', '模様')" class="round option-category">
             <a id="patternTitle" style="cursor: pointer;">▼模様 (クリックして開く)</a>
           </div>
@@ -122,7 +122,7 @@
             <span class="nowrap"><input type="radio" name="options-shape" value="lines2"   id="options-shape-lines2"  ><label for="options-shape-lines2">線2</label></span>
             <span class="nowrap"><input type="radio" name="options-shape" value="none"     id="options-shape-none"    ><label for="options-shape-none">なし</label></span>
           </div>
-          <hr style="border: none; border-top: dashed 5px #bfb;">
+          <hr class="option">
 
           <div id="targetLocation">
             <div style="margin: 1px 10px">
@@ -132,7 +132,7 @@
             <input type="radio" name="options-target" value="front" id="options-target-front"/><label for="options-target-front">前面</label>
             <input type="radio" name="options-target" value="back" id="options-target-back"/><label for="options-target-back">背面</label>
             <input type="radio" name="options-target" value="other" id="options-target-other"/><label for="options-target-other">上</label>
-            <hr style="border: none; border-top: dashed 5px #bfb;">
+            <hr class="option">
           </div>
           <div id="coloredProperPieces">
             <span class="nowrap"><input type="checkbox" id="options-coloredProperPieces" checked><label for="options-coloredProperPieces">正しい位置のピースを薄い色で表示</label></span>
@@ -144,7 +144,7 @@
           <br>
           <span class="nowrap"><input type="checkbox" id="options-showIndex"><label for="options-showIndex">番号</label></span>
           <span class="nowrap"><input type="checkbox" id="options-showLines"><label for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
-          <hr style="border: none; border-top: dashed 5px #bfb;">
+          <hr class="option">
           <div onclick="onClickOpenClose('random', 'ランダム動作')" class="round option-category">
             <a id="randomTitle" style="cursor: pointer;">▼ランダム動作 (クリックして開く)</a>
           </div>
@@ -156,7 +156,7 @@
           </div>
         </div>
 
-        <div class="round" style="border: 5px solid #bfb;">
+        <div class="round option-sub">
           <input type="checkbox" id="options-showTweetButton">
           <label for="options-showTweetButton">未完成時用ツイートボタン</label>
           <br>
@@ -178,15 +178,15 @@
         <label for="radioButtonModeEasy">レベル6 (イージーモード)</label>
         <table style="margin-left: auto; margin-right: auto; border: 1px solid #ddf; border-collapse: collapse; background-color: white;">
           <tr>
-            <th style="background-color: #bbf;">初期状態</th>
-            <th style="background-color: #bbf;">完成状態</th>
+            <th class="level">初期状態</th>
+            <th class="level">完成状態</th>
           </tr>
           <tr>
             <td style="text-align: center;">
-              <img style="vertical-align: middle;" src="./images/para6.png" alt="(イージーモードの初期状態の画像)" />
+              <img class="vertical-middle" src="./images/para6.png" alt="(イージーモードの初期状態の画像)" />
             </td>
             <td style="text-align: center;">
-              <img style="vertical-align: middle;" src="./images/olym6.png" alt="(イージーモードの完成状態の画像)" />
+              <img class="vertical-middle" src="./images/olym6.png" alt="(イージーモードの完成状態の画像)" />
             </td>
           </tr>
         </table>
@@ -194,15 +194,15 @@
         <label for="radioButtonModeNormal">レベル12 (ノーマルモード)</label>
         <table style="margin-left: auto; margin-right: auto; border: 1px solid #ddf; border-collapse: collapse; background-color: white;">
           <tr>
-            <th style="background-color: #bbf;">初期状態</th>
-            <th style="background-color: #bbf;">完成状態</th>
+            <th class="level">初期状態</th>
+            <th class="level">完成状態</th>
           </tr>
           <tr>
             <td style="text-align: center;">
-              <img style="vertical-align: middle;" src="./images/para.png" alt="(ノーマルモードの初期状態の画像)" />
+              <img class="vertical-middle" src="./images/para.png" alt="(ノーマルモードの初期状態の画像)" />
             </td>
             <td style="text-align: center;">
-              <img style="vertical-align: middle;" src="./images/olym.png" alt="(ノーマルモードの完成状態の画像)" />
+              <img class="vertical-middle" src="./images/olym.png" alt="(ノーマルモードの完成状態の画像)" />
             </td>
           </tr>
         </table>
@@ -268,10 +268,10 @@
       </tr>
       <tr>
         <td style="text-align: center;">
-          <img style="vertical-align: middle; margin: 5px 0px;" src="./images/para.png" alt="(パラリンピックのエンブレムの画像)" />
+          <img class="vertical-middle" style="margin: 5px 0px;" src="./images/para.png" alt="(パラリンピックのエンブレムの画像)" />
         </td>
         <td style="text-align: center">
-          <img style="vertical-align: middle; margin: 5px 0px;" src="./images/olym.png" alt="(オリンピックのエンブレムの画像)" />
+          <img class="vertical-middle" style="margin: 5px 0px;" src="./images/olym.png" alt="(オリンピックのエンブレムの画像)" />
         </td>
       </tr>
     </table>
