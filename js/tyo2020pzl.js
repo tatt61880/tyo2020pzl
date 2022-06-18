@@ -347,10 +347,18 @@ function initializePairVartex() {
     const xs = x * s;
     const yc = y * c;
     const ys = y * s;
-    pieceVertexX[idx] = [cx + xc - ys, cx - xc - ys,
-      cx - xc + ys, cx + xc + ys];
-    pieceVertexY[idx] = [cy + xs + yc, cy - xs + yc,
-      cy - xs - yc, cy + xs - yc];
+    pieceVertexX[idx] = [
+      cx + xc - ys,
+      cx - xc - ys,
+      cx - xc + ys,
+      cx + xc + ys,
+    ];
+    pieceVertexY[idx] = [
+      cy + xs + yc,
+      cy - xs + yc,
+      cy - xs - yc,
+      cy + xs - yc,
+    ];
   }
 
   for (let i = 0; i < pieceNum * 4; i++) {
@@ -918,41 +926,49 @@ function drawShape(ctx, rectType, strokeOn) {
     }
     {
       ctx.beginPath();
-      ctx.moveTo( w * 2/3, -h * 1/3);
-      ctx.lineTo( w * 1/3, -h * 2/3);
-      ctx.lineTo( w * 1/3 * 0.72 - w * 2/3 * 0.28,
-          -h * 2/3 * 0.72 + h * 1/3 * 0.28);
-      ctx.lineTo( w * 2/3 * 0.72 - w * 1/3 * 0.28,
-          -h * 1/3 * 0.72 + h * 2/3 * 0.28);
+      ctx.moveTo(w * 2 / 3, -h * 1 / 3);
+      ctx.lineTo(w * 1 / 3, -h * 2 / 3);
+      ctx.lineTo(
+        w * 1 / 3 * 0.72 - w * 2 / 3 * 0.28,
+        -h * 2 / 3 * 0.72 + h * 1 / 3 * 0.28
+      );
+      ctx.lineTo(
+        w * 2 / 3 * 0.72 - w * 1 / 3 * 0.28,
+        -h * 1 / 3 * 0.72 + h * 2 / 3 * 0.28
+      );
       ctx.closePath();
       ctx.fill();
     }
     {
       ctx.beginPath();
-      ctx.moveTo(-w * 2/3, h * 1/3);
-      ctx.lineTo(-w * 1/3, h * 2/3);
-      ctx.lineTo(-w * 1/3 * 0.72 + w * 2/3 * 0.28,
-          h * 2/3 * 0.72 - h * 1/3 * 0.28);
-      ctx.lineTo(-w * 2/3 * 0.72 + w * 1/3 * 0.28,
-          h * 1/3 * 0.72 - h * 2/3 * 0.28);
+      ctx.moveTo(-w * 2 / 3, h * 1 / 3);
+      ctx.lineTo(-w * 1 / 3, h * 2 / 3);
+      ctx.lineTo(
+        -w * 1 / 3 * 0.72 + w * 2 / 3 * 0.28,
+        h * 2 / 3 * 0.72 - h * 1 / 3 * 0.28
+      );
+      ctx.lineTo(
+        -w * 2 / 3 * 0.72 + w * 1 / 3 * 0.28,
+        h * 1 / 3 * 0.72 - h * 2 / 3 * 0.28
+      );
       ctx.closePath();
       ctx.fill();
     }
   } else if (options.shape == 'circle1') {
-    ctx.arc( 0, 0, 0.5 * h, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
   } else if (options.shape == 'circle2') {
-    ctx.arc( 0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
   } else if (options.shape == 'circle3') {
     h = rects[0].h;
-    ctx.arc( 0, 0, 0.5 * h, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
   } else if (options.shape == 'circle4') {
     h = rects[0].h;
     w = rects[0].w;
-    ctx.arc( 0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
   } else if (options.shape == 'circle5') {
-    ctx.arc( 0, 0, h, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, h, 0, 2 * Math.PI, false);
   } else if (options.shape == 'circle6') {
-    ctx.arc( 0, 0, w, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, w, 0, 2 * Math.PI, false);
   } else if (options.shape == 'lines') {
     const widthRate = 0.25;
     const rate = 1 - widthRate;
@@ -965,10 +981,10 @@ function drawShape(ctx, rectType, strokeOn) {
 
     ctx.beginPath();
     ctx.moveTo(-w * widthRate, h * rate);
-    ctx.lineTo( 0, h);
-    ctx.lineTo( w * widthRate, h * rate);
-    ctx.lineTo( w * widthRate, -h * rate);
-    ctx.lineTo( 0, -h);
+    ctx.lineTo(0, h);
+    ctx.lineTo(w * widthRate, h * rate);
+    ctx.lineTo(w * widthRate, -h * rate);
+    ctx.lineTo(0, -h);
     ctx.lineTo(-w * widthRate, -h * rate);
     ctx.closePath();
     ctx.fill();
@@ -1185,10 +1201,18 @@ function calcClickPoints(clickID) {
     const xs = x * s;
     const yc = y * c;
     const ys = y * s;
-    pieceVertexX[idx] = [cx + xc - ys, cx - xc - ys,
-      cx - xc + ys, cx + xc + ys];
-    pieceVertexY[idx] = [cy + xs + yc, cy - xs + yc,
-      cy - xs - yc, cy + xs - yc];
+    pieceVertexX[idx] = [
+      cx + xc - ys,
+      cx - xc - ys,
+      cx - xc + ys,
+      cx + xc + ys,
+    ];
+    pieceVertexY[idx] = [
+      cy + xs + yc,
+      cy - xs + yc,
+      cy - xs - yc,
+      cy + xs - yc,
+    ];
   }
   pointNum = 0;
   for (let p11 = 0; p11 < pieceNum * 4; p11++) {
@@ -1212,7 +1236,11 @@ function calcClickPoints(clickID) {
           (rectTypes[piece1id] + 1) * 4 == num ? 4 : 2)) {
       if (clickID == -1 || pointNum == clickID) {
         clickPoints[pointNum] = {
-          px: point2X, py: point2Y, id1: p12, id2: p21, trio: false,
+          px: point2X,
+          py: point2Y,
+          id1: p12,
+          id2: p21,
+          trio: false,
         };
         if (clickID != -1) {
           return;
@@ -1651,7 +1679,7 @@ function onButtonClickSavedataRedo(event) {
         return;
       }
       if (dataRedo[len] == '(') {
-        while (len != dataRedo.length - 1 && dataRedo[++len] != ')') ;
+        while (len != dataRedo.length - 1 && dataRedo[++len] != ')');
       }
       len++;
     }
@@ -1670,13 +1698,15 @@ function onOptionTargetChanged() {
     document.body.clientHeight,
     document.body.scrollHeight,
     document.documentElement.scrollHeight,
-    document.documentElement.clientHeight]);
+    document.documentElement.clientHeight,
+  ]);
   updateTargetLocation();
   scrollDistance += Math.max.apply(null, [
     document.body.clientHeight,
     document.body.scrollHeight,
     document.documentElement.scrollHeight,
-    document.documentElement.clientHeight]);
+    document.documentElement.clientHeight,
+  ]);
   scrollBy(0, scrollDistance);
   draw();
 }
@@ -1766,9 +1796,9 @@ function hsv2rgb(h, s, v) {
   const ii = h / 60 + 60; // ここでiiがマイナスになるようなhには非対応です。
   v = Math.floor(v);
   const f = ii - Math.floor(ii);
-  const p = Math.round(v * (1- (s / 255)));
-  const q = Math.round(v * (1- (s / 255) * f));
-  const t = Math.round(v * (1- (s / 255) * (1 - f)));
+  const p = Math.round(v * (1 - s / 255));
+  const q = Math.round(v * (1 - s / 255 * f));
+  const t = Math.round(v * (1 - s / 255 * (1 - f)));
   switch (Math.floor(ii) % 6) {
     case 0: return [v, t, p];
     case 1: return [q, v, p];
@@ -1815,7 +1845,7 @@ function onColorSelectStart(e) {
   const xy = getXYonColorCanvas(e);
   const x = xy[0];
   const y = xy[1];
-  const rr = ((hueCx - x) * (hueCx - x) + (hueCy - y) * (hueCy - y));
+  const rr = (hueCx - x) * (hueCx - x) + (hueCy - y) * (hueCy - y);
   if (hueMinR * hueMinR < rr && rr < hueMaxR * hueMaxR) {
     hueMode = true;
   } else if (svX0 <= x && x <= svX0 + svSize &&
@@ -1839,7 +1869,7 @@ function onColorSelecting(e) {
     rad += Math.PI / hueSplitNum;
     const hueI = Math.floor(rad / (2 * Math.PI / hueSplitNum));
     hueRad = 2 * Math.PI / hueSplitNum * hueI - Math.PI / 2;
-    hueValue = (360 * hueI / hueSplitNum + 60);
+    hueValue = 360 * hueI / hueSplitNum + 60;
   } else if (svMode) {
     flag = true;
     satValue = Math.max(0, Math.min(255, (x - svX0) / svSize * 255));
@@ -1892,10 +1922,14 @@ function drawHSV() {
 
       ctxColor.beginPath();
       ctxColor.moveTo(hueCx, hueCy);
-      ctxColor.lineTo(hueCx + 2 * hueR * Math.sin(currRad),
-          hueCy - 2 * hueR * Math.cos(currRad));
-      ctxColor.lineTo(hueCx + 2 * hueR * Math.sin(nextRad),
-          hueCy - 2 * hueR * Math.cos(nextRad));
+      ctxColor.lineTo(
+        hueCx + 2 * hueR * Math.sin(currRad),
+        hueCy - 2 * hueR * Math.cos(currRad)
+      );
+      ctxColor.lineTo(
+        hueCx + 2 * hueR * Math.sin(nextRad),
+        hueCy - 2 * hueR * Math.cos(nextRad)
+      );
       ctxColor.lineTo(hueCx, hueCy);
       ctxColor.fill();
       ctxColor.stroke();
@@ -1933,8 +1967,10 @@ function drawHSV() {
     ctxColor.fillStyle = valGrad;
     ctxColor.fillRect(svX0, svY0, svSize, svSize);
 
-    drawSelectedCircle(svX0 + satValue / 255 * svSize,
-        svY0 + svSize - valValue / 255 * svSize);
+    drawSelectedCircle(
+      svX0 + satValue / 255 * svSize,
+      svY0 + svSize - valValue / 255 * svSize
+    );
     ctxColor.restore();
   }
 
@@ -1942,10 +1978,11 @@ function drawHSV() {
   drawSVRect();
   drawHSVStroke();
   const r = (hueMinR + hueMaxR) / 2;
-  drawSelectedCircle(hueCx + r * Math.cos(hueRad),
-      hueCy + r * Math.sin(hueRad));
+  drawSelectedCircle(
+    hueCx + r * Math.cos(hueRad),
+    hueCy + r * Math.sin(hueRad)
+  );
 }
-
 
 function drawColorSelector() {
   ctxColor = document.getElementById('canvasForColor').getContext('2d');
@@ -1988,5 +2025,7 @@ function onClickOpenClose(clickId, str) {
   const obj = document.getElementById(clickId).style;
   const closedFlag = (obj.display == 'none');
   obj.display = closedFlag ? 'block' : 'none';
-  document.getElementById(`${clickId}Title`).innerHTML = closedFlag ? `△${str} (クリックして閉じる)` : `▼${str} (クリックして開く)`;
+  document.getElementById(`${clickId}Title`).innerHTML = closedFlag
+    ? `△${str} (クリックして閉じる)`
+    : `▼${str} (クリックして開く)`;
 }
