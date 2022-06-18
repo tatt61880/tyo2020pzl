@@ -66,6 +66,8 @@ const elems = {
 
   radioButtonModeEasy: {change: onRadioButtonChangeLevel},
   radioButtonModeNormal: {change: onRadioButtonChangeLevel},
+
+  canvasForColor: {},
 };
 
 let redoCount = 0;
@@ -121,7 +123,6 @@ function initEventListener() {
 
   for (const elemId in elems) {
     const elem = document.getElementById(elemId)
-
     const elemInfo = elems[elemId];
     for (const key in elemInfo) {
       elem.addEventListener(key, elemInfo[key], false);
@@ -1754,7 +1755,6 @@ const hueMinR = hueR * 0.6;
 const hueMaxR = hueR * 0.9;
 const hueSplitNum = 12;
 let ctxColor;
-let canvasForColor;
 
 const svSize = hueMinR * Math.sqrt(2);
 let svX0;
@@ -1822,7 +1822,7 @@ let hueMode = false;
 let svMode = false;
 
 function getXYonColorCanvas(e) {
-  const bcRect = canvasForColor.getBoundingClientRect();
+  const bcRect = elems.canvasForColor.getBoundingClientRect();
   let x;
   let y;
   if (typeof e.touches !== 'undefined') {
@@ -1885,7 +1885,7 @@ function onColorSelecting(e) {
     colorFillProperPieceIndex = calcIndexColorText(rgbProper);
     colorFillNormalPieceIndex = calcIndexColorText(rgb);
 
-    ctxColor.clearRect(0, 0, canvasForColor.width, canvasForColor.height);
+    ctxColor.clearRect(0, 0, elems.canvasForColor.width, elems.canvasForColor.height);
     drawHSV();
     draw();
   }
@@ -1985,27 +1985,26 @@ function drawHSV() {
 }
 
 function drawColorSelector() {
-  ctxColor = document.getElementById('canvasForColor').getContext('2d');
-  canvasForColor = document.getElementById('canvasForColor');
-  hueCx = canvasForColor.width / 2;
-  hueCy = canvasForColor.height / 2;
+  ctxColor = elems.canvasForColor.getContext('2d');
+  hueCx = elems.canvasForColor.width / 2;
+  hueCy = elems.canvasForColor.height / 2;
   svX0 = hueCx - svSize / 2;
   svY0 = hueCy - svSize / 2;
 
   const eventNameDown = isTouchDevice ? 'touchstart' : 'mousedown';
   const eventNameMove = isTouchDevice ? 'touchmove' : 'mousemove';
   const eventNameUp = isTouchDevice ? 'touchend' : 'mouseup';
-  canvasForColor.addEventListener(eventNameDown, onColorSelectStart, false);
-  canvasForColor.addEventListener(eventNameMove, onColorSelecting, false);
-  canvasForColor.addEventListener(eventNameUp, onColorSelectEnd, false);
+  elems.canvasForColor.addEventListener(eventNameDown, onColorSelectStart, false);
+  elems.canvasForColor.addEventListener(eventNameMove, onColorSelecting, false);
+  elems.canvasForColor.addEventListener(eventNameUp, onColorSelectEnd, false);
   if (!isTouchDevice) {
-    canvasForColor.addEventListener('mouseout', onColorSelectEnd, false);
+    elems.canvasForColor.addEventListener('mouseout', onColorSelectEnd, false);
   }
   drawHSV();
 }
 
 function onButtonClickDefaultColor() {
-  ctxColor.clearRect(0, 0, canvasForColor.width, canvasForColor.height);
+  ctxColor.clearRect(0, 0, elems.canvasForColor.width, elems.canvasForColor.height);
   colorFillProperPiece = colorFillProperPieceDefault;
   colorFillNormalPiece = colorFillNormalPieceDefault;
   colorStrokeLozenge = colorStrokeLozengeDefault;
