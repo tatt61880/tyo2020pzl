@@ -80,6 +80,7 @@ input[type="button"].savedata {
   color: #838;
   font-weight: bold;
   cursor: pointer;
+  z-index: 1; // Safariでborder-radiusが動作するようにするための措置。
 }
 
 div.option {
@@ -106,6 +107,7 @@ input[type="button"].option {
   color: #383;
   font-weight: bold;
   cursor: pointer;
+  z-index: 1; // Safariでborder-radiusが動作するようにするための措置。
 }
 
 hr.option {
