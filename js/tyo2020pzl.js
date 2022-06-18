@@ -52,6 +52,22 @@ const options = {
   showTweetButton: {type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged},
 };
 
+const elems = {
+  buttonLoad: {click: onButtonClickSavedataLoad},
+  buttonUndo: {click: onButtonClickSavedataUndo},
+  buttonRedo: {click: onButtonClickSavedataRedo},
+
+  buttonDefaultColor: {click: onButtonClickDefaultColor},
+  buttonResetShape: {click: onButtonClickResetShape},
+  buttonRandom: {click: onButtonClickRandom},
+  buttonRandomInterval: {click: onButtonClickRandomInterval},
+  buttonRandomIntervalStop: {click: onButtonClickRandomIntervalStop},
+  rangeRandom: {change: oninputRange, input: oninputRange},
+
+  radioButtonModeEasy: {change: onRadioButtonChangeLevel},
+  radioButtonModeNormal: {change: onRadioButtonChangeLevel},
+};
+
 let redoCount = 0;
 let clickCount = {total: 0, red: 0, green: 0};
 let clickCountFin = {total: 0, red: 0, green: 0};
@@ -103,30 +119,16 @@ function initEventListener() {
     'orientationchange' : 'resize';
   window.addEventListener(rotateEvent, onOrientationchange, false);
 
-  document.getElementById('buttonLoad').
-      addEventListener('click', onButtonClickSavedataLoad, false);
-  document.getElementById('buttonUndo').
-      addEventListener('click', onButtonClickSavedataUndo, false);
-  document.getElementById('buttonRedo').
-      addEventListener('click', onButtonClickSavedataRedo, false);
-  document.getElementById('buttonDefaultColor').
-      addEventListener('click', onButtonClickDefaultColor, false);
-  document.getElementById('buttonRandom').
-      addEventListener('click', onButtonClickRandom, false);
-  document.getElementById('buttonRandomInterval').
-      addEventListener('click', onButtonClickRandomInterval, false);
-  document.getElementById('buttonRandomIntervalStop').
-      addEventListener('click', onButtonClickRandomIntervalStop, false);
-  document.getElementById('buttonResetShape').
-      addEventListener('click', onButtonClickResetShape, false);
+  for (const elemId in elems) {
+    const elem = document.getElementById(elemId)
 
-  document.getElementById('radioButtonModeEasy')
-      .onchange = onRadioButtonChangeLevel;
-  document.getElementById('radioButtonModeNormal')
-      .onchange = onRadioButtonChangeLevel;
-  elemRangeRandom = document.getElementById('rangeRandom');
-  elemRangeRandom.onchange = oninputRange;
-  elemRangeRandom.oninput = oninputRange;
+    const elemInfo = elems[elemId];
+    for (const key in elemInfo) {
+      elem.addEventListener(key, elemInfo[key], false);
+    }
+
+    elems[elemId] = elem;
+  }
 
   const myFile = document.getElementById('myFile');
   // 画像ファイル選択時の処理です。
@@ -1549,14 +1551,12 @@ function moveRandom() {
 
 let timerRandom;
 let bRandomInterval = false;
-let elemRangeRandom;
 function setTimerRandom(event) {
-  const randomSpeed = Number(550 - elemRangeRandom.value);
+  const randomSpeed = Number(550 - elems.rangeRandom.value);
   timerRandom = setInterval('moveRandom()', randomSpeed);
 }
 function onButtonClickRandomInterval(event) {
-  // iOSで連続でボタンを押しているとダブルクリック判定されて
-  // 画面が移動してしまったりするので。
+  elems.buttonRandomIntervalStop.style.visibility = 'visible';
   event.preventDefault();
   if (!bRandomInterval) {
     bRandomInterval = true;
@@ -1564,6 +1564,7 @@ function onButtonClickRandomInterval(event) {
   }
 }
 function onButtonClickRandomIntervalStop(event) {
+  elems.buttonRandomIntervalStop.style.visibility = 'hidden';
   event.preventDefault();
   bRandomInterval = false;
   clearInterval(timerRandom);
@@ -1752,7 +1753,6 @@ let hueCy;
 const hueMinR = hueR * 0.6;
 const hueMaxR = hueR * 0.9;
 const hueSplitNum = 12;
-// let hueSplitNum = 120;
 let ctxColor;
 let canvasForColor;
 
