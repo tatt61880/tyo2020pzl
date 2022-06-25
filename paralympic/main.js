@@ -33,8 +33,8 @@
 
   let timer;
 
-  let CenterX;
-  let CenterY;
+  let centerX;
+  let centerY;
 
   const OptionType = {
     checkbox: 1,
@@ -44,8 +44,8 @@
   // for Options
   const options = {
     drawStyle: {type: OptionType.radio, onchange: update},
-    showLozenge: {type: OptionType.checkbox, onchange: update},
-  }
+    showLozenges: {type: OptionType.checkbox, onchange: update},
+  };
 
   window.onload = function() {
     initOptions();
@@ -53,8 +53,8 @@
     elemCanvas = document.getElementById('myCanvas');
     elemDec = document.getElementById('buttonDec');
     elemInc = document.getElementById('buttonInc');
-    elemDec.addEventListener('click', Dec, false);
-    elemInc.addEventListener('click', Inc, false);
+    elemDec.addEventListener('click', decNum, false);
+    elemInc.addEventListener('click', incNum, false);
 
     update();
   };
@@ -65,50 +65,45 @@
       const optionType = options[optionName].type;
       const optionOnchange = options[optionName].onchange;
       switch (optionType) {
-        case OptionType.checkbox:
-          {
-            const elem = document.getElementById(`options-${optionName}`);
-            options[optionName] = elem.checked;
+      case OptionType.checkbox:
+        {
+          const elem = document.getElementById(`options-${optionName}`);
+          options[optionName] = elem.checked;
+          elem.addEventListener(
+            'change',
+            function() {
+              options[optionName] = elem.checked;
+              optionOnchange();
+            },
+            false
+          );
+        }
+        break;
+      case OptionType.radio:
+        {
+          const elems = document.getElementsByName(`options-${optionName}`);
+          for (const elem of elems) {
+            if (elem.checked) {
+              options[optionName] = elem.value;
+            }
             elem.addEventListener(
-                'change',
-                function() {
-                  options[optionName] = elem.checked;
-                  optionOnchange();
-                },
-                false
+              'change',
+              function() {
+                if (elem.checked) {
+                  options[optionName] = elem.value;
+                }
+                optionOnchange();
+              },
+              false
             );
           }
-          break;
-        case OptionType.radio:
-          {
-            const elems = document.getElementsByName(`options-${optionName}`);
-            for (const elem of elems) {
-              if (elem.checked) {
-                options[optionName] = elem.value;
-              }
-              elem.addEventListener(
-                  'change',
-                  function() {
-                    if (elem.checked) {
-                      options[optionName] = elem.value;
-                    }
-                    optionOnchange();
-                  },
-                  false
-              );
-            }
-          }
-          break;
+        }
+        break;
       }
     }
   }
 
-  function updateShowLogenzes() {
-    options.showLozenges = document.getElementById('options-showLozenge').checked;
-  }
-
   function update() {
-    updateShowLogenzes();
     clearTimeout(timer);
     document.getElementById('num').innerHTML = num + '角形ベース';
 
@@ -120,13 +115,13 @@
     elemCanvas.setAttribute('width', csize);
     elemCanvas.setAttribute('height', csize);
 
-    CenterX = elemCanvas.width / 2;
-    CenterY = elemCanvas.height / 2;
+    centerX = elemCanvas.width / 2;
+    centerY = elemCanvas.height / 2;
     ctx = elemCanvas.getContext('2d');
     ctx.fillStyle = '#004080';
-    ctx.translate(CenterX, CenterY);
+    ctx.translate(centerX, centerY);
 
-    scale = CenterX * 3 / 2 / num;
+    scale = centerX * 3 / 2 / num;
     if (options.drawStyle == 'slow') {
       countStep1 = 0;
       countStep2 = 0;
@@ -177,7 +172,7 @@
       );
     }
 
-    rot_x = CenterX;
+    rot_x = centerX;
     rot_y =
       (Math.pow(
         Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
@@ -185,14 +180,14 @@
       ) +
         rects[0].h / 2.0) /
         2.0 +
-      CenterY;
+      centerY;
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
         let index = i * 2 + (j % 2 == 0 ? 0 : 1);
         let rot = 2.0 * Math.PI * index / (num * 2);
-        let cx = r[j] * Math.cos(rot) + CenterX;
-        let cy = r[j] * Math.sin(rot) + CenterY;
+        let cx = r[j] * Math.cos(rot) + centerX;
+        let cy = r[j] * Math.sin(rot) + centerY;
 
         const idx = i * num + j;
         cxs[idx] = cx;
@@ -212,7 +207,7 @@
     draw();
   }
 
-  function DrawRect(idx) {
+  function drawRect(idx) {
     let rectType = idx % num;
     let cx = cxs[idx];
     let cy = cys[idx];
@@ -289,22 +284,23 @@
   }
 
   function draw() {
-    ctx.clearRect(-CenterX, -CenterY, elemCanvas.width, elemCanvas.height);
+    ctx.clearRect(-centerX, -centerY, elemCanvas.width, elemCanvas.height);
+    const isSlow = options.drawStyle == 'slow';
 
     let bStep1Finished = false;
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        if (options.drawStyle == 'slow' && j * num + i >= countStep1) {
+        if (isSlow && j * num + i >= countStep1) {
           continue;
         }
-        DrawRect(i * num + j);
+        drawRect(i * num + j);
         if (j == num / 2 - 2 && i == num - 1) {
           bStep1Finished = true;
         }
       }
     }
 
-    if (options.drawStyle == 'slow') {
+    if (isSlow) {
       if (bStep1Finished) {
         if (countStep2 <= countStep2Total) {
           countStep2++;
@@ -313,17 +309,16 @@
       countStep1 += Math.floor(num * num / 169) + 1;
     }
 
-    //console.log(countStep1);
-    if (options.drawStyle == 'slow') {
+    if (isSlow) {
       if (countStep2 <= countStep2Total) {
         timer = setTimeout(function() {
           draw();
-        }, 50);
+        }, 40);
       }
     }
   }
 
-  function Inc(event) {
+  function incNum(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     elemDec.style.visibility = 'visible';
     if (num < numMax) {
@@ -335,7 +330,7 @@
     }
   }
 
-  function Dec(event) {
+  function decNum(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     elemInc.style.visibility = 'visible';
     if (num > 4) {
@@ -345,10 +340,5 @@
       }
       update();
     }
-  }
-
-  function onOptionShowLozengeChanged() {
-    updateShowLogenzes();
-    update();
   }
 })();
