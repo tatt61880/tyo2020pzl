@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>東京パラリンピック（2020年）のエンブレムの拡張</title>
+<link rel="shortcut icon" href="./images/t.gif">
+<link rel="stylesheet" href="./style.css">
+<style>
+input[type="radio"] {
+  margin:0px 5px 0px 10px;
+}
+input[type="button"] {
+  background-color: #FDF;
+  border-radius:10px;
+  padding: 0px 5px;
+}
+div.round {
+  border-radius: 10px;
+  margin:3px 5px;
+}
+</style>
+</head>
+
+<body>
+<div id="container">
+<h1>東京パラリンピック（2020年）のエンブレムの拡張</h1>
+<form>
+  <canvas id="myCanvas"></canvas><br>
+
+  <div class="round" style="padding: 5px; background-color: #DDF;">
+    <div class="round" style="border:3px solid; border-color: #BBF;">
+      <input type="button" value="-2" id="Button_Dec" style="font-size: 150%;" onclick="Dec(event)">
+      <input type="button" value="+2" id="Button_Inc" style="font-size: 150%;" onclick="Inc(event)">
+      <span id="num"></span>
+    </div>
+
+    <input type="radio" id="Radio1" name="RadioGroup1" onchange="onRadioButtonChange()" checked/><label for="Radio1">徐々に描画する</label>
+    <input type="radio" id="Radio2" name="RadioGroup1" onchange="onRadioButtonChange()"        /><label for="Radio2">一気に描画する</label>
+    <br>
+    <input type="checkbox" id="Checkbox_ShowLozenge" onclick="onCheckboxChange_ShowLozenge()"><label for="Checkbox_ShowLozenge">菱形を表示</label>
+  </div>
+</form>
+
+<h2>このプログラムの作者</h2>
+<table style="text-align:center; border:0;">
+  <tr>
+  <td>
+    たっと（Tatt）<a href="https://twitter.com/tatt61880">@tatt61880</a>
+  </td>
+  </tr>
+</table>
+
+<h3>謝辞</h3>
+<ul>
+  <li>エンブレム作者の野老朝雄さん（<a href="https://twitter.com/asaoTOKOLO">@asaoTOKOLO</a>）さんがいなければ、このプログラムが作られることはありませんでした。</li>
+  <li>Twitterでエンブレムの話題が盛り上がっていたことが、このプログラムを作成するモチベーションになりました。また、Twitter上でのエンブレム解析情報は、このプログラムを作成する上でとても参考になりました。</li>
+</ul>
+<p>
+皆様に厚くお礼申し上げます。ありがとうございました。
+
+<h3>リンク集</h3>
+<ul>
+  <li><a href="../olympic/index.html">東京オリンピック（2020年）のエンブレム拡張？</a></li>
+  <li><a href="../index.html">東京オリンピック・エンブレム・パズル</a></li>
+</ul>
+</div>
+
+<script>
+var Canvas;
+var ctx;
+
+var ColorS_Lozenge = '#5599DD';
+
+var num = 12; // ベースとなる多角形の頂点数 (正num角形ベース)
+var numMax = 150;
+var scale;
+var L = [];
+var rects = [];
+var r = [];
+var rr = [];
+
+var rot_x = 0;
+var rot_y = 0;
+
+var bIncrementalDrawing = false;
+var bTypeColoring = false;
+var bShowLozenges = false;
+
+var countStep1 = 0;
+var countStep2 = 0;
+var countStep2Total = 30;
+
+var rots = [];
+var cxs = [];
+var cys = [];
+var removeFlags = [];
+var rotateFlags = [];
+
+var timer;
+
+var CenterX;
+var CenterY;
+
+onload = function(){
+  Canvas = document.getElementById("myCanvas");
+  onRadioButtonChange();
+};
+
+function updateShowLogenzes(){
+  bShowLozenges = document.getElementById("Checkbox_ShowLozenge").checked;
+}
+
+function Init(){
+  updateShowLogenzes();
+  clearTimeout(timer);
+  document.getElementById('num').innerHTML=num+"角形ベース";
+
+  var csize = document.documentElement.clientWidth;
+  if(csize <= 0) csize = 400;
+  if(csize > 400) csize = 400;
+  document.getElementById("container").setAttribute('width', csize);
+
+  Canvas.setAttribute('width', csize);
+  Canvas.setAttribute('height', csize);
+
+  CenterX = Canvas.width / 2;
+  CenterY = Canvas.height / 2;
+  ctx = Canvas.getContext('2d');
+  ctx.fillStyle = "#004080";
+  ctx.translate(CenterX, CenterY);
+
+  scale = CenterX * 3 / 2 / num;
+  if(bIncrementalDrawing){
+    countStep1 = 0;
+    countStep2 = 0;
+  }else{
+    countStep2 = countStep2Total + 1;
+  }
+
+  var points = [];
+  for(var i = 0; i < num; i++){
+    points[i] = {x: scale * Math.cos(2.0 * Math.PI * i / num), y: scale * Math.sin(2.0 * Math.PI * i / num)}
+  }
+  for(var i = 0; i < num / 2; i++){
+    var dx = points[0].x - points[i + 1].x;
+    var dy = points[0].y - points[i + 1].y;
+    L[i] = Math.sqrt(dx * dx + dy * dy);
+  }
+  for(var i = 0; i < num / 2 - 1; i++){
+    //θ=0でのw, h
+    var w = L[num / 2 - 2 - i];
+    var h = L[i];
+    rects[i] = {w: w, h: h};
+  }
+  r[0] = L[num / 2 - 2];
+  for(var i = 1; i < num / 2 - 1; i++){
+    r[i] = Math.pow(Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0) - Math.pow(rects[i].h / 2.0, 2.0), 0.5) + rects[i].w / 2.0;
+  }
+  rr[0] = L[num / 2 - 1] / 2.0;
+  for(var i = 1; i < num / 2; i++){
+    rr[i] = Math.pow(Math.pow(Math.pow(Math.pow(rr[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) + rects[i - 1].w, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
+  }
+
+  rot_x = CenterX;
+  rot_y = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0 + CenterY;
+
+  for(var j = 0; j < num / 2 - 1; j++){
+    for(var i = 0; i < num; i++){
+      var index = i * 2 + ((j % 2 == 0)? 0 : 1);
+      var rot = 2.0 * Math.PI * index / (num * 2);
+      var cx = r[j] * Math.cos(rot) + CenterX;
+      var cy = r[j] * Math.sin(rot) + CenterY;
+
+      idx = i * num + j;
+      cxs[idx] = cx;
+      cys[idx] = cy;
+      rots[idx] = rot;
+      rotateFlags[idx] = false;
+      removeFlags[idx] = false;
+      if(j + 1 < index && index < num - j){ // 下側の回転すべき場所
+        rotateFlags[idx] = true;
+      }else if(num + j < index && index < 2 * num - j){ // 上側の消えるべき場所
+        removeFlags[idx] = true;
+      }
+    }
+  }
+  Draw();
+};
+
+function DrawRect(idx){
+  var rectType = idx % num;
+  var cx = cxs[idx];
+  var cy = cys[idx];
+  var rot = rots[idx];
+  var rotateFlag = rotateFlags[idx];
+  var removeFlag = removeFlags[idx];
+
+  ctx.save();
+  if(removeFlag){
+    if(bTypeColoring){
+      ctx.fillStyle = "#F0B0B0";
+    }
+    if(countStep2 > 0){
+      if(countStep2 > countStep2Total){
+        a = 0;
+        //return;
+      }else{
+        a = (countStep2Total - countStep2) / countStep2Total;
+        //ctx.globalAlpha = a;
+      }
+      ctx.fillStyle = "rgba(0, 64, 128, " + a + ")"; // "#004080" + α
+    }
+  }else if(rotateFlag){
+    if(bTypeColoring){
+      ctx.fillStyle = "#90F0B0";
+    }
+    if(countStep2 > 0){
+      var rot_add = 0.0;
+      if(countStep2 > countStep2Total){
+        rot_add = Math.PI;
+      }else{
+        rot_add = Math.PI * countStep2 / countStep2Total;
+      }
+      var cx_old = cx;
+      var cy_old = cy;
+      cx = (cx_old - rot_x) * Math.cos(rot_add) + (cy_old - rot_y) * Math.sin(-rot_add) + rot_x;
+      cy = (cx_old - rot_x) * Math.sin(rot_add) + (cy_old - rot_y) * Math.cos( rot_add) + rot_y;
+      rot += rot_add;
+    }
+  }else{
+    if(bTypeColoring){
+      ctx.fillStyle = "#90B0F0";
+    }
+  }
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+  ctx.fillRect(-rects[rectType].w / 2, -rects[rectType].h / 2, rects[rectType].w, rects[rectType].h);
+
+  if(bShowLozenges){
+    ctx.strokeStyle = ColorS_Lozenge;
+    ctx.beginPath();
+    ctx.moveTo(0, rects[rectType].h);
+    ctx.lineTo(rects[rectType].w, 0);
+    ctx.lineTo(0, -rects[rectType].h);
+    ctx.lineTo(-rects[rectType].w, 0);
+    ctx.closePath(); 
+    ctx.stroke();
+  }
+  ctx.restore();
+};
+
+function Draw(){ 
+  ctx.clearRect(-CenterX, -CenterY, Canvas.width, Canvas.height);
+  
+  var bStep1Finished = false;
+  for(var j = 0; j < num / 2 - 1; j++){
+    for(var i = 0; i < num; i++){
+      if(bIncrementalDrawing && j * num + i >= countStep1){
+        continue;
+      }
+      DrawRect(i * num + j);
+      if(j == num / 2 - 2 && i == num - 1){
+        bStep1Finished = true;
+      }
+    }
+  }
+
+  if(bIncrementalDrawing){
+    if(bStep1Finished){
+      if(countStep2 <= countStep2Total){
+        countStep2++;
+      }
+    }
+    countStep1 += Math.floor(num * num / 169) + 1;
+  }
+
+  //console.log(countStep1);
+  if(bIncrementalDrawing){
+    if(countStep2 <= countStep2Total){
+      timer = setTimeout(function(){Draw()}, 50);
+    }
+  }
+};
+
+function Inc(event){
+  event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+  document.getElementById("Button_Dec").style.visibility = "visible";
+  if(num < numMax){
+    num += 2;
+    if(num == numMax){
+      document.getElementById("Button_Inc").style.visibility = "hidden";
+    }
+    Init();
+  }
+};
+function Dec(event){
+  event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+  document.getElementById("Button_Inc").style.visibility = "visible";
+  if(num > 4){
+    num -= 2;
+    if(num == 4){
+      document.getElementById("Button_Dec").style.visibility = "hidden";
+    }
+    Init();
+  }
+};
+
+function onRadioButtonChange() {
+  bIncrementalDrawing = document.getElementById("Radio1").checked;
+  Init();
+};
+
+function onCheckboxChange_ShowLozenge(){
+  updateShowLogenzes();
+  Init();
+};
+</script>
+</body>
+</html>
