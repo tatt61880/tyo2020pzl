@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>東京オリンピック（2020年）のエンブレム拡張？</title>
+  <title>東京オリンピック（2020年）のエンブレムの拡張？</title>
   <link rel="shortcut icon" href="./images/t.gif">
   <link rel="stylesheet" href="./style.css">
   <style>
@@ -23,25 +23,27 @@ div.round {
   margin:3px 5px;
 }
   </style>
+
+  <script src="./main.js?2022.06.25"></script>
 </head>
 
 <body>
 <div id="container">
-<h1>東京オリンピック（2020年）のエンブレム拡張？</h1>
+<h1>東京オリンピック（2020年）のエンブレムの拡張？</h1>
 <form>
   <canvas id="myCanvas"></canvas><br>
 
   <div class="round" style="padding: 5px; background-color: #DDF;">
     <div class="round" style="border:3px solid; border-color: #BBF;">
-      <input type="button" value="-6" id="Button_Dec" style="font-size: 150%;" onclick="Dec(event)">
-      <input type="button" value="+6" id="Button_Inc" style="font-size: 150%;" onclick="Inc(event)">
+      <input type="button" value="-6" id="buttonDec" style="font-size: 150%;">
+      <input type="button" value="+6" id="buttonInc" style="font-size: 150%;">
       <span id="num"></span>
     </div>
 
-    <input type="radio" id="Radio1" name="RadioGroup1" onchange="onRadioButtonChange()" checked/><label for="Radio1">徐々に描画する</label>
-    <input type="radio" id="Radio2" name="RadioGroup1" onchange="onRadioButtonChange()"        /><label for="Radio2">一気に描画する</label>
+    <input type="radio" id="options-drawStyle-slow" name="options-drawStyle" value="slow" checked><label for="options-drawStyle-slow">徐々に描画する</label>
+    <input type="radio" id="options-drawStyle-fast" name="options-drawStyle" value="fast"><label for="options-drawStyle-fast">一気に描画する</label>
     <br>
-    <input type="checkbox" id="Checkbox_ShowLozenge" onclick="onCheckboxChange_ShowLozenge()"><label for="Checkbox_ShowLozenge">菱形を表示</label>
+    <input type="checkbox" id="options-showLozenges"><label for="options-showLozenges">菱形を表示</label>
   </div>
 </form>
 
@@ -64,366 +66,9 @@ div.round {
 
 <h3>リンク集</h3>
 <ul>
-  <li><a href="../paralympic/index.html">東京パラリンピック（2020年）のエンブレム拡張</a></li>
+  <li><a href="../paralympic/index.html">東京パラリンピック（2020年）のエンブレムの拡張</a></li>
   <li><a href="../index.html">東京オリンピック・エンブレム・パズル</a></li>
 </ul>
 </div>
-
-<script>
-var Canvas;
-var ctx;
-
-var ColorS_Lozenge = '#5599DD';
-
-var num = 12; // ベースとなる多角形の頂点数 (正num角形ベース)
-var numMax = 150;
-var scale;
-var points = [];
-var L = [];
-var rects = [];
-var r = [];
-var rr = [];
-
-var rot1_x = [];
-var rot1_y = [];
-var rot2_x = [];
-var rot2_y = [];
-
-var bIncrementalDrawing = false;
-var bTypeColoring = false;
-var bShowLozenges = false;
-
-var countStep1 = 0;
-var countStep2 = 0;
-var countStep3 = 0;
-var countStep2Total = 30;
-var countStep3Total = 30;
-
-var rots = [];
-var cxs = [];
-var cys = [];
-var typeNums = [];
-var removeFlags = [];
-
-var timer;
-
-var CenterX;
-var CenterY;
-
-// 暇なときにリファクタリングしますヽ(´ー｀)ノ
-var temp_x;
-var temp_y;
-
-onload = function(){
-  Canvas = document.getElementById("myCanvas");
-  onRadioButtonChange();
-};
-
-function updateShowLogenzes(){
-  bShowLozenges = document.getElementById("Checkbox_ShowLozenge").checked;
-}
-
-function Init(){
-  updateShowLogenzes();
-  clearTimeout(timer);
-  document.getElementById('num').innerHTML=num+"角形ベース";
-
-  var csize = document.documentElement.clientWidth;
-  if(csize <= 0) csize = 400;
-  if(csize > 400) csize = 400;
-  document.getElementById("container").setAttribute('width', csize);
-
-  Canvas.setAttribute('width', csize);
-  Canvas.setAttribute('height', csize);
-
-  CenterX = Canvas.width / 2;
-  CenterY = Canvas.height / 2;
-  ctx = Canvas.getContext('2d');
-  //ctx.fillStyle = "#B0D4E5";
-  //ctx.fillStyle = "#90B0F0";
-  ctx.fillStyle = "#004080";
-  ctx.translate(CenterX, CenterY);
-
-  scale = CenterX * 3 / 2 / num;
-  if(bIncrementalDrawing){
-    countStep1 = 0;
-    countStep2 = 0;
-    countStep3 = 0;
-  }else{
-    countStep2 = countStep2Total;
-    countStep3 = countStep3Total;
-  }
-
-  for(var i = 0; i < num; i++){
-    points[i] = {x: scale * Math.cos(2.0 * Math.PI * i / num), y: scale * Math.sin(2.0 * Math.PI * i / num)}
-  }
-  for(var i = 0; i < num / 2; i++){
-    var dx = points[0].x - points[i + 1].x;
-    var dy = points[0].y - points[i + 1].y;
-    L[i] = Math.sqrt(dx * dx + dy * dy);
-  }
-  for(var i = 0; i < num / 2 - 1; i++){
-    //θ=0でのw, h
-    var w = L[num / 2 - 2 - i];
-    var h = L[i];
-    rects[i] = {w: w, h: h};
-  }
-  r[0] = L[num / 2 - 2];
-  for(var i = 1; i < num / 2 - 1; i++){
-    r[i] = Math.pow(Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0) - Math.pow(rects[i].h / 2.0, 2.0), 0.5) + rects[i].w / 2.0;
-  }
-  rr[0] = L[num / 2 - 1] / 2.0;
-  for(var i = 1; i < num / 2; i++){
-    rr[i] = Math.pow(Math.pow(Math.pow(Math.pow(rr[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) + rects[i - 1].w, 2.0) + Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
-  }
-
-  {
-    var rx1 = 0.0;
-    var ry1 = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
-    for(var i = 0; i < 3; i++){
-      var theta = i * 2.0 * Math.PI / 3.0;
-      rot1_x[i] = CenterX + rx1 * Math.cos(theta) + ry1 * Math.sin(-theta);
-      rot1_y[i] = CenterY + rx1 * Math.sin(theta) + ry1 * Math.cos(theta);
-    }
-  }
-
-  {
-    var rx2_a = L[num / 6] / 2.0;
-    var ry2_a = -Math.pow(Math.pow(rr[num / 6], 2.0) - Math.pow(rx2_a, 2.0), 0.5);
-    var rx2_b__ = -rx2_a;
-    var ry2_b__ =  ry2_a;
-    var theta;
-    theta = 2 * Math.PI / num;
-    var rx2_b_ = (rx2_b__) * Math.cos(theta) + (ry2_b__) * Math.sin(-theta);
-    var ry2_b_ = (rx2_b__) * Math.sin(theta) + (ry2_b__) * Math.cos( theta);
-    //temp_x = rx2_b_ + CenterX;
-    //temp_y = ry2_b_ + CenterY;
-    theta = Math.PI / 3;
-    var cx_b = rot1_x[2] - CenterX;
-    var cy_b = rot1_y[2] - CenterY;
-    var rx2_b = (rx2_b_ - cx_b) * Math.cos(theta) + (ry2_b_ - cy_b) * Math.sin(-theta) + cx_b;
-    var ry2_b = (rx2_b_ - cx_b) * Math.sin(theta) + (ry2_b_ - cy_b) * Math.cos( theta) + cy_b;
-    var rx2 = (rx2_a + rx2_b) / 2;
-    var ry2 = (ry2_a + ry2_b) / 2;
-    for(var i = 0; i < 3; i++){
-      var theta = (i + 1) * 2.0 * Math.PI / 3.0;
-      rot2_x[i] = CenterX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
-      rot2_y[i] = CenterY + rx2 * Math.sin(theta) + ry2 * Math.cos(theta);
-    }
-  }
-
-  for(var j = 0; j < num / 2 - 1; j++){
-    for(var i = 0; i < num; i++){
-      var index = i * 2 + ((j % 2 == 0)? 0 : 1);
-      var typeNum = 0;
-      var removeFlag = false;
-      if(j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j){
-        typeNum = 1;
-      }else if(j + 1 < index - num * 2 / 3 && index - num * 2 / 3 < j + 1 + num / 6 * 2 && index - num * 2 / 3 < num - j){
-        typeNum = 2;
-      }else if(j + 1 < index - num * 4 / 3 && index - num * 4 / 3 < j + 1 + num / 6 * 2 && index - num * 4 / 3 < num - j){
-        typeNum = 3;
-      }else if(j + 1 < index && index < num - j){
-        typeNum = 1;
-        removeFlag = true;
-      }else if(j + 1 < index - num * 2 / 3 && index - num * 2 / 3 < num - j){
-        typeNum = 2;
-        removeFlag = true;
-      }else if(j + 1 < index - num * 4 / 3 && index - num * 4 / 3 < num - j){
-        typeNum = 3;
-        removeFlag = true;
-      }else if(j + 1 < index + num * 2 / 3 && index + num * 2 / 3 < num - j){
-        typeNum = 1;
-        removeFlag = true;
-      }
-
-      for(var n = 0; n < 3; n ++){
-        if(j + 1 < index - num * 2 * n / 3 && index - num * 2 * n / 3 < num / 3 + 1 - j){
-          removeFlag = false;
-          typeNum += 3;
-        }
-      }
-      var idx = i * num + j;
-      typeNums[idx] = typeNum;
-      removeFlags[idx] = removeFlag;
-
-      var index = i * 2 + ((j % 2 == 0)? 0 : 1);
-      var rot = 2.0 * Math.PI * index / (num * 2);
-      var cx = r[j] * Math.cos(rot) + CenterX;
-      var cy = r[j] * Math.sin(rot) + CenterY;
-      rots[idx] = rot;
-      cxs[idx] = cx;
-      cys[idx] = cy;
-    }
-  }
-  Draw();
-};
-
-function DebugDraw(){
-  if(0){
-    ctx.save();
-    ctx.fillStyle = "#0000B0";
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.translate(temp_x, temp_y);
-    ctx.rotate(0);
-    ctx.fillRect(-4, -4, 8, 8);
-    ctx.restore();
-  }
-};
-
-function DrawRect(idx){
-  var rectType = idx % num;
-  var cx = cxs[idx];
-  var cy = cys[idx];
-  var rot = rots[idx];
-  var typeNum = typeNums[idx];
-  var removeFlag = removeFlags[idx];
-  ctx.save();
-  if(removeFlag){
-    if(bTypeColoring){
-      ctx.fillStyle = "#F0B0B0";
-    }
-    if(countStep2 > 0){
-      if(countStep2 >= countStep2Total){
-        return;
-      }else{
-        a = (countStep2Total - countStep2) / countStep2Total;
-        ctx.globalAlpha = a;
-        //ctx.fillStyle = "rgba(" + [128, 100, 162, a] + "]";
-      }
-    }
-  }else if(typeNum == 0){
-    if(bTypeColoring){
-      ctx.fillStyle = "#90B0F0";
-    }
-  }else{
-    if(bTypeColoring){
-      if(typeNum <= 3){
-        ctx.fillStyle = "#90F0B0";
-      }else{
-        ctx.fillStyle = "#909090";
-      }
-    }
-    var posIdx = (typeNum - 1) % 3;
-    if(countStep2 > 0){
-      var rot_add = 0.0;
-      var rot_max = Math.PI / 3;
-      if(countStep2 >= countStep2Total){
-        rot_add = rot_max;
-      }else{
-        rot_add = rot_max * countStep2 / countStep2Total;
-      }
-      var cx_old = cx;
-      var cy_old = cy;
-      cx = (cx_old - rot1_x[posIdx]) * Math.cos(rot_add) + (cy_old - rot1_y[posIdx]) * Math.sin(-rot_add) + rot1_x[posIdx];
-      cy = (cx_old - rot1_x[posIdx]) * Math.sin(rot_add) + (cy_old - rot1_y[posIdx]) * Math.cos( rot_add) + rot1_y[posIdx];
-      rot += rot_add;
-    }
-    if(countStep3 > 0 && typeNum > 3){
-      var rot_add = 0.0;
-      var rot_max = Math.PI;
-      if(countStep3 >= countStep3Total){
-        rot_add = rot_max;
-      }else{
-        rot_add = rot_max * countStep3 / countStep3Total;
-      }
-      var cx_old = cx;
-      var cy_old = cy;
-      cx = (cx_old - rot2_x[posIdx]) * Math.cos(rot_add) + (cy_old - rot2_y[posIdx]) * Math.sin(-rot_add) + rot2_x[posIdx];
-      cy = (cx_old - rot2_x[posIdx]) * Math.sin(rot_add) + (cy_old - rot2_y[posIdx]) * Math.cos( rot_add) + rot2_y[posIdx];
-      rot += rot_add;
-    }
-  }
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.translate(cx, cy);
-  ctx.rotate(rot);
-  ctx.fillRect(-rects[rectType].w / 2, -rects[rectType].h / 2, rects[rectType].w, rects[rectType].h);
-
-  if(bShowLozenges){
-    ctx.strokeStyle = ColorS_Lozenge;
-    ctx.beginPath();
-    ctx.moveTo(0, rects[rectType].h);
-    ctx.lineTo(rects[rectType].w, 0);
-    ctx.lineTo(0, -rects[rectType].h);
-    ctx.lineTo(-rects[rectType].w, 0);
-    ctx.closePath(); 
-    ctx.stroke();
-  }
-
-  ctx.restore();
-};
-
-function Draw(){
-  ctx.clearRect(-CenterX, -CenterY, Canvas.width, Canvas.height);
-  
-  var bStep1Finished = false;
-  for(var j = 0; j < num / 2 - 1; j++){
-    for(var i = 0; i < num; i++){
-      //if(bIncrementalDrawing && j * num + i >= countStep1){
-      if(bIncrementalDrawing && (num / 2 - 2) * num + num - 1 - (j * num + i) > countStep1){
-        continue;
-      }
-      DrawRect(i * num + j);
-      //if(j == num / 2 - 2 && i == num - 1){
-      if(j == 0 && i == 0){
-        bStep1Finished = true;
-      }
-    }
-  }
-
-  if(bIncrementalDrawing){
-    if(bStep1Finished){
-      if(countStep2 <= countStep2Total){
-        countStep2++;
-      }
-    }
-    if(countStep2 >= countStep2Total){
-      if(countStep3 <= countStep3Total){
-        countStep3++;
-      }
-    }
-    countStep1 += Math.floor(num * num / 169) + 1;
-  }
-  DebugDraw();
-  if(bIncrementalDrawing){
-    if(countStep3 <= countStep3Total){
-      timer = setTimeout(function(){Draw()}, 50);
-    }
-  }
-};
-
-function Inc(event){
-  event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  document.getElementById("Button_Dec").style.visibility = "visible";
-  if(num < numMax){
-    num += 6;
-    if(num == numMax){
-      document.getElementById("Button_Inc").style.visibility = "hidden";
-    }
-    Init();
-  }
-};
-function Dec(event){
-  event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-  document.getElementById("Button_Inc").style.visibility = "visible";
-  if(num > 6){
-    num -= 6;
-    if(num == 6){
-      document.getElementById("Button_Dec").style.visibility = "hidden";
-    }
-    Init();
-  }
-};
-
-function onRadioButtonChange() {
-  bIncrementalDrawing = document.getElementById("Radio1").checked;
-  Init();
-};
-
-function onCheckboxChange_ShowLozenge(){
-  updateShowLogenzes();
-  Init();
-};
-</script>
 </body>
 </html>

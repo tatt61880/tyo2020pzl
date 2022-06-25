@@ -16,20 +16,24 @@
   let r = [];
   let rr = [];
 
-  let rot_x = 0;
-  let rot_y = 0;
+  let rot1_x = [];
+  let rot1_y = [];
+  let rot2_x = [];
+  let rot2_y = [];
 
   const bTypeColoring = false;
 
   let countStep1 = 0;
   let countStep2 = 0;
+  let countStep3 = 0;
   let countStep2Total = 30;
+  let countStep3Total = 30;
 
   let rots = [];
   let cxs = [];
   let cys = [];
   let removeFlags = [];
-  let rotateFlags = [];
+  let typeNums = [];
 
   let timer;
 
@@ -126,8 +130,10 @@
     if (options.drawStyle == 'slow') {
       countStep1 = 0;
       countStep2 = 0;
+      countStep3 = 0;
     } else {
-      countStep2 = countStep2Total + 1;
+      countStep2 = countStep2Total;
+      countStep3 = countStep3Total;
     }
 
     let points = [];
@@ -174,21 +180,107 @@
     }
 
     {
-      rot_x = centerX;
-      rot_y =
+      let rx1 = 0.0;
+      let ry1 =
         (Math.pow(
           Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
           0.5
         ) +
           rects[0].h / 2.0) /
-          2.0 +
-        centerY;
+        2.0;
+      for (let i = 0; i < 3; i++) {
+        const theta = i * 2.0 * Math.PI / 3.0;
+        rot1_x[i] = centerX + rx1 * Math.cos(theta) + ry1 * Math.sin(-theta);
+        rot1_y[i] = centerY + rx1 * Math.sin(theta) + ry1 * Math.cos(theta);
+      }
+    }
+
+    {
+      let rx2_a = L[num / 6] / 2.0;
+      let ry2_a = -Math.pow(
+        Math.pow(rr[num / 6], 2.0) - Math.pow(rx2_a, 2.0),
+        0.5
+      );
+      let rx2_b__ = -rx2_a;
+      let ry2_b__ = ry2_a;
+      let theta;
+      theta = 2 * Math.PI / num;
+      let rx2_b_ = rx2_b__ * Math.cos(theta) + ry2_b__ * Math.sin(-theta);
+      let ry2_b_ = rx2_b__ * Math.sin(theta) + ry2_b__ * Math.cos(theta);
+      theta = Math.PI / 3;
+      let cx_b = rot1_x[2] - centerX;
+      let cy_b = rot1_y[2] - centerY;
+      let rx2_b =
+        (rx2_b_ - cx_b) * Math.cos(theta) +
+        (ry2_b_ - cy_b) * Math.sin(-theta) +
+        cx_b;
+      let ry2_b =
+        (rx2_b_ - cx_b) * Math.sin(theta) +
+        (ry2_b_ - cy_b) * Math.cos(theta) +
+        cy_b;
+      let rx2 = (rx2_a + rx2_b) / 2;
+      let ry2 = (ry2_a + ry2_b) / 2;
+      for (let i = 0; i < 3; i++) {
+        const theta = (i + 1) * 2.0 * Math.PI / 3.0;
+        rot2_x[i] = centerX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
+        rot2_y[i] = centerY + rx2 * Math.sin(theta) + ry2 * Math.cos(theta);
+      }
     }
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
         const index = i * 2 + (j % 2 == 0 ? 0 : 1);
-        const rot = 2.0 * Math.PI * index / (num * 2);
+        let typeNum = 0;
+        let removeFlag = false;
+        if (j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j) {
+          typeNum = 1;
+        } else if (
+          j + 1 < index - num * 2 / 3 &&
+          index - num * 2 / 3 < j + 1 + num / 6 * 2 &&
+          index - num * 2 / 3 < num - j
+        ) {
+          typeNum = 2;
+        } else if (
+          j + 1 < index - num * 4 / 3 &&
+          index - num * 4 / 3 < j + 1 + num / 6 * 2 &&
+          index - num * 4 / 3 < num - j
+        ) {
+          typeNum = 3;
+        } else if (j + 1 < index && index < num - j) {
+          typeNum = 1;
+          removeFlag = true;
+        } else if (
+          j + 1 < index - num * 2 / 3 &&
+          index - num * 2 / 3 < num - j
+        ) {
+          typeNum = 2;
+          removeFlag = true;
+        } else if (
+          j + 1 < index - num * 4 / 3 &&
+          index - num * 4 / 3 < num - j
+        ) {
+          typeNum = 3;
+          removeFlag = true;
+        } else if (
+          j + 1 < index + num * 2 / 3 &&
+          index + num * 2 / 3 < num - j
+        ) {
+          typeNum = 1;
+          removeFlag = true;
+        }
+
+        for (let n = 0; n < 3; n++) {
+          if (
+            j + 1 < index - num * 2 * n / 3 &&
+            index - num * 2 * n / 3 < num / 3 + 1 - j
+          ) {
+            removeFlag = false;
+            typeNum += 3;
+          }
+        }
+
+        const index2 = i * 2 + (j % 2 == 0 ? 0 : 1);
+        const rot = 2.0 * Math.PI * index2 / (num * 2);
         const cx = r[j] * Math.cos(rot) + centerX;
         const cy = r[j] * Math.sin(rot) + centerY;
 
@@ -196,16 +288,8 @@
         cxs[idx] = cx;
         cys[idx] = cy;
         rots[idx] = rot;
-        removeFlags[idx] = false;
-        rotateFlags[idx] = false;
-
-        if (j + 1 < index && index < num - j) {
-          // 下側の回転すべき場所
-          rotateFlags[idx] = true;
-        } else if (num + j < index && index < 2 * num - j) {
-          // 上側の消えるべき場所
-          removeFlags[idx] = true;
-        }
+        removeFlags[idx] = removeFlag;
+        typeNums[idx] = typeNum;
       }
     }
     draw();
@@ -214,7 +298,7 @@
   function drawRect(idx) {
     const rectType = idx % num;
     const removeFlag = removeFlags[idx];
-    const rotateFlag = rotateFlags[idx];
+    const typeNum = typeNums[idx];
     let cx = cxs[idx];
     let cy = cys[idx];
     let rot = rots[idx];
@@ -225,41 +309,65 @@
         ctx.fillStyle = '#F0B0B0';
       }
       if (countStep2 > 0) {
-        let a;
-        if (countStep2 > countStep2Total) {
-          a = 0;
-          //return;
-        } else {
-          a = (countStep2Total - countStep2) / countStep2Total;
+        if (countStep2 >= countStep2Total) {
+          return;
         }
+
+        const a = (countStep2Total - countStep2) / countStep2Total;
         ctx.fillStyle = `rgba(0, 64, 128, ${a})`; // "#004080" + α
       }
-    } else if (rotateFlag) {
+    } else if (typeNum == 0) {
       if (bTypeColoring) {
-        ctx.fillStyle = '#90F0B0';
-      }
-      if (countStep2 > 0) {
-        let rot_add = 0.0;
-        if (countStep2 > countStep2Total) {
-          rot_add = Math.PI;
-        } else {
-          rot_add = Math.PI * countStep2 / countStep2Total;
-        }
-        let cx_old = cx;
-        let cy_old = cy;
-        cx =
-          (cx_old - rot_x) * Math.cos(rot_add) +
-          (cy_old - rot_y) * Math.sin(-rot_add) +
-          rot_x;
-        cy =
-          (cx_old - rot_x) * Math.sin(rot_add) +
-          (cy_old - rot_y) * Math.cos(rot_add) +
-          rot_y;
-        rot += rot_add;
+        ctx.fillStyle = '#90B0F0';
       }
     } else {
       if (bTypeColoring) {
-        ctx.fillStyle = '#90B0F0';
+        if (typeNum <= 3) {
+          ctx.fillStyle = '#90F0B0';
+        } else {
+          ctx.fillStyle = '#909090';
+        }
+      }
+      let posIdx = (typeNum - 1) % 3;
+      if (countStep2 > 0) {
+        let rot_add = 0.0;
+        const rot_max = Math.PI / 3;
+        if (countStep2 >= countStep2Total) {
+          rot_add = rot_max;
+        } else {
+          rot_add = rot_max * countStep2 / countStep2Total;
+        }
+        const cx_old = cx;
+        const cy_old = cy;
+        cx =
+          (cx_old - rot1_x[posIdx]) * Math.cos(rot_add) +
+          (cy_old - rot1_y[posIdx]) * Math.sin(-rot_add) +
+          rot1_x[posIdx];
+        cy =
+          (cx_old - rot1_x[posIdx]) * Math.sin(rot_add) +
+          (cy_old - rot1_y[posIdx]) * Math.cos(rot_add) +
+          rot1_y[posIdx];
+        rot += rot_add;
+      }
+      if (countStep3 > 0 && typeNum > 3) {
+        let rot_add = 0.0;
+        const rot_max = Math.PI;
+        if (countStep3 >= countStep3Total) {
+          rot_add = rot_max;
+        } else {
+          rot_add = rot_max * countStep3 / countStep3Total;
+        }
+        const cx_old = cx;
+        const cy_old = cy;
+        cx =
+          (cx_old - rot2_x[posIdx]) * Math.cos(rot_add) +
+          (cy_old - rot2_y[posIdx]) * Math.sin(-rot_add) +
+          rot2_x[posIdx];
+        cy =
+          (cx_old - rot2_x[posIdx]) * Math.sin(rot_add) +
+          (cy_old - rot2_y[posIdx]) * Math.cos(rot_add) +
+          rot2_y[posIdx];
+        rot += rot_add;
       }
     }
 
@@ -293,11 +401,14 @@
     let bStep1Finished = false;
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        if (isSlow && j * num + i >= countStep1) {
+        if (
+          isSlow &&
+          (num / 2 - 2) * num + num - 1 - (j * num + i) > countStep1
+        ) {
           continue;
         }
         drawRect(i * num + j);
-        if (j == num / 2 - 2 && i == num - 1) {
+        if (j == 0 && i == 0) {
           bStep1Finished = true;
         }
       }
@@ -309,11 +420,16 @@
           countStep2++;
         }
       }
+      if (countStep2 >= countStep2Total) {
+        if (countStep3 <= countStep3Total) {
+          countStep3++;
+        }
+      }
       countStep1 += Math.floor(num * num / 169) + 1;
     }
 
     if (isSlow) {
-      if (countStep2 <= countStep2Total) {
+      if (countStep3 <= countStep3Total) {
         timer = setTimeout(draw, 40);
       }
     }
@@ -323,7 +439,7 @@
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     elemDec.style.visibility = 'visible';
     if (num < numMax) {
-      num += 2;
+      num += 6;
       if (num == numMax) {
         elemInc.style.visibility = 'hidden';
       }
@@ -334,9 +450,9 @@
   function decNum(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     elemInc.style.visibility = 'visible';
-    if (num > 4) {
-      num -= 2;
-      if (num == 4) {
+    if (num > 6) {
+      num -= 6;
+      if (num == 6) {
         elemDec.style.visibility = 'hidden';
       }
       update();
