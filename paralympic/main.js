@@ -105,7 +105,7 @@
 
   function update() {
     clearTimeout(timer);
-    document.getElementById('num').innerHTML = num + '角形ベース';
+    document.getElementById('num').innerHTML = `${num}角形ベース`;
 
     let csize = document.documentElement.clientWidth;
     if (csize <= 0) csize = 400;
@@ -229,7 +229,7 @@
           a = (countStep2Total - countStep2) / countStep2Total;
           //ctx.globalAlpha = a;
         }
-        ctx.fillStyle = 'rgba(0, 64, 128, ' + a + ')'; // "#004080" + α
+        ctx.fillStyle = `rgba(0, 64, 128, ${a})`; // "#004080" + α
       }
     } else if (rotateFlag) {
       if (bTypeColoring) {
@@ -311,9 +311,7 @@
 
     if (isSlow) {
       if (countStep2 <= countStep2Total) {
-        timer = setTimeout(function() {
-          draw();
-        }, 40);
+        timer = setTimeout(draw, 40);
       }
     }
   }
