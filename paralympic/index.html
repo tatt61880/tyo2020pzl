@@ -2,18 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>東京パラリンピック（2020年）のエンブレムの拡張</title>
   <link rel="shortcut icon" href="./images/t.gif">
   <link rel="stylesheet" href="./style.css">
   <style>
 input[type="radio"] {
-  margin:0px 5px 0px 10px;
+  margin:0px 10px;
 }
 input[type="button"] {
-  background-color: #FDF;
-  border-radius:10px;
   padding: 0px 5px;
+  border: 3px solid deeppink;
+  border-radius: 10px;
+  background-color: #FDF;
+  color: deeppink;
+  font-weight: bold;
 }
 div.round {
   border-radius: 10px;
@@ -32,13 +35,13 @@ div.round {
 
   <div class="round" style="padding: 5px; background-color: #DDF;">
     <div class="round" style="border:3px solid; border-color: #BBF;">
-      <input type="button" value="-2" id="Button_Dec" style="font-size: 150%;">
-      <input type="button" value="+2" id="Button_Inc" style="font-size: 150%;">
+      <input type="button" value="-2" id="buttonDec" style="font-size: 150%;">
+      <input type="button" value="+2" id="buttonInc" style="font-size: 150%;">
       <span id="num"></span>
     </div>
 
-    <input type="radio" id="Radio1" name="options-drawStyle" checked><label for="Radio1">徐々に描画する</label>
-    <input type="radio" id="Radio2" name="options-drawStyle"><label for="Radio2">一気に描画する</label>
+    <input type="radio" id="options-drawStyle-slow" name="options-drawStyle" value="slow" checked><label for="options-drawStyle-slow">徐々に描画する</label>
+    <input type="radio" id="options-drawStyle-fast" name="options-drawStyle" value="fast"><label for="options-drawStyle-fast">一気に描画する</label>
     <br>
     <input type="checkbox" id="options-showLozenge"><label for="options-showLozenge">菱形を表示</label>
   </div>

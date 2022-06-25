@@ -2,6 +2,8 @@
   'use strict';
 
   let elemCanvas;
+  let elemDec;
+  let elemInc;
   let ctx;
 
   const colorLozenge = '#5599DD';
@@ -17,9 +19,7 @@
   let rot_x = 0;
   let rot_y = 0;
 
-  let bIncrementalDrawing = false;
-  let bTypeColoring = false;
-  let bShowLozenges = false;
+  const bTypeColoring = false;
 
   let countStep1 = 0;
   let countStep2 = 0;
@@ -36,24 +36,78 @@
   let CenterX;
   let CenterY;
 
-  window.onload = function() {
-    elemCanvas = document.getElementById('myCanvas');
-    onOptionDrawStyleChanged();
-    document.getElementById('Button_Dec').addEventListener('click', Dec, false);
-    document.getElementById('Button_Inc').addEventListener('click', Inc, false);
-    document.getElementById('options-showLozenge').addEventListener('click', onOptionShowLozengeChanged, false);
-
-    const elems = document.getElementsByName('options-drawStyle');
-    for (const elem of elems) {
-      elem.addEventListener('click', onOptionDrawStyleChanged, false);
-    }
+  const OptionType = {
+    checkbox: 1,
+    radio: 2,
   };
 
-  function updateShowLogenzes() {
-    bShowLozenges = document.getElementById('options-showLozenge').checked;
+  // for Options
+  const options = {
+    drawStyle: {type: OptionType.radio, onchange: update},
+    showLozenge: {type: OptionType.checkbox, onchange: update},
   }
 
-  function Init() {
+  window.onload = function() {
+    initOptions();
+
+    elemCanvas = document.getElementById('myCanvas');
+    elemDec = document.getElementById('buttonDec');
+    elemInc = document.getElementById('buttonInc');
+    elemDec.addEventListener('click', Dec, false);
+    elemInc.addEventListener('click', Inc, false);
+
+    update();
+  };
+
+  // オプションの初期化
+  function initOptions() {
+    for (const optionName in options) {
+      const optionType = options[optionName].type;
+      const optionOnchange = options[optionName].onchange;
+      switch (optionType) {
+        case OptionType.checkbox:
+          {
+            const elem = document.getElementById(`options-${optionName}`);
+            options[optionName] = elem.checked;
+            elem.addEventListener(
+                'change',
+                function() {
+                  options[optionName] = elem.checked;
+                  optionOnchange();
+                },
+                false
+            );
+          }
+          break;
+        case OptionType.radio:
+          {
+            const elems = document.getElementsByName(`options-${optionName}`);
+            for (const elem of elems) {
+              if (elem.checked) {
+                options[optionName] = elem.value;
+              }
+              elem.addEventListener(
+                  'change',
+                  function() {
+                    if (elem.checked) {
+                      options[optionName] = elem.value;
+                    }
+                    optionOnchange();
+                  },
+                  false
+              );
+            }
+          }
+          break;
+      }
+    }
+  }
+
+  function updateShowLogenzes() {
+    options.showLozenges = document.getElementById('options-showLozenge').checked;
+  }
+
+  function update() {
     updateShowLogenzes();
     clearTimeout(timer);
     document.getElementById('num').innerHTML = num + '角形ベース';
@@ -73,7 +127,7 @@
     ctx.translate(CenterX, CenterY);
 
     scale = CenterX * 3 / 2 / num;
-    if (bIncrementalDrawing) {
+    if (options.drawStyle == 'slow') {
       countStep1 = 0;
       countStep2 = 0;
     } else {
@@ -221,7 +275,7 @@
       rects[rectType].h
     );
 
-    if (bShowLozenges) {
+    if (options.showLozenges) {
       ctx.strokeStyle = colorLozenge;
       ctx.beginPath();
       ctx.moveTo(0, rects[rectType].h);
@@ -240,7 +294,7 @@
     let bStep1Finished = false;
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        if (bIncrementalDrawing && j * num + i >= countStep1) {
+        if (options.drawStyle == 'slow' && j * num + i >= countStep1) {
           continue;
         }
         DrawRect(i * num + j);
@@ -250,7 +304,7 @@
       }
     }
 
-    if (bIncrementalDrawing) {
+    if (options.drawStyle == 'slow') {
       if (bStep1Finished) {
         if (countStep2 <= countStep2Total) {
           countStep2++;
@@ -260,7 +314,7 @@
     }
 
     //console.log(countStep1);
-    if (bIncrementalDrawing) {
+    if (options.drawStyle == 'slow') {
       if (countStep2 <= countStep2Total) {
         timer = setTimeout(function() {
           draw();
@@ -271,35 +325,30 @@
 
   function Inc(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-    document.getElementById('Button_Dec').style.visibility = 'visible';
+    elemDec.style.visibility = 'visible';
     if (num < numMax) {
       num += 2;
       if (num == numMax) {
-        document.getElementById('Button_Inc').style.visibility = 'hidden';
+        elemInc.style.visibility = 'hidden';
       }
-      Init();
+      update();
     }
   }
 
   function Dec(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-    document.getElementById('Button_Inc').style.visibility = 'visible';
+    elemInc.style.visibility = 'visible';
     if (num > 4) {
       num -= 2;
       if (num == 4) {
-        document.getElementById('Button_Dec').style.visibility = 'hidden';
+        elemDec.style.visibility = 'hidden';
       }
-      Init();
+      update();
     }
-  }
-
-  function onOptionDrawStyleChanged() {
-    bIncrementalDrawing = document.getElementById('Radio1').checked;
-    Init();
   }
 
   function onOptionShowLozengeChanged() {
     updateShowLogenzes();
-    Init();
+    update();
   }
 })();
