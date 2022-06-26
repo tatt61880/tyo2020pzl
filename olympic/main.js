@@ -45,11 +45,11 @@
     radio: 2,
   };
 
-  // for Options
   const options = {
     drawStyle: {type: OptionType.radio, onchange: update},
     showLozenges: {type: OptionType.checkbox, onchange: update},
     typeColoring: {type: OptionType.checkbox, onchange: update},
+    showAllBlock: {type: OptionType.checkbox, onchange: update},
   };
 
   window.onload = function() {
@@ -267,7 +267,7 @@
           index + num * 2 / 3 < num - j
         ) {
           removeFlag = true;
-          typeNum = 1;
+          typeNum = 3;
         }
 
         for (let n = 0; n < 3; n++) {
@@ -276,7 +276,7 @@
             index - num * 2 * n / 3 < num / 3 + 1 - j
           ) {
             removeFlag = false;
-            typeNum += 3;
+            //typeNum += 3;
           }
         }
 
@@ -309,18 +309,24 @@
         ctx.fillStyle = '#fbb';
       }
       if (countStep2 > 0) {
+        let alpha;
         if (countStep2 >= countStep2Total) {
-          return;
+          alpha = 0.0;
+        } else {
+          alpha = (countStep2Total - countStep2) / countStep2Total;
         }
-        const alpha = (countStep2Total - countStep2) / countStep2Total;
+        if (options.showAllBlock) {
+          alpha = Math.max(alpha, 0.25);
+        }
         ctx.globalAlpha = alpha;
       }
-    } else if (typeNum == 0) {
-      if (options.typeColoring) {
+    }
+    if (typeNum == 0) {
+      if (options.typeColoring && !removeFlag) {
         ctx.fillStyle = '#8bf';
       }
     } else {
-      if (options.typeColoring) {
+      if (options.typeColoring && !removeFlag) {
         if (typeNum <= 3) {
           ctx.fillStyle = '#8fb';
         } else {

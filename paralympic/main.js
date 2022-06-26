@@ -41,11 +41,11 @@
     radio: 2,
   };
 
-  // for Options
   const options = {
     drawStyle: {type: OptionType.radio, onchange: update},
     showLozenges: {type: OptionType.checkbox, onchange: update},
     typeColoring: {type: OptionType.checkbox, onchange: update},
+    showAllBlock: {type: OptionType.checkbox, onchange: update},
   };
 
   window.onload = function() {
@@ -228,10 +228,15 @@
         ctx.fillStyle = '#fbb';
       }
       if (countStep2 > 0) {
+        let alpha;
         if (countStep2 > countStep2Total) {
-          return;
+          alpha = 0.0;
+        } else {
+          alpha = (countStep2Total - countStep2) / countStep2Total;
         }
-        const alpha = (countStep2Total - countStep2) / countStep2Total;
+        if (options.showAllBlock) {
+          alpha = Math.max(alpha, 0.25);
+        }
         ctx.globalAlpha = alpha;
       }
     } else if (rotateFlag) {
