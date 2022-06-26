@@ -14,16 +14,16 @@ ul, ol {
 }
 
 h1 {
-  background-color: #FDF;
+  background-color: #fdf;
   font-weight: bold;
 }
 
 h2 {
-  background-color: #BFF;
+  background-color: #bff;
 }
 
 h3 {
-  background-color: #FFC;
+  background-color: #ffb;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -35,7 +35,7 @@ th, td {
 }
 
 th {
-  background: #B0D4E5;
+  background: #b0d4e5;
 }
 
 pre {
@@ -44,8 +44,8 @@ pre {
 
 body {
   margin: auto;
-  max-width: 400px;
-  background-color: #B0D4E5;
+  width: 400px;
+  background-color: #b0d4e5;
 }
 
 #container {
@@ -63,13 +63,13 @@ input[type="button"] {
   padding: 0px 5px;
   border: 3px solid deeppink;
   border-radius: 0.5em;
-  background-color: #FDF;
+  background-color: #fdf;
   color: deeppink;
   font-size: 150%;
   font-weight: bold;
 }
 
 div.round {
-  border-radius: 10px;
+  border-radius: 0.5em;
   margin:3px 5px;
 }

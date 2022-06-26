@@ -6,9 +6,11 @@
   let elemInc;
   let ctx;
 
-  const colorLozenge = '#5599DD';
+  const colorLozenge = '#58d';
 
   let num = 12; // ベースとなる多角形の頂点数 (正num角形ベース)
+  let numDiff = 6;
+  let numMin = 6;
   let numMax = 150;
   let scale;
   let L = [];
@@ -122,7 +124,7 @@
     centerX = elemCanvas.width / 2;
     centerY = elemCanvas.height / 2;
     ctx = elemCanvas.getContext('2d');
-    ctx.fillStyle = '#004080';
+    ctx.fillStyle = '#048';
     ctx.translate(centerX, centerY);
 
     scale = centerX * 3 / 2 / num;
@@ -304,7 +306,7 @@
     ctx.save();
     if (removeFlag) {
       if (options.typeColoring) {
-        ctx.fillStyle = '#F0B0B0';
+        ctx.fillStyle = '#fbb';
       }
       if (countStep2 > 0) {
         if (countStep2 >= countStep2Total) {
@@ -315,14 +317,14 @@
       }
     } else if (typeNum == 0) {
       if (options.typeColoring) {
-        ctx.fillStyle = '#90B0F0';
+        ctx.fillStyle = '#8bf';
       }
     } else {
       if (options.typeColoring) {
         if (typeNum <= 3) {
-          ctx.fillStyle = '#90F0B0';
+          ctx.fillStyle = '#8fb';
         } else {
-          ctx.fillStyle = '#909090';
+          ctx.fillStyle = '#fb8';
         }
       }
       let posIdx = (typeNum - 1) % 3;
@@ -434,11 +436,11 @@
 
   function incNum(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-    elemDec.style.visibility = 'visible';
+    showElem(elemDec);
     if (num < numMax) {
-      num += 6;
+      num += numDiff;
       if (num == numMax) {
-        elemInc.style.visibility = 'hidden';
+        hideElem(elemInc);
       }
       update();
     }
@@ -446,13 +448,21 @@
 
   function decNum(event) {
     event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
-    elemInc.style.visibility = 'visible';
-    if (num > 6) {
-      num -= 6;
-      if (num == 6) {
-        elemDec.style.visibility = 'hidden';
+    showElem(elemInc);
+    if (num > numMin) {
+      num -= numDiff;
+      if (num == numMin) {
+        hideElem(elemDec);
       }
       update();
     }
+  }
+
+  function showElem(elem) {
+    elem.style.visibility = 'visible';
+  }
+
+  function hideElem(elem) {
+    elem.style.visibility = 'hidden';
   }
 })();
