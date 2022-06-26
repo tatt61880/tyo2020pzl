@@ -403,14 +403,11 @@
     let bStep1Finished = false;
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        if (
-          isSlow &&
-          (num / 2 - 1 - j) * num - 1 - i > countStep1
-        ) {
+        if (isSlow && j * num + i >= countStep1) {
           continue;
         }
         drawRect(i * num + j);
-        if (j == 0 && i == 0) {
+        if (j == num / 2 - 2 && i == num - 1) {
           bStep1Finished = true;
         }
       }
