@@ -273,7 +273,7 @@
             index - num * 2 * n / 3 < num / 3 + 1 - j
           ) {
             removeFlag = false;
-            //typeNum += 3;
+            typeNum += 3;
           }
         }
 
