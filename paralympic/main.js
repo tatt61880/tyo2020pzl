@@ -187,7 +187,17 @@
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + (j % 2 == 0 ? 0 : 1);
+        const index = i * 2 + j % 2;
+        let removeFlag = false;
+        let rotateFlag = false;
+        if (j + 1 < index && index < num - j) {
+          // 下側の回転すべき場所
+          rotateFlag = true;
+        } else if (num + j < index && index < 2 * num - j) {
+          // 上側の消えるべき場所
+          removeFlag = true;
+        }
+
         const rot = 2.0 * Math.PI * index / (num * 2);
         const cx = r[j] * Math.cos(rot) + centerX;
         const cy = r[j] * Math.sin(rot) + centerY;
@@ -196,16 +206,8 @@
         cxs[idx] = cx;
         cys[idx] = cy;
         rots[idx] = rot;
-        removeFlags[idx] = false;
-        rotateFlags[idx] = false;
-
-        if (j + 1 < index && index < num - j) {
-          // 下側の回転すべき場所
-          rotateFlags[idx] = true;
-        } else if (num + j < index && index < 2 * num - j) {
-          // 上側の消えるべき場所
-          removeFlags[idx] = true;
-        }
+        removeFlags[idx] = removeFlag;
+        rotateFlags[idx] = rotateFlag;
       }
     }
     draw();

@@ -229,9 +229,9 @@
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + (j % 2 == 0 ? 0 : 1);
-        let typeNum = 0;
+        const index = i * 2 + j % 2;
         let removeFlag = false;
+        let typeNum = 0;
         if (j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j) {
           typeNum = 1;
         } else if (
@@ -247,26 +247,26 @@
         ) {
           typeNum = 3;
         } else if (j + 1 < index && index < num - j) {
-          typeNum = 1;
           removeFlag = true;
+          typeNum = 1;
         } else if (
           j + 1 < index - num * 2 / 3 &&
           index - num * 2 / 3 < num - j
         ) {
-          typeNum = 2;
           removeFlag = true;
+          typeNum = 2;
         } else if (
           j + 1 < index - num * 4 / 3 &&
           index - num * 4 / 3 < num - j
         ) {
-          typeNum = 3;
           removeFlag = true;
+          typeNum = 3;
         } else if (
           j + 1 < index + num * 2 / 3 &&
           index + num * 2 / 3 < num - j
         ) {
-          typeNum = 1;
           removeFlag = true;
+          typeNum = 1;
         }
 
         for (let n = 0; n < 3; n++) {
@@ -279,8 +279,7 @@
           }
         }
 
-        const index2 = i * 2 + (j % 2 == 0 ? 0 : 1);
-        const rot = 2.0 * Math.PI * index2 / (num * 2);
+        const rot = 2.0 * Math.PI * index / (num * 2);
         const cx = r[j] * Math.cos(rot) + centerX;
         const cy = r[j] * Math.sin(rot) + centerY;
 
