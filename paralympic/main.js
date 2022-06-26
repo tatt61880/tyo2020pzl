@@ -16,10 +16,8 @@
   let r = [];
   let rr = [];
 
-  let rot_x = 0;
-  let rot_y = 0;
-
-  const bTypeColoring = false;
+  let rotX = 0;
+  let rotY = 0;
 
   let countStep1 = 0;
   let countStep2 = 0;
@@ -45,6 +43,7 @@
   const options = {
     drawStyle: {type: OptionType.radio, onchange: update},
     showLozenges: {type: OptionType.checkbox, onchange: update},
+    typeColoring: {type: OptionType.checkbox, onchange: update},
   };
 
   window.onload = function() {
@@ -174,8 +173,8 @@
     }
 
     {
-      rot_x = centerX;
-      rot_y =
+      rotX = centerX;
+      rotY =
         (Math.pow(
           Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
           0.5
@@ -223,44 +222,41 @@
 
     ctx.save();
     if (removeFlag) {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         ctx.fillStyle = '#F0B0B0';
       }
       if (countStep2 > 0) {
-        let a;
         if (countStep2 > countStep2Total) {
-          a = 0;
-          //return;
-        } else {
-          a = (countStep2Total - countStep2) / countStep2Total;
+          return;
         }
-        ctx.fillStyle = `rgba(0, 64, 128, ${a})`; // "#004080" + α
+        const alpha = (countStep2Total - countStep2) / countStep2Total;
+        ctx.globalAlpha = alpha;
       }
     } else if (rotateFlag) {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         ctx.fillStyle = '#90F0B0';
       }
       if (countStep2 > 0) {
-        let rot_add = 0.0;
+        let rotAdd = 0.0;
         if (countStep2 > countStep2Total) {
-          rot_add = Math.PI;
+          rotAdd = Math.PI;
         } else {
-          rot_add = Math.PI * countStep2 / countStep2Total;
+          rotAdd = Math.PI * countStep2 / countStep2Total;
         }
-        let cx_old = cx;
-        let cy_old = cy;
+        let cxOld = cx;
+        let cyOld = cy;
         cx =
-          (cx_old - rot_x) * Math.cos(rot_add) +
-          (cy_old - rot_y) * Math.sin(-rot_add) +
-          rot_x;
+          (cxOld - rotX) * Math.cos(rotAdd) +
+          (cyOld - rotY) * Math.sin(-rotAdd) +
+          rotX;
         cy =
-          (cx_old - rot_x) * Math.sin(rot_add) +
-          (cy_old - rot_y) * Math.cos(rot_add) +
-          rot_y;
-        rot += rot_add;
+          (cxOld - rotX) * Math.sin(rotAdd) +
+          (cyOld - rotY) * Math.cos(rotAdd) +
+          rotY;
+        rot += rotAdd;
       }
     } else {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         ctx.fillStyle = '#90B0F0';
       }
     }

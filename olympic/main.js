@@ -16,12 +16,10 @@
   let r = [];
   let rr = [];
 
-  let rot1_x = [];
-  let rot1_y = [];
-  let rot2_x = [];
-  let rot2_y = [];
-
-  const bTypeColoring = false;
+  let rotX1 = [];
+  let rotY1 = [];
+  let rotX2 = [];
+  let rotY2 = [];
 
   let countStep1 = 0;
   let countStep2 = 0;
@@ -49,6 +47,7 @@
   const options = {
     drawStyle: {type: OptionType.radio, onchange: update},
     showLozenges: {type: OptionType.checkbox, onchange: update},
+    typeColoring: {type: OptionType.checkbox, onchange: update},
   };
 
   window.onload = function() {
@@ -190,40 +189,40 @@
         2.0;
       for (let i = 0; i < 3; i++) {
         const theta = i * 2.0 * Math.PI / 3.0;
-        rot1_x[i] = centerX + rx1 * Math.cos(theta) + ry1 * Math.sin(-theta);
-        rot1_y[i] = centerY + rx1 * Math.sin(theta) + ry1 * Math.cos(theta);
+        rotX1[i] = centerX + rx1 * Math.cos(theta) + ry1 * Math.sin(-theta);
+        rotY1[i] = centerY + rx1 * Math.sin(theta) + ry1 * Math.cos(theta);
       }
     }
 
     {
-      let rx2_a = L[num / 6] / 2.0;
-      let ry2_a = -Math.pow(
-        Math.pow(rr[num / 6], 2.0) - Math.pow(rx2_a, 2.0),
+      let rx2A = L[num / 6] / 2.0;
+      let ry2A = -Math.pow(
+        Math.pow(rr[num / 6], 2.0) - Math.pow(rx2A, 2.0),
         0.5
       );
-      let rx2_b__ = -rx2_a;
-      let ry2_b__ = ry2_a;
+      let rx2Ba = -rx2A;
+      let ry2Ba = ry2A;
       let theta;
       theta = 2 * Math.PI / num;
-      let rx2_b_ = rx2_b__ * Math.cos(theta) + ry2_b__ * Math.sin(-theta);
-      let ry2_b_ = rx2_b__ * Math.sin(theta) + ry2_b__ * Math.cos(theta);
+      let rx2Bb = rx2Ba * Math.cos(theta) + ry2Ba * Math.sin(-theta);
+      let ry2Bb = rx2Ba * Math.sin(theta) + ry2Ba * Math.cos(theta);
       theta = Math.PI / 3;
-      let cx_b = rot1_x[2] - centerX;
-      let cy_b = rot1_y[2] - centerY;
-      let rx2_b =
-        (rx2_b_ - cx_b) * Math.cos(theta) +
-        (ry2_b_ - cy_b) * Math.sin(-theta) +
-        cx_b;
-      let ry2_b =
-        (rx2_b_ - cx_b) * Math.sin(theta) +
-        (ry2_b_ - cy_b) * Math.cos(theta) +
-        cy_b;
-      let rx2 = (rx2_a + rx2_b) / 2;
-      let ry2 = (ry2_a + ry2_b) / 2;
+      let cxB = rotX1[2] - centerX;
+      let cyB = rotY1[2] - centerY;
+      let rx2B =
+        (rx2Bb - cxB) * Math.cos(theta) +
+        (ry2Bb - cyB) * Math.sin(-theta) +
+        cxB;
+      let ry2B =
+        (rx2Bb - cxB) * Math.sin(theta) +
+        (ry2Bb - cyB) * Math.cos(theta) +
+        cyB;
+      let rx2 = (rx2A + rx2B) / 2;
+      let ry2 = (ry2A + ry2B) / 2;
       for (let i = 0; i < 3; i++) {
         const theta = (i + 1) * 2.0 * Math.PI / 3.0;
-        rot2_x[i] = centerX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
-        rot2_y[i] = centerY + rx2 * Math.sin(theta) + ry2 * Math.cos(theta);
+        rotX2[i] = centerX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
+        rotY2[i] = centerY + rx2 * Math.sin(theta) + ry2 * Math.cos(theta);
       }
     }
 
@@ -304,23 +303,22 @@
 
     ctx.save();
     if (removeFlag) {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         ctx.fillStyle = '#F0B0B0';
       }
       if (countStep2 > 0) {
         if (countStep2 >= countStep2Total) {
           return;
         }
-
-        const a = (countStep2Total - countStep2) / countStep2Total;
-        ctx.fillStyle = `rgba(0, 64, 128, ${a})`; // "#004080" + α
+        const alpha = (countStep2Total - countStep2) / countStep2Total;
+        ctx.globalAlpha = alpha;
       }
     } else if (typeNum == 0) {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         ctx.fillStyle = '#90B0F0';
       }
     } else {
-      if (bTypeColoring) {
+      if (options.typeColoring) {
         if (typeNum <= 3) {
           ctx.fillStyle = '#90F0B0';
         } else {
@@ -329,44 +327,44 @@
       }
       let posIdx = (typeNum - 1) % 3;
       if (countStep2 > 0) {
-        let rot_add = 0.0;
-        const rot_max = Math.PI / 3;
+        let rotAdd = 0.0;
+        const rotMax = Math.PI / 3;
         if (countStep2 >= countStep2Total) {
-          rot_add = rot_max;
+          rotAdd = rotMax;
         } else {
-          rot_add = rot_max * countStep2 / countStep2Total;
+          rotAdd = rotMax * countStep2 / countStep2Total;
         }
-        const cx_old = cx;
-        const cy_old = cy;
+        const cxOld = cx;
+        const cyOld = cy;
         cx =
-          (cx_old - rot1_x[posIdx]) * Math.cos(rot_add) +
-          (cy_old - rot1_y[posIdx]) * Math.sin(-rot_add) +
-          rot1_x[posIdx];
+          (cxOld - rotX1[posIdx]) * Math.cos(rotAdd) +
+          (cyOld - rotY1[posIdx]) * Math.sin(-rotAdd) +
+          rotX1[posIdx];
         cy =
-          (cx_old - rot1_x[posIdx]) * Math.sin(rot_add) +
-          (cy_old - rot1_y[posIdx]) * Math.cos(rot_add) +
-          rot1_y[posIdx];
-        rot += rot_add;
+          (cxOld - rotX1[posIdx]) * Math.sin(rotAdd) +
+          (cyOld - rotY1[posIdx]) * Math.cos(rotAdd) +
+          rotY1[posIdx];
+        rot += rotAdd;
       }
       if (countStep3 > 0 && typeNum > 3) {
-        let rot_add = 0.0;
-        const rot_max = Math.PI;
+        let rotAdd = 0.0;
+        const rotMax = Math.PI;
         if (countStep3 >= countStep3Total) {
-          rot_add = rot_max;
+          rotAdd = rotMax;
         } else {
-          rot_add = rot_max * countStep3 / countStep3Total;
+          rotAdd = rotMax * countStep3 / countStep3Total;
         }
-        const cx_old = cx;
-        const cy_old = cy;
+        const cxOld = cx;
+        const cyOld = cy;
         cx =
-          (cx_old - rot2_x[posIdx]) * Math.cos(rot_add) +
-          (cy_old - rot2_y[posIdx]) * Math.sin(-rot_add) +
-          rot2_x[posIdx];
+          (cxOld - rotX2[posIdx]) * Math.cos(rotAdd) +
+          (cyOld - rotY2[posIdx]) * Math.sin(-rotAdd) +
+          rotX2[posIdx];
         cy =
-          (cx_old - rot2_x[posIdx]) * Math.sin(rot_add) +
-          (cy_old - rot2_y[posIdx]) * Math.cos(rot_add) +
-          rot2_y[posIdx];
-        rot += rot_add;
+          (cxOld - rotX2[posIdx]) * Math.sin(rotAdd) +
+          (cyOld - rotY2[posIdx]) * Math.cos(rotAdd) +
+          rotY2[posIdx];
+        rot += rotAdd;
       }
     }
 
@@ -402,7 +400,7 @@
       for (let i = 0; i < num; i++) {
         if (
           isSlow &&
-          (num / 2 - 2) * num + num - 1 - (j * num + i) > countStep1
+          (num / 2 - 1 - j) * num - 1 - i > countStep1
         ) {
           continue;
         }

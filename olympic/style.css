@@ -54,3 +54,22 @@ body {
   background-color: white;
   line-height: 150%;
 }
+
+input[type="radio"] {
+  margin:0px 10px;
+}
+
+input[type="button"] {
+  padding: 0px 5px;
+  border: 3px solid deeppink;
+  border-radius: 0.5em;
+  background-color: #FDF;
+  color: deeppink;
+  font-size: 150%;
+  font-weight: bold;
+}
+
+div.round {
+  border-radius: 10px;
+  margin:3px 5px;
+}
