@@ -9,14 +9,9 @@
   const colorLozenge = '#58d';
 
   let num = 12; // ベースとなる多角形の頂点数 (正num角形ベース)
-  let numDiff = 2;
-  let numMin = 4;
-  let numMax = 150;
-  let scale;
-  let L = [];
-  let rects = [];
-  let r = [];
-  let rr = [];
+  const numDiff = 2;
+  const numMin = 4;
+  const numMax = 150;
 
   let rotX = 0;
   let rotY = 0;
@@ -25,13 +20,14 @@
   let countStep2 = 0;
   let countStep2Total = 30;
 
+  let rects = [];
   let rots = [];
   let cxs = [];
   let cys = [];
   let removeFlags = [];
   let rotateFlags = [];
 
-  let timer;
+  let timerId;
 
   let centerX;
   let centerY;
@@ -106,7 +102,7 @@
   }
 
   function update() {
-    clearTimeout(timer);
+    clearTimeout(timerId);
     document.getElementById('num').innerHTML = `${num}角形ベース`;
 
     let csize = document.documentElement.clientWidth;
@@ -123,7 +119,7 @@
     ctx.fillStyle = '#048';
     ctx.translate(centerX, centerY);
 
-    scale = centerX * 3 / 2 / num;
+    const scale = centerX * 3 / 2 / num;
     if (options.drawStyle == 'slow') {
       countStep1 = 0;
       countStep2 = 0;
@@ -138,34 +134,35 @@
         y: scale * Math.sin(2.0 * Math.PI * i / num),
       };
     }
+    const lengths = [];
     for (let i = 0; i < num / 2; i++) {
       let dx = points[0].x - points[i + 1].x;
       let dy = points[0].y - points[i + 1].y;
-      L[i] = Math.sqrt(dx * dx + dy * dy);
+      lengths[i] = Math.sqrt(dx * dx + dy * dy);
     }
     for (let i = 0; i < num / 2 - 1; i++) {
       //θ=0でのw, h
-      let w = L[num / 2 - 2 - i];
-      let h = L[i];
-      rects[i] = {w: w, h: h};
+      rects[i] = {w: lengths[num / 2 - 2 - i], h: lengths[i]};
     }
-    r[0] = L[num / 2 - 2];
+
+    const radius = [lengths[num / 2 - 2]];
     for (let i = 1; i < num / 2 - 1; i++) {
-      r[i] =
+      radius[i] =
         Math.pow(
-          Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) +
+          Math.pow(radius[i - 1] + rects[i - 1].w / 2.0, 2.0) +
             Math.pow(rects[i - 1].h / 2.0, 2.0) -
             Math.pow(rects[i].h / 2.0, 2.0),
           0.5
         ) +
         rects[i].w / 2.0;
     }
-    rr[0] = L[num / 2 - 1] / 2.0;
+
+    const radius2 = [lengths[num / 2 - 1] / 2.0];
     for (let i = 1; i < num / 2; i++) {
-      rr[i] = Math.pow(
+      radius2[i] = Math.pow(
         Math.pow(
           Math.pow(
-            Math.pow(rr[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0),
+            Math.pow(radius2[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0),
             0.5
           ) + rects[i - 1].w,
           2.0
@@ -178,7 +175,7 @@
       rotX = centerX;
       rotY =
         (Math.pow(
-          Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
+          Math.pow(radius2[num / 2 - 1], 2.0) - Math.pow(radius[0] / 2.0, 2.0),
           0.5
         ) +
           rects[0].h / 2.0) /
@@ -200,8 +197,8 @@
         }
 
         const rot = 2.0 * Math.PI * index / (num * 2);
-        const cx = r[j] * Math.cos(rot) + centerX;
-        const cy = r[j] * Math.sin(rot) + centerY;
+        const cx = radius[j] * Math.cos(rot) + centerX;
+        const cy = radius[j] * Math.sin(rot) + centerY;
 
         const idx = i * num + j;
         cxs[idx] = cx;
@@ -229,7 +226,7 @@
       }
       if (countStep2 > 0) {
         let alpha;
-        if (countStep2 > countStep2Total) {
+        if (countStep2 >= countStep2Total) {
           alpha = 0.0;
         } else {
           alpha = (countStep2Total - countStep2) / countStep2Total;
@@ -250,8 +247,8 @@
         } else {
           rotAdd = Math.PI * countStep2 / countStep2Total;
         }
-        let cxOld = cx;
-        let cyOld = cy;
+        const cxOld = cx;
+        const cyOld = cy;
         cx =
           (cxOld - rotX) * Math.cos(rotAdd) +
           (cyOld - rotY) * Math.sin(-rotAdd) +
@@ -319,7 +316,7 @@
 
     if (isSlow) {
       if (countStep2 <= countStep2Total) {
-        timer = setTimeout(draw, 40);
+        timerId = setTimeout(draw, 40);
       }
     }
   }
