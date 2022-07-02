@@ -126,7 +126,7 @@
     const scale = centerX * 3 / 2 / num;
     if (options.drawStyle == 'slow') {
       countStep1 = 0;
-      countStep2 = 0;
+      countStep2 = -10;
       countStep3 = 0;
     } else {
       countStep2 = countStep2Total;
