@@ -122,7 +122,7 @@ function initEventListener() {
   window.addEventListener(rotateEvent, onOrientationchange, false);
 
   for (const elemId in elems) {
-    const elem = document.getElementById(elemId)
+    const elem = document.getElementById(elemId);
     const elemInfo = elems[elemId];
     for (const key in elemInfo) {
       elem.addEventListener(key, elemInfo[key], false);
@@ -151,40 +151,40 @@ function initOptions() {
     const optionType = options[optionName].type;
     const optionOnchange = options[optionName].onchange;
     switch (optionType) {
-      case OptionType.checkbox:
-        {
-          const elem = document.getElementById(`options-${optionName}`);
-          options[optionName] = elem.checked;
+    case OptionType.checkbox:
+      {
+        const elem = document.getElementById(`options-${optionName}`);
+        options[optionName] = elem.checked;
+        elem.addEventListener(
+          'change',
+          function() {
+            options[optionName] = elem.checked;
+            optionOnchange();
+          },
+          false
+        );
+      }
+      break;
+    case OptionType.radio:
+      {
+        const elems = document.getElementsByName(`options-${optionName}`);
+        for (const elem of elems) {
+          if (elem.checked) {
+            options[optionName] = elem.value;
+          }
           elem.addEventListener(
-              'change',
-              function() {
-                options[optionName] = elem.checked;
-                optionOnchange();
-              },
-              false
+            'change',
+            function() {
+              if (elem.checked) {
+                options[optionName] = elem.value;
+              }
+              optionOnchange();
+            },
+            false
           );
         }
-        break;
-      case OptionType.radio:
-        {
-          const elems = document.getElementsByName(`options-${optionName}`);
-          for (const elem of elems) {
-            if (elem.checked) {
-              options[optionName] = elem.value;
-            }
-            elem.addEventListener(
-                'change',
-                function() {
-                  if (elem.checked) {
-                    options[optionName] = elem.value;
-                  }
-                  optionOnchange();
-                },
-                false
-            );
-          }
-        }
-        break;
+      }
+      break;
     }
   }
 }
@@ -247,8 +247,8 @@ function onLoad() {
     numChanged();
 
     document.getElementById('finish').style.display = 'none';
-    document.getElementById('radioButtonModeEasy').checked = (num == 6);
-    document.getElementById('radioButtonModeNormal').checked = (num == 12);
+    document.getElementById('radioButtonModeEasy').checked = num == 6;
+    document.getElementById('radioButtonModeNormal').checked = num == 12;
 
     const selectLevel = document.getElementById('selectLevel');
     selectLevel.onchange = function() {
@@ -257,7 +257,7 @@ function onLoad() {
       numChanged();
     };
     for (let i = 0; i < selectLevel.length; ++i) {
-      selectLevel.options[i].selected = (selectLevel.options[i].value == num);
+      selectLevel.options[i].selected = selectLevel.options[i].value == num;
     }
   }
 
@@ -265,7 +265,7 @@ function onLoad() {
   canvas = document.getElementById('canvasMain');
   canvasTarget = document.getElementById('canvasTarget');
   canvas.addEventListener(isTouchDevice ? 'touchstart' : 'click',
-      onClick, false);
+    onClick, false);
 
   updateTargetLocation();
   updateShapeType();
@@ -404,10 +404,10 @@ function initializeState() {
       const cy = r[j] * sin[rot] + centerY;
 
       const idx = j * num + i;
-      rectTypes[idx] = (4 * j < num - 2) ? j : (num / 2 - 2 - j);
+      rectTypes[idx] = 4 * j < num - 2 ? j : num / 2 - 2 - j;
       cxs[idx] = cx;
       cys[idx] = cy;
-      rots[idx] = (4 * j < num - 2) ? rot : ((rot + num / 2) % (2 * num));
+      rots[idx] = 4 * j < num - 2 ? rot : (rot + num / 2) % (2 * num);
       unusedFlags[idx] = false;
       if (j + 1 < index && index < num - j) { // 下側の小円内のピース
         cxs[idx] = 2 * rotX - cxs[idx];
@@ -446,8 +446,8 @@ function setTargetState() {
   const ry2BBB = ry2A;
 
   theta = 2;
-  const rx2BB = (rx2BBB) * cos[theta] - (ry2BBB) * sin[theta];
-  const ry2BB = (rx2BBB) * sin[theta] + (ry2BBB) * cos[theta];
+  const rx2BB = rx2BBB * cos[theta] - ry2BBB * sin[theta];
+  const ry2BB = rx2BBB * sin[theta] + ry2BBB * cos[theta];
 
   theta = num / 3;
   const cxB = rot1X[2] - centerX;
@@ -459,7 +459,7 @@ function setTargetState() {
   const rx2 = (rx2A + rx2B) / 2;
   const ry2 = (ry2A + ry2B) / 2;
   for (let i = 0; i < 3; i++) {
-    theta = ((i + 1) * 2 * num / 3) % (2 * num);
+    theta = (i + 1) * 2 * num / 3 % (2 * num);
     rot2X[i] = centerX + rx2 * cos[theta] - ry2 * sin[theta];
     rot2Y[i] = centerY + rx2 * sin[theta] + ry2 * cos[theta];
   }
@@ -529,8 +529,8 @@ function setTargetState() {
       }
       rot %= 2 * num;
 
-      targetRectTypes[idx] = (4 * j < num - 2) ? j : (num / 2 - 2 - j);
-      targetRots[idx] = (4 * j < num - 2) ? rot : ((rot + num / 2) % (2 * num));
+      targetRectTypes[idx] = 4 * j < num - 2 ? j : num / 2 - 2 - j;
+      targetRots[idx] = 4 * j < num - 2 ? rot : (rot + num / 2) % (2 * num);
       targetCxs[idx] = cx;
       targetCys[idx] = cy;
       targetUnusedFlags[idx] = unusedFlag;
@@ -570,7 +570,7 @@ function init() {
 
   pieceNum = num * num / 2 - num;
   for (let i = 0; i < pieceNum * 4; i++) {
-    nextId[i] = (((i & 3) == 3) ? (i - 3) : (i + 1));
+    nextId[i] = (i & 3) == 3 ? i - 3 : i + 1;
   }
   for (let i = 0; i < 2 * num; i++) {
     sin[i] = Math.sin(i * Math.PI / num);
@@ -603,7 +603,7 @@ function init() {
   rr[0] = L[num / 2 - 1] / 2.0;
   for (let i = 1; i < num / 2; i++) {
     rr[i] = Math.pow(Math.pow(Math.pow(
-        Math.pow(rr[i - 1], 2.0) -
+      Math.pow(rr[i - 1], 2.0) -
         Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) +
         rects[i - 1].w, 2.0) +
         Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
@@ -700,9 +700,9 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(-w, 0);
-    ctx.lineTo( 0, h);
-    ctx.lineTo( w, 0);
-    ctx.lineTo( 0, -h);
+    ctx.lineTo(0, h);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(0, -h);
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w, -h, w * 2, h * 2);
@@ -723,29 +723,29 @@ function drawShape(ctx, rectType, strokeOn) {
     ctx.lineTo(-wDiv2, -hDiv2);
     ctx.closePath();
   } else if (options.shape == 'octangle') {
-    ctx.moveTo( w * 1/3, h * 2/3);
-    ctx.lineTo( w * 2/3, h * 1/3);
-    ctx.lineTo( w * 2/3, -h * 1/3);
-    ctx.lineTo( w * 1/3, -h * 2/3);
-    ctx.lineTo(-w * 1/3, -h * 2/3);
-    ctx.lineTo(-w * 2/3, -h * 1/3);
-    ctx.lineTo(-w * 2/3, h * 1/3);
-    ctx.lineTo(-w * 1/3, h * 2/3);
+    ctx.moveTo(w * 1 / 3, h * 2 / 3);
+    ctx.lineTo(w * 2 / 3, h * 1 / 3);
+    ctx.lineTo(w * 2 / 3, -h * 1 / 3);
+    ctx.lineTo(w * 1 / 3, -h * 2 / 3);
+    ctx.lineTo(-w * 1 / 3, -h * 2 / 3);
+    ctx.lineTo(-w * 2 / 3, -h * 1 / 3);
+    ctx.lineTo(-w * 2 / 3, h * 1 / 3);
+    ctx.lineTo(-w * 1 / 3, h * 2 / 3);
     ctx.closePath();
   } else if (options.shape == 'espille1') { // ※ellipseの逆スペル
     ctx.scale(1, h / w);
     const r = w / Math.sqrt(2.0);
     const piDiv4 = Math.PI / 4;
-    ctx.arc( 0, w, r, 5 * piDiv4, 7 * piDiv4, false);
-    ctx.arc( w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
-    ctx.arc( 0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
+    ctx.arc(0, w, r, 5 * piDiv4, 7 * piDiv4, false);
+    ctx.arc(w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
+    ctx.arc(0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
     ctx.arc(-w, 0, r, -1 * piDiv4, 1 * piDiv4, false);
   } else if (options.shape == 'espille2') {
     ctx.scale(1, h / w);
     const r = w;
     const piDiv2 = Math.PI / 2;
-    ctx.arc( w, w, r, 2 * piDiv2, 3 * piDiv2, false);
-    ctx.arc( w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
+    ctx.arc(w, w, r, 2 * piDiv2, 3 * piDiv2, false);
+    ctx.arc(w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
     ctx.arc(-w, -w, r, 0 * piDiv2, 1 * piDiv2, false);
     ctx.arc(-w, w, r, -1 * piDiv2, 0 * piDiv2, false);
   } else if (options.shape == 'cross1') {
@@ -753,42 +753,42 @@ function drawShape(ctx, rectType, strokeOn) {
     const r = w;
     ctx.scale(1, h / w);
     const piDiv6 = Math.PI / 6;
-    ctx.arc( wDiv2, wDiv2, r, 6 * piDiv6, 7 * piDiv6, false);
-    ctx.arc( wDiv2, -wDiv2, r, 5 * piDiv6, 6 * piDiv6, false);
+    ctx.arc(wDiv2, wDiv2, r, 6 * piDiv6, 7 * piDiv6, false);
+    ctx.arc(wDiv2, -wDiv2, r, 5 * piDiv6, 6 * piDiv6, false);
     ctx.arc(-wDiv2, wDiv2, r, 9 * piDiv6, 10 * piDiv6, false);
-    ctx.arc( wDiv2, wDiv2, r, 8 * piDiv6, 9 * piDiv6, false);
+    ctx.arc(wDiv2, wDiv2, r, 8 * piDiv6, 9 * piDiv6, false);
     ctx.arc(-wDiv2, -wDiv2, r, 0 * piDiv6, 1 * piDiv6, false);
     ctx.arc(-wDiv2, wDiv2, r, 11 * piDiv6, 12 * piDiv6, false);
-    ctx.arc( wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
+    ctx.arc(wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
     ctx.arc(-wDiv2, -wDiv2, r, 2 * piDiv6, 3 * piDiv6, false);
   } else if (options.shape == 'cross2') {
     const r = w * Math.sqrt(2.0);
     ctx.scale(1, h / w);
     const piDiv12 = Math.PI / 12;
-    ctx.arc( 0, w, r, 15 * piDiv12, 17 * piDiv12, false);
-    ctx.arc( w, 0, r, 13 * piDiv12, 15 * piDiv12, false);
+    ctx.arc(0, w, r, 15 * piDiv12, 17 * piDiv12, false);
+    ctx.arc(w, 0, r, 13 * piDiv12, 15 * piDiv12, false);
     ctx.arc(-w, 0, r, 21 * piDiv12, 23 * piDiv12, false);
-    ctx.arc( 0, w, r, 19 * piDiv12, 21 * piDiv12, false);
-    ctx.arc( 0, -w, r, 3 * piDiv12, 5 * piDiv12, false);
+    ctx.arc(0, w, r, 19 * piDiv12, 21 * piDiv12, false);
+    ctx.arc(0, -w, r, 3 * piDiv12, 5 * piDiv12, false);
     ctx.arc(-w, 0, r, 25 * piDiv12, 27 * piDiv12, false);
-    ctx.arc( w, 0, r, 9 * piDiv12, 11 * piDiv12, false);
-    ctx.arc( 0, -w, r, 7 * piDiv12, 9 * piDiv12, false);
+    ctx.arc(w, 0, r, 9 * piDiv12, 11 * piDiv12, false);
+    ctx.arc(0, -w, r, 7 * piDiv12, 9 * piDiv12, false);
   } else if (options.shape == 'flower1') {
     const wDiv2 = w / 2;
     const r = wDiv2;
     ctx.scale(1, h / w);
     const piDiv2 = Math.PI / 2;
-    ctx.arc( 0, wDiv2, r, 2 * piDiv2, 4 * piDiv2, false);
-    ctx.arc( wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
-    ctx.arc( 0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
+    ctx.arc(0, wDiv2, r, 2 * piDiv2, 4 * piDiv2, false);
+    ctx.arc(wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
+    ctx.arc(0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
     ctx.arc(-wDiv2, 0, r, 3 * piDiv2, 1 * piDiv2, false);
   } else if (options.shape == 'flower2') {
     const wDiv2 = w / 2;
     const r = wDiv2 * Math.sqrt(2.0);
     ctx.scale(1, h / w);
     const piDiv4 = Math.PI / 4;
-    ctx.arc( wDiv2, wDiv2, r, 3 * piDiv4, 7 * piDiv4, false);
-    ctx.arc( wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
+    ctx.arc(wDiv2, wDiv2, r, 3 * piDiv4, 7 * piDiv4, false);
+    ctx.arc(wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
     ctx.arc(-wDiv2, -wDiv2, r, 7 * piDiv4, 3 * piDiv4, false);
     ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, 1 * piDiv4, false);
   } else if (options.shape == 'rectS') {
@@ -889,11 +889,11 @@ function drawShape(ctx, rectType, strokeOn) {
     const widthRate = 0.3;
     const wDiv2 = w / 2;
     const hDiv2 = h / 2;
-    ctx.moveTo( wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
-    ctx.lineTo( wDiv2 * (1 + widthRate), hDiv2 * (1 - widthRate));
+    ctx.moveTo(wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
+    ctx.lineTo(wDiv2 * (1 + widthRate), hDiv2 * (1 - widthRate));
     ctx.lineTo(w * widthRate, 0);
-    ctx.lineTo( wDiv2 * (1 + widthRate), -hDiv2 * (1 - widthRate));
-    ctx.lineTo( wDiv2 * (1 - widthRate), -hDiv2 * (1 + widthRate));
+    ctx.lineTo(wDiv2 * (1 + widthRate), -hDiv2 * (1 - widthRate));
+    ctx.lineTo(wDiv2 * (1 - widthRate), -hDiv2 * (1 + widthRate));
     ctx.lineTo(0, -h * widthRate);
     ctx.lineTo(-wDiv2 * (1 - widthRate), -hDiv2 * (1 + widthRate));
     ctx.lineTo(-wDiv2 * (1 + widthRate), -hDiv2 * (1 - widthRate));
@@ -905,12 +905,12 @@ function drawShape(ctx, rectType, strokeOn) {
   } else if (options.shape == 'plus2') {
     const widthRate = 0.3 / Math.sqrt(2.0);
     ctx.moveTo(-w * widthRate, h * (1 - widthRate));
-    ctx.lineTo( w * widthRate, h * (1 - widthRate));
-    ctx.lineTo( w * widthRate, h * widthRate);
-    ctx.lineTo( w * (1 - widthRate), h * widthRate);
-    ctx.lineTo( w * (1 - widthRate), -h * widthRate);
-    ctx.lineTo( w * widthRate, -h * widthRate);
-    ctx.lineTo( w * widthRate, -h * (1 - widthRate));
+    ctx.lineTo(w * widthRate, h * (1 - widthRate));
+    ctx.lineTo(w * widthRate, h * widthRate);
+    ctx.lineTo(w * (1 - widthRate), h * widthRate);
+    ctx.lineTo(w * (1 - widthRate), -h * widthRate);
+    ctx.lineTo(w * widthRate, -h * widthRate);
+    ctx.lineTo(w * widthRate, -h * (1 - widthRate));
     ctx.lineTo(-w * widthRate, -h * (1 - widthRate));
     ctx.lineTo(-w * widthRate, -h * widthRate);
     ctx.lineTo(-w * (1 - widthRate), -h * widthRate);
@@ -920,10 +920,10 @@ function drawShape(ctx, rectType, strokeOn) {
   } else if (options.shape == 'div') {
     {
       ctx.beginPath();
-      ctx.moveTo( w * 1/3, h * 2/3);
-      ctx.lineTo( w * 2/3, h * 1/3);
-      ctx.lineTo(-w * 1/3, -h * 2/3);
-      ctx.lineTo(-w * 2/3, -h * 1/3);
+      ctx.moveTo(w * 1 / 3, h * 2 / 3);
+      ctx.lineTo(w * 2 / 3, h * 1 / 3);
+      ctx.lineTo(-w * 1 / 3, -h * 2 / 3);
+      ctx.lineTo(-w * 2 / 3, -h * 1 / 3);
       ctx.closePath();
       ctx.fill();
     }
@@ -1176,7 +1176,7 @@ function draw() {
 
 const eps = 0.001;
 function nearlyEqual(a, b) {
-  return (Math.abs(a - b) < eps);
+  return Math.abs(a - b) < eps;
 }
 
 function nearlyEqualForRot(a, b, n) {
@@ -1220,7 +1220,7 @@ function calcClickPoints(clickID) {
   pointNum = 0;
   for (let p11 = 0; p11 < pieceNum * 4; p11++) {
     const piece1id = Math.floor(p11 / 4);
-    const point1id = (p11 & 3);
+    const point1id = p11 & 3;
     const point1X = pieceVertexX[piece1id][point1id];
     const point1Y = pieceVertexY[piece1id][point1id];
 
@@ -1229,7 +1229,7 @@ function calcClickPoints(clickID) {
     if (p21 == -1) continue;
     const piece2id = Math.floor(p21 / 4);
     if (piece1id > piece2id) continue;
-    const point2id = (p21 & 3);
+    const point2id = p21 & 3;
     const point2X = pieceVertexX[piece2id][point2id];
     const point2Y = pieceVertexY[piece2id][point2id];
     // for swapping 2 objects; (ペア)
@@ -1257,7 +1257,7 @@ function calcClickPoints(clickID) {
     if (p31 == -1) continue;
     const piece3id = Math.floor(p31 / 4);
     if (piece1id > piece3id) continue;
-    const point3id = (p31 & 3);
+    const point3id = p31 & 3;
     const point3X = pieceVertexX[piece3id][point3id];
     const point3Y = pieceVertexY[piece3id][point3id];
 
@@ -1287,11 +1287,11 @@ function onOrientationchange() {
 }
 
 function pieceMatchCheck(targetId, pieceId) {
-  return (targetRectTypes[targetId] == rectTypes[pieceId] &&
+  return targetRectTypes[targetId] == rectTypes[pieceId] &&
     nearlyEqual(targetCxs[targetId], cxs[pieceId]) &&
       nearlyEqual(targetCys[targetId], cys[pieceId]) &&
       nearlyEqualForRot(targetRots[targetId], rots[pieceId],
-        (rectTypes[targetId] + 1) * 4 == num ? 4 : 2));
+        (rectTypes[targetId] + 1) * 4 == num ? 4 : 2);
 }
 
 function updateProperFlags(pieceId) {
@@ -1361,7 +1361,7 @@ function addTweetButton(finished) {
   ele.appendChild(str);
   d.appendChild(ele);
 
-  twttr.widgets.load();
+  twttr.widgets.load(); // eslint-disable-line no-undef
 }
 
 function itoa(n) {
@@ -1552,7 +1552,7 @@ function moveRandom() {
 
 let timerRandom;
 let bRandomInterval = false;
-function setTimerRandom(event) {
+function setTimerRandom() {
   const randomSpeed = Number(550 - elems.rangeRandom.value);
   timerRandom = setInterval('moveRandom()', randomSpeed);
 }
@@ -1641,10 +1641,10 @@ function setRedoData() {
 function onButtonClickSavedataLoad(event) {
   event.preventDefault();
   const dataStr = document.getElementById('textareaSavedata').value;
-  console.time('loadTimer');
+  console.time('loadTimer'); // eslint-disable-line no-console
   loadData(dataStr);
   setRedoData();
-  console.timeEnd('loadTimer');
+  console.timeEnd('loadTimer'); // eslint-disable-line no-console
 }
 
 function onButtonClickSavedataUndo(event) {
@@ -1800,12 +1800,12 @@ function hsv2rgb(h, s, v) {
   const q = Math.round(v * (1 - s / 255 * f));
   const t = Math.round(v * (1 - s / 255 * (1 - f)));
   switch (Math.floor(ii) % 6) {
-    case 0: return [v, t, p];
-    case 1: return [q, v, p];
-    case 2: return [p, v, t];
-    case 3: return [p, q, v];
-    case 4: return [t, p, v];
-    case 5: return [v, p, q];
+  case 0: return [v, t, p];
+  case 1: return [q, v, p];
+  case 2: return [p, v, t];
+  case 3: return [p, q, v];
+  case 4: return [t, p, v];
+  case 5: return [v, p, q];
   }
 }
 
@@ -1916,7 +1916,7 @@ function drawHSV() {
     for (let i = 0; i < hueSplitNum; ++i) {
       const currRad = 2 * Math.PI / hueSplitNum * (i - 0.5);
       const nextRad = 2 * Math.PI / hueSplitNum * (i + 0.5);
-      const rgb = hsv2rgb((360 * i / hueSplitNum + 60), 255, 255);
+      const rgb = hsv2rgb(360 * i / hueSplitNum + 60, 255, 255);
       ctxColor.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
       ctxColor.strokeStyle = ctxColor.fillStyle;
 
@@ -2020,9 +2020,9 @@ function onButtonClickDefaultColor() {
   draw();
 }
 
-function onClickOpenClose(clickId, str) {
+function onClickOpenClose(clickId, str) { // eslint-disable-line no-unused-vars
   const obj = document.getElementById(clickId).style;
-  const closedFlag = (obj.display == 'none');
+  const closedFlag = obj.display == 'none';
   obj.display = closedFlag ? 'block' : 'none';
   document.getElementById(`${clickId}Title`).innerHTML = closedFlag
     ? `△${str} (クリックして閉じる)`
