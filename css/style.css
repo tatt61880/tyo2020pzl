@@ -22,16 +22,16 @@ ol {
 }
 
 h1 {
-  background-color: #fdf;
+  background-color: #ffddff;
   font-weight: bold;
 }
 
 h2 {
-  background-color: #bff;
+  background-color: #bbffff;
 }
 
 h3 {
-  background-color: #ffc;
+  background-color: #ffffcc;
 }
 
 h1,
@@ -57,7 +57,7 @@ pre {
 body {
   margin: auto;
   max-width: 1000px;
-  background-color: #eff;
+  background-color: #eeffff;
 }
 
 #container {
@@ -71,9 +71,9 @@ div.savedata {
 }
 
 div.savedata-category {
-  background-color: #fdf;
+  background-color: #ffddff;
   padding: 0 5px;
-  color: #838;
+  color: #883388;
   font-weight: bold;
 }
 
@@ -83,25 +83,25 @@ input[type="button"].savedata {
   padding: 0 10px;
   font-size: 130%;
   border-radius: 12px;
-  border: 3px solid #838;
-  background-color: #fdf;
-  color: #838;
+  border: 3px solid #883388;
+  background-color: #ffddff;
+  color: #883388;
   font-weight: bold;
   cursor: pointer;
 }
 
 div.option {
-  background-color: #dfd;
+  background-color: #ddffdd;
 }
 
 div.option-sub {
-  border: 5px solid #bfb;
+  border: 5px solid #bbffbb;
 }
 
 div.option-category {
-  background-color: #bfb;
+  background-color: #bbffbb;
   padding: 0 5px;
-  color: #383;
+  color: #338833;
   font-weight: bold;
 }
 
@@ -109,32 +109,32 @@ input[type="button"].option {
   height: 48px;
   margin: 15px 5px;
   padding: 0 10px;
-  background-color: #bfb;
-  border: 3px solid #383;
+  background-color: #bbffbb;
+  border: 3px solid #338833;
   border-radius: 12px;
-  color: #383;
+  color: #338833;
   font-weight: bold;
   cursor: pointer;
 }
 
 hr.option {
   border: none;
-  border-top: dashed 5px #bfb;
+  border-top: dashed 5px #bbffbb;
 }
 
 div.level {
-  background-color: #ddf;
+  background-color: #ddddff;
 }
 
 div.level-category {
-  background-color: #bbf;
+  background-color: #bbbbff;
   padding: 0 5px;
-  color: #338;
+  color: #333388;
   font-weight: bold;
 }
 
 th.level {
-  background-color: #bbf;
+  background-color: #bbbbff;
 }
 
 input[type="radio"] {
