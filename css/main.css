@@ -1,4 +1,4 @@
-* {
+html {
   margin: 0;
   padding: 0;
   font-family: Meiryo, Arial, Verdana, "Hiragino Kaku Gothic Pro", Osaka, "MS PGothic", sans-serif;
@@ -60,9 +60,9 @@ body {
   background-color: #eeffff;
 }
 
-#container {
+#contents {
   margin: 0;
-  padding: 0;
+  padding: 0 0 2px;
   background-color: white;
 }
 
