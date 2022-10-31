@@ -1,6 +1,6 @@
 html {
-  margin: 0;
   padding: 0;
+  margin: 0;
   font-family: Meiryo, Arial, Verdana, "Hiragino Kaku Gothic Pro", Osaka, "MS PGothic", sans-serif;
   font-size: 14px;
 }
@@ -22,8 +22,8 @@ ol {
 }
 
 h1 {
-  background-color: #ffddff;
   font-weight: bold;
+  background-color: #ffddff;
 }
 
 h2 {
@@ -40,8 +40,8 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0;
   padding: 2px 10px;
+  margin: 0;
   font-weight: normal;
 }
 
@@ -55,14 +55,14 @@ pre {
 }
 
 body {
-  margin: auto;
   max-width: 1000px;
+  margin: auto;
   background-color: #ccffff;
 }
 
 #contents {
-  margin: 0;
   padding: 0 0 2px;
+  margin: 0;
   background-color: white;
 }
 
@@ -71,23 +71,23 @@ div.savedata {
 }
 
 div.savedata-category {
-  background-color: #ffddff;
   padding: 0 5px;
-  color: #883388;
   font-weight: bold;
+  color: #883388;
+  background-color: #ffddff;
 }
 
 input[type="button"].savedata {
   height: 48px;
-  margin: 15px 0 15px 10px;
   padding: 0 10px;
+  margin: 15px 0 15px 10px;
   font-size: 130%;
-  border-radius: 12px;
-  border: 3px solid #883388;
-  background-color: #ffddff;
-  color: #883388;
   font-weight: bold;
+  color: #883388;
   cursor: pointer;
+  background-color: #ffddff;
+  border: 3px solid #883388;
+  border-radius: 12px;
 }
 
 div.option {
@@ -99,22 +99,22 @@ div.option-sub {
 }
 
 div.option-category {
-  background-color: #bbffbb;
   padding: 0 5px;
-  color: #338833;
   font-weight: bold;
+  color: #338833;
+  background-color: #bbffbb;
 }
 
 input[type="button"].option {
   height: 48px;
-  margin: 15px 5px;
   padding: 0 10px;
+  margin: 15px 5px;
+  font-weight: bold;
+  color: #338833;
+  cursor: pointer;
   background-color: #bbffbb;
   border: 3px solid #338833;
   border-radius: 12px;
-  color: #338833;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 hr.option {
@@ -127,10 +127,10 @@ div.level {
 }
 
 div.level-category {
-  background-color: #bbbbff;
   padding: 0 5px;
-  color: #333388;
   font-weight: bold;
+  color: #333388;
+  background-color: #bbbbff;
 }
 
 th.level {
