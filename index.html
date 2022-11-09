@@ -13,7 +13,7 @@
 
   <link rel="stylesheet" href="./css/main.css?2022.10.30">
 
-  <script src="./src/tyo2020pzl.js?2022.10.30"></script>
+  <script src="./src/tyo2020pzl.js?2022.11.09"></script>
 </head>
 
 <body>
@@ -40,20 +40,20 @@
     <div id="right" style="float: left; max-width: 400px;">
     <!-- セーブデータ -->
     <div class="round savedata" style="margin-bottom: 5px; padding: 1px 0px;">
-      <div onclick="onClickOpenClose('savedata', 'セーブデータ')" class="round savedata-category">
+      <div onclick="tyo2020pzl.onClickOpenClose('savedata', 'セーブデータ')" class="round savedata-category">
         <a id="savedataTitle" style="cursor: pointer;">▼セーブデータ (クリックして開く)</a>
       </div>
       <div id="savedata" style="display: none; clear: both;">
         <input type="button" class="savedata" value="Load" id="buttonLoad">
         <input type="button" class="savedata" value="Undo" id="buttonUndo">
         <input type="button" class="savedata" value="Redo" id="buttonRedo">
-        <div onclick="onClickOpenClose('savedataStr', 'テキストエリア')" class="round savedata-category">
+        <div onclick="tyo2020pzl.onClickOpenClose('savedataStr', 'テキストエリア')" class="round savedata-category">
           <a id="savedataStrTitle" style="cursor: pointer;">▼テキストエリア (クリックして開く)</a>
         </div>
         <div id="savedataStr" style="display: none; clear: both;">
           <textarea id="textareaSavedata" rows="5" style="width: 98%; margin: 5px 1%; border: 1px solid #b0d4e5"></textarea>
         </div>
-        <div onclick="onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round savedata-category">
+        <div onclick="tyo2020pzl.onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round savedata-category">
           <a id="usageForSavedataTitle" style="cursor: pointer;">▼セーブデータの使い方 (クリックして開く)</a>
         </div>
         <div id="usageForSavedata" style="display: none; clear: both;">
@@ -71,11 +71,11 @@
 
     <!-- オプション -->
     <div class="round option" style="margin-bottom: 5px; padding: 1px 0px;">
-      <div onclick="onClickOpenClose('option', 'オプション')" class="round option-category">
+      <div onclick="tyo2020pzl.onClickOpenClose('option', 'オプション')" class="round option-category">
         <a id="optionTitle" style="cursor: pointer;">△オプション (クリックして閉じる)</a>
       </div>
       <div id="option" style="display: block; clear: both;">
-        <div onclick="drawColorSelector(); onClickOpenClose('HueCircle', '色')" class="round option-category">
+        <div onclick="tyo2020pzl.drawColorSelector(); tyo2020pzl.onClickOpenClose('HueCircle', '色')" class="round option-category">
           <a id="HueCircleTitle" style="cursor: pointer;">▼色 (クリックして開く)</a>
         </div>
         <div id="HueCircle" style="display: none; clear: both;">
@@ -88,7 +88,7 @@
         </div>
 
         <div class="round option-sub">
-          <div onclick="onClickOpenClose('pattern', '模様')" class="round option-category">
+          <div onclick="tyo2020pzl.onClickOpenClose('pattern', '模様')" class="round option-category">
             <a id="patternTitle" style="cursor: pointer;">▼模様 (クリックして開く)</a>
           </div>
           <div id="pattern" style="display: none; clear: both;">
@@ -145,7 +145,7 @@
           <span class="nowrap"><input type="checkbox" id="options-showIndex"><label for="options-showIndex">番号</label></span>
           <span class="nowrap"><input type="checkbox" id="options-showLines"><label for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
           <hr class="option">
-          <div onclick="onClickOpenClose('random', 'ランダム動作')" class="round option-category">
+          <div onclick="tyo2020pzl.onClickOpenClose('random', 'ランダム動作')" class="round option-category">
             <a id="randomTitle" style="cursor: pointer;">▼ランダム動作 (クリックして開く)</a>
           </div>
           <div id="random" style="display: none; clear: both; text-align: center;">
@@ -167,7 +167,7 @@
 
     <!-- レベル -->
     <div class="round level" style="margin-bottom: 5px; padding: 1px 0px;">
-      <div onclick="onClickOpenClose('levelSelect', 'レベル')" class="round level-category">
+      <div onclick="tyo2020pzl.onClickOpenClose('levelSelect', 'レベル')" class="round level-category">
         <a id="levelSelectTitle" style="cursor: pointer;">▼レベル (クリックして開く)</a>
       </div>
       <div id="levelSelect" style="display: none; clear: both; padding-bottom: 5px">
