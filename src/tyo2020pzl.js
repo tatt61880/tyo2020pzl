@@ -422,7 +422,7 @@
       }
     }
     initializePairVartex();
-    calcClickPoints(-1);
+    calcClickPoints();
   }
 
   function setTargetState() {
@@ -1187,9 +1187,9 @@
 
   let pointNum;
   let clickPoints;
+
   // 次にクリックするID(clickID)がわかっている場合(セーブデータを読み込む場合など)は、計算を途中で打ち切ります。
-  // そうでない場合は、引数に-1を入れて使用します。
-  function calcClickPoints(clickID) {
+  function calcClickPoints(clickID = null) {
     clickPoints = [];
 
     const pieceVertexX = [];
@@ -1239,7 +1239,7 @@
         rectTypes[piece1id] == rectTypes[piece2id] &&
           nearlyEqualForRot(rots[piece1id], rots[piece2id],
             (rectTypes[piece1id] + 1) * 4 == num ? 4 : 2)) {
-        if (clickID == -1 || pointNum == clickID) {
+        if (clickID === null || pointNum === clickID) {
           clickPoints[pointNum] = {
             px: point2X,
             py: point2Y,
@@ -1247,7 +1247,7 @@
             id2: p21,
             trio: false,
           };
-          if (clickID != -1) {
+          if (clickID !== null) {
             return;
           }
         }
@@ -1264,7 +1264,7 @@
       const point3Y = pieceVertexY[piece3id][point3id];
 
       if (pairVertex[nextId[p31]] == p11) {
-        if (clickID == -1 || pointNum == clickID) {
+        if (clickID === null || pointNum === clickID) {
           // for swapping 3 objects; (トリオ)
           const px = ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 -
             (point1X + point2X + point3X)) / 3;
@@ -1273,7 +1273,7 @@
           clickPoints[pointNum] = {
             px: px, py: py, id1: p11, id2: p21, id3: p31, trio: true,
           };
-          if (clickID != -1) {
+          if (clickID !== null) {
             return;
           }
         }
@@ -1536,7 +1536,7 @@
 
     if (clickID != -1) {
       movePieces(clickID);
-      calcClickPoints(-1);
+      calcClickPoints();
       draw();
       addTweetButton(false);
       setRedoData();
@@ -1546,7 +1546,7 @@
   function moveRandom() {
     const clickID = Math.floor(Math.random() * clickPoints.length);
     movePieces(clickID);
-    calcClickPoints(-1);
+    calcClickPoints();
     draw();
     addTweetButton(false);
     setRedoData();
@@ -1603,7 +1603,7 @@
           clickID += dataStr.charCodeAt(i) - 48;
         }
       } else if (dataStr.charAt(i) == '.') {
-        calcClickPoints(-1);
+        calcClickPoints();
         calculatedFlag = true;
         clickID = Math.floor(Math.random() * clickPoints.length);
       } else if (dataStr.charAt(i) == '\n' ||
@@ -1627,7 +1627,7 @@
       }
       movePieces(clickID);
     }
-    calcClickPoints(-1);
+    calcClickPoints();
     draw();
     addTweetButton(false);
   }
