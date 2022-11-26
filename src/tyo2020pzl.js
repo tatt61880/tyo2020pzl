@@ -199,23 +199,23 @@
     // analyzing url
     {
       let paravalsStr = location.href.split('?')[1];
-      if (paravalsStr == null) paravalsStr = '';
+      if (paravalsStr === null) paravalsStr = '';
       const paravalsArray = paravalsStr.split('&');
       for (const paravals of paravalsArray) {
         const paraval = paravals.split('=');
-        if (paraval.length == 2) {
-          if (paraval[0] == 'level') {
+        if (paraval.length === 2) {
+          if (paraval[0] === 'level') {
             num = Number(paraval[1]);
-          } else if (paraval[0] == 's') {
+          } else if (paraval[0] === 's') {
             dataLoad = paraval[1];
           }
         }
       }
-      if (num == -1) num = 12;
+      if (num === -1) num = 12;
       if (isNaN(num)) num = 12;
 
-      const maxLevel = 70;
-      if (num % 2 == 1) {
+      const MAX_LEVEL = 70;
+      if (num % 2 === 1) {
         if (window.confirm(`奇数レベルには未対応です。申し訳ありません。
   1つ下のレベル（レベル${num - 1}）を読み込みます。良いですか？
   （キャンセルした場合、レベル12を読み込みます。）`)) {
@@ -223,13 +223,13 @@
         } else {
           num = 12;
         }
-      } else if (num > maxLevel) {
-        window.alert(`※レベル${maxLevel}より上のレベルは、フリーズ等の対策のため制限しています。
+      } else if (num > MAX_LEVEL) {
+        window.alert(`※レベル${MAX_LEVEL}より上のレベルは、フリーズ等の対策のため制限しています。
   ご了承ください。`);
         num = 12;
       }
 
-      if (num == 6 || num == 12) {
+      if (num === 6 || num === 12) {
         document.getElementById('upperTitle').style.display = 'block';
         document.getElementById('lowerTitle').style.display = 'none';
       } else {
@@ -249,8 +249,8 @@
       numChanged();
 
       document.getElementById('finish').style.display = 'none';
-      document.getElementById('radioButtonModeEasy').checked = num == 6;
-      document.getElementById('radioButtonModeNormal').checked = num == 12;
+      document.getElementById('radioButtonModeEasy').checked = num === 6;
+      document.getElementById('radioButtonModeNormal').checked = num === 12;
 
       const selectLevel = document.getElementById('selectLevel');
       selectLevel.onchange = function() {
@@ -259,7 +259,7 @@
         numChanged();
       };
       for (let i = 0; i < selectLevel.length; ++i) {
-        selectLevel.options[i].selected = selectLevel.options[i].value == num;
+        selectLevel.options[i].selected = selectLevel.options[i].value === num;
       }
     }
 
@@ -317,7 +317,7 @@
       }
     }
     document.getElementById('divTargetCanvas').style.display =
-      options.target == 'other' ? 'block' : 'none';
+      options.target === 'other' ? 'block' : 'none';
   }
 
   function updateShapeType() {
@@ -372,7 +372,7 @@
 
     for (let piece1id = 0; piece1id < pieceNum; piece1id++) {
       for (let point1id = 0; point1id < 4; point1id++) {
-        if (pairVertex[piece1id * 4 + point1id] != -1) continue;
+        if (pairVertex[piece1id * 4 + point1id] !== -1) continue;
         const point1X = pieceVertexX[piece1id][point1id];
         const point1Y = pieceVertexY[piece1id][point1id];
         for (let piece2id = piece1id + 1; piece2id < pieceNum; piece2id++) {
@@ -504,7 +504,7 @@
         let cy = r[j] * sin[rot] + centerY;
 
         const posIdx = typeNum - 1;
-        if (typeNum != 0) {
+        if (typeNum !== 0) {
           const rotAdd = num / 3;
           const cxOld = cx;
           const cyOld = cy;
@@ -541,15 +541,15 @@
   }
 
   document.addEventListener('keydown', function(event) {
-    if (document.getElementById('savedataStr').style.display != 'none' &&
-        document.getElementById('savedataStr').style.display != 'none') return;
+    if (document.getElementById('savedataStr').style.display !== 'none' &&
+        document.getElementById('savedataStr').style.display !== 'none') return;
     const k = event.keyCode;
-    if (k == 37) { // [←]キー
-      if (document.getElementById('buttonUndo').style.visibility == 'visible') {
+    if (k === 37) { // [←]キー
+      if (document.getElementById('buttonUndo').style.visibility === 'visible') {
         onButtonClickSavedataUndo(event);
       }
-    } else if (k == 39) { // [→]キー
-      if (document.getElementById('buttonRedo').style.visibility == 'visible') {
+    } else if (k === 39) { // [→]キー
+      if (document.getElementById('buttonRedo').style.visibility === 'visible') {
         onButtonClickSavedataRedo(event);
       }
     }
@@ -558,7 +558,7 @@
   function init() {
     document.getElementById('textClickCount').innerText = '初期化中…';
 
-    if (numPrev != num) {
+    if (numPrev !== num) {
       numPrev = num;
       numChanged();
     }
@@ -572,7 +572,7 @@
 
     pieceNum = num * num / 2 - num;
     for (let i = 0; i < pieceNum * 4; i++) {
-      nextId[i] = (i & 3) == 3 ? i - 3 : i + 1;
+      nextId[i] = (i & 3) === 3 ? i - 3 : i + 1;
     }
     for (let i = 0; i < 2 * num; i++) {
       sin[i] = Math.sin(i * Math.PI / num);
@@ -618,19 +618,19 @@
 
   function numChanged() {
     let paravalsStr = location.href.split('?')[1];
-    if (paravalsStr == null) paravalsStr = '';
+    if (paravalsStr === null) paravalsStr = '';
     const paravalsArray = paravalsStr.split('&');
     let numUrl = -1;
     for (const paravals of paravalsArray) {
       const paraval = paravals.split('=');
-      if (paraval.length == 2) {
-        if (paraval[0] == 'level') {
+      if (paraval.length === 2) {
+        if (paraval[0] === 'level') {
           numUrl = Number(paraval[1]);
         }
       }
     }
-    if (numUrl == -1) numUrl = 12;
-    if (numUrl != num) location.search = `?level=${num}`;
+    if (numUrl === -1) numUrl = 12;
+    if (numUrl !== num) location.search = `?level=${num}`;
   }
 
   function showIndex(idx, cx, cy, unusedFlag, bProperFlag) {
@@ -654,7 +654,7 @@
     const cy = cys[idx];
     const rot = rots[idx];
     const unusedFlag = unusedFlags[idx];
-    const bProperFlag = options.coloredProperPieces && properFlags[idx] != -1;
+    const bProperFlag = options.coloredProperPieces && properFlags[idx] !== -1;
 
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -709,10 +709,10 @@
       ctx.clip();
       ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w, -h, w * 2, h * 2);
       ctx.restore();
-    } else if (options.shape == 'ellipse') {
+    } else if (options.shape === 'ellipse') {
       ctx.scale(1, h / w);
       ctx.arc(0, 0, w / Math.sqrt(2.0), 0, 2 * Math.PI, false);
-    } else if (options.shape == 'octagram') {
+    } else if (options.shape === 'octagram') {
       const hDiv2 = h / 2;
       const wDiv2 = w / 2;
       ctx.moveTo(0, h);
@@ -724,7 +724,7 @@
       ctx.lineTo(w, 0);
       ctx.lineTo(-wDiv2, -hDiv2);
       ctx.closePath();
-    } else if (options.shape == 'octangle') {
+    } else if (options.shape === 'octangle') {
       ctx.moveTo(w * 1 / 3, h * 2 / 3);
       ctx.lineTo(w * 2 / 3, h * 1 / 3);
       ctx.lineTo(w * 2 / 3, -h * 1 / 3);
@@ -734,7 +734,7 @@
       ctx.lineTo(-w * 2 / 3, h * 1 / 3);
       ctx.lineTo(-w * 1 / 3, h * 2 / 3);
       ctx.closePath();
-    } else if (options.shape == 'espille1') { // ※ellipseの逆スペル
+    } else if (options.shape === 'espille1') { // ※ellipseの逆スペル
       ctx.scale(1, h / w);
       const r = w / Math.sqrt(2.0);
       const piDiv4 = Math.PI / 4;
@@ -742,7 +742,7 @@
       ctx.arc(w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
       ctx.arc(0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
       ctx.arc(-w, 0, r, -1 * piDiv4, 1 * piDiv4, false);
-    } else if (options.shape == 'espille2') {
+    } else if (options.shape === 'espille2') {
       ctx.scale(1, h / w);
       const r = w;
       const piDiv2 = Math.PI / 2;
@@ -750,7 +750,7 @@
       ctx.arc(w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
       ctx.arc(-w, -w, r, 0 * piDiv2, 1 * piDiv2, false);
       ctx.arc(-w, w, r, -1 * piDiv2, 0 * piDiv2, false);
-    } else if (options.shape == 'cross1') {
+    } else if (options.shape === 'cross1') {
       const wDiv2 = w / 2;
       const r = w;
       ctx.scale(1, h / w);
@@ -763,7 +763,7 @@
       ctx.arc(-wDiv2, wDiv2, r, 11 * piDiv6, 12 * piDiv6, false);
       ctx.arc(wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
       ctx.arc(-wDiv2, -wDiv2, r, 2 * piDiv6, 3 * piDiv6, false);
-    } else if (options.shape == 'cross2') {
+    } else if (options.shape === 'cross2') {
       const r = w * Math.sqrt(2.0);
       ctx.scale(1, h / w);
       const piDiv12 = Math.PI / 12;
@@ -775,7 +775,7 @@
       ctx.arc(-w, 0, r, 25 * piDiv12, 27 * piDiv12, false);
       ctx.arc(w, 0, r, 9 * piDiv12, 11 * piDiv12, false);
       ctx.arc(0, -w, r, 7 * piDiv12, 9 * piDiv12, false);
-    } else if (options.shape == 'flower1') {
+    } else if (options.shape === 'flower1') {
       const wDiv2 = w / 2;
       const r = wDiv2;
       ctx.scale(1, h / w);
@@ -784,7 +784,7 @@
       ctx.arc(wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
       ctx.arc(0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
       ctx.arc(-wDiv2, 0, r, 3 * piDiv2, 1 * piDiv2, false);
-    } else if (options.shape == 'flower2') {
+    } else if (options.shape === 'flower2') {
       const wDiv2 = w / 2;
       const r = wDiv2 * Math.sqrt(2.0);
       ctx.scale(1, h / w);
@@ -793,21 +793,21 @@
       ctx.arc(wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
       ctx.arc(-wDiv2, -wDiv2, r, 7 * piDiv4, 3 * piDiv4, false);
       ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, 1 * piDiv4, false);
-    } else if (options.shape == 'rectS') {
+    } else if (options.shape === 'rectS') {
       const rate = 0.5;
       ctx.moveTo(0, h * rate);
       ctx.lineTo(w * rate, 0);
       ctx.lineTo(0, -h * rate);
       ctx.lineTo(-w * rate, 0);
       ctx.closePath();
-    } else if (options.shape == 'rect') {
+    } else if (options.shape === 'rect') {
       const rate = 0.8;
       ctx.moveTo(0, h * rate);
       ctx.lineTo(w * rate, 0);
       ctx.lineTo(0, -h * rate);
       ctx.lineTo(-w * rate, 0);
       ctx.closePath();
-    } else if (options.shape == 'rects') {
+    } else if (options.shape === 'rects') {
       const paddingRate = 0.1;
       const wDiv2 = w / 2;
       const hDiv2 = h / 2;
@@ -887,7 +887,7 @@
         }
         ctx.stroke();
       }
-    } else if (options.shape == 'plus1') {
+    } else if (options.shape === 'plus1') {
       const widthRate = 0.3;
       const wDiv2 = w / 2;
       const hDiv2 = h / 2;
@@ -904,7 +904,7 @@
       ctx.lineTo(-wDiv2 * (1 - widthRate), hDiv2 * (1 + widthRate));
       ctx.lineTo(0, h * widthRate);
       ctx.closePath();
-    } else if (options.shape == 'plus2') {
+    } else if (options.shape === 'plus2') {
       const widthRate = 0.3 / Math.sqrt(2.0);
       ctx.moveTo(-w * widthRate, h * (1 - widthRate));
       ctx.lineTo(w * widthRate, h * (1 - widthRate));
@@ -919,7 +919,7 @@
       ctx.lineTo(-w * (1 - widthRate), h * widthRate);
       ctx.lineTo(-w * widthRate, h * widthRate);
       ctx.closePath();
-    } else if (options.shape == 'div') {
+    } else if (options.shape === 'div') {
       {
         ctx.beginPath();
         ctx.moveTo(w * 1 / 3, h * 2 / 3);
@@ -959,22 +959,22 @@
         ctx.closePath();
         ctx.fill();
       }
-    } else if (options.shape == 'circle1') {
+    } else if (options.shape === 'circle1') {
       ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
-    } else if (options.shape == 'circle2') {
+    } else if (options.shape === 'circle2') {
       ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
-    } else if (options.shape == 'circle3') {
+    } else if (options.shape === 'circle3') {
       h = rects[0].h;
       ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
-    } else if (options.shape == 'circle4') {
+    } else if (options.shape === 'circle4') {
       h = rects[0].h;
       w = rects[0].w;
       ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
-    } else if (options.shape == 'circle5') {
+    } else if (options.shape === 'circle5') {
       ctx.arc(0, 0, h, 0, 2 * Math.PI, false);
-    } else if (options.shape == 'circle6') {
+    } else if (options.shape === 'circle6') {
       ctx.arc(0, 0, w, 0, 2 * Math.PI, false);
-    } else if (options.shape == 'lines') {
+    } else if (options.shape === 'lines') {
       const widthRate = 0.25;
       const rate = 1 - widthRate;
       ctx.beginPath();
@@ -1002,7 +1002,7 @@
       ctx.fill();
 
       ctx.beginPath();
-    } else if (options.shape == 'lines2') {
+    } else if (options.shape === 'lines2') {
       const widthRate = 0.25;
       const rate = 1 - widthRate;
       ctx.beginPath();
@@ -1021,14 +1021,14 @@
       ctx.closePath();
       ctx.fill();
       ctx.beginPath();
-    } else if (options.shape == 'none') {
+    } else if (options.shape === 'none') {
       1;
     } else {
       ctx.rect(-w / 2, -h / 2, w, h);
     }
 
-    if (options.shape != 'rects' && options.shape != 'div' && !bShapeImage) {
-      if (options.shape == 'circle5' || options.shape == 'circle6') {
+    if (options.shape !== 'rects' && options.shape !== 'div' && !bShapeImage) {
+      if (options.shape === 'circle5' || options.shape === 'circle6') {
         ctx.stroke();
       } else {
         ctx.fill();
@@ -1050,7 +1050,7 @@
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       if (smallSize) ctx.scale(0.19, 0.19);
       if (normalColor) {
-        if (options.coloredProperPieces && properFlagsTarget[idx] != -1) {
+        if (options.coloredProperPieces && properFlagsTarget[idx] !== -1) {
           ctx.fillStyle = ctx.strokeStyle = colorFillProperPiece;
         } else {
           ctx.fillStyle = ctx.strokeStyle = colorFillNormalPiece;
@@ -1132,7 +1132,7 @@
     ctx.strokeStyle = 'magenta';
     for (let i = 0; i < pieceNum * 4; i++) {
       const j = pairVertex[i];
-      if (j == -1) continue;
+      if (j === -1) continue;
       const idxI = Math.floor(i / 4);
       const idxJ = Math.floor(j / 4);
       ctx.beginPath();
@@ -1150,17 +1150,17 @@
     ctxTarget.fillStyle = colorFillBackground;
     ctxTarget.fillRect(0, 0, canvasTarget.width, canvasTarget.height);
 
-    if (options.target == 'topLeft' && !completedFlag) {
+    if (options.target === 'topLeft' && !completedFlag) {
       drawTarget(ctx, true, true);
-    } else if (options.target == 'other') {
+    } else if (options.target === 'other') {
       drawTarget(ctxTarget, false, true);
-    } else if (options.target == 'back') {
+    } else if (options.target === 'back') {
       drawTarget(ctx, false, false);
     }
     for (let i = 0; i < pieceNum; i++) {
       drawPiece(i, false);
     }
-    if (options.target == 'front') {
+    if (options.target === 'front') {
       drawTarget(ctx, false, false);
     }
 
@@ -1182,7 +1182,7 @@
   }
 
   function nearlyEqualForRot(a, b, n) {
-    return Math.abs(a - b) % (2 * num / n) == 0;
+    return Math.abs(a - b) % (2 * num / n) === 0;
   }
 
   let pointNum;
@@ -1228,17 +1228,17 @@
 
       const p12 = nextId[p11];
       const p21 = pairVertex[p12];
-      if (p21 == -1) continue;
+      if (p21 === -1) continue;
       const piece2id = Math.floor(p21 / 4);
       if (piece1id > piece2id) continue;
       const point2id = p21 & 3;
       const point2X = pieceVertexX[piece2id][point2id];
       const point2Y = pieceVertexY[piece2id][point2id];
       // for swapping 2 objects; (ペア)
-      if (unusedFlags[piece1id] != unusedFlags[piece2id] &&
-        rectTypes[piece1id] == rectTypes[piece2id] &&
+      if (unusedFlags[piece1id] !== unusedFlags[piece2id] &&
+        rectTypes[piece1id] === rectTypes[piece2id] &&
           nearlyEqualForRot(rots[piece1id], rots[piece2id],
-            (rectTypes[piece1id] + 1) * 4 == num ? 4 : 2)) {
+            (rectTypes[piece1id] + 1) * 4 === num ? 4 : 2)) {
         if (clickID === null || pointNum === clickID) {
           clickPoints[pointNum] = {
             px: point2X,
@@ -1256,14 +1256,14 @@
       }
 
       const p31 = pairVertex[nextId[p21]];
-      if (p31 == -1) continue;
+      if (p31 === -1) continue;
       const piece3id = Math.floor(p31 / 4);
       if (piece1id > piece3id) continue;
       const point3id = p31 & 3;
       const point3X = pieceVertexX[piece3id][point3id];
       const point3Y = pieceVertexY[piece3id][point3id];
 
-      if (pairVertex[nextId[p31]] == p11) {
+      if (pairVertex[nextId[p31]] === p11) {
         if (clickID === null || pointNum === clickID) {
           // for swapping 3 objects; (トリオ)
           const px = ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 -
@@ -1283,17 +1283,17 @@
   }
 
   function onOrientationchange() {
-    if (canvas == null) return;
+    if (canvas === null) return;
     initScale();
     loadData(dataCurrent);
   }
 
   function pieceMatchCheck(targetId, pieceId) {
-    return targetRectTypes[targetId] == rectTypes[pieceId] &&
+    return targetRectTypes[targetId] === rectTypes[pieceId] &&
       nearlyEqual(targetCxs[targetId], cxs[pieceId]) &&
         nearlyEqual(targetCys[targetId], cys[pieceId]) &&
         nearlyEqualForRot(targetRots[targetId], rots[pieceId],
-          (rectTypes[targetId] + 1) * 4 == num ? 4 : 2);
+          (rectTypes[targetId] + 1) * 4 === num ? 4 : 2);
   }
 
   function updateProperFlags(pieceId) {
@@ -1320,7 +1320,7 @@
   function isFinished() {
     for (let targetId = 0; targetId < pieceNum; targetId++) {
       if (targetUnusedFlags[targetId]) continue;
-      if (properFlagsTarget[targetId] == -1) return false;
+      if (properFlagsTarget[targetId] === -1) return false;
     }
     return true;
   }
@@ -1329,15 +1329,15 @@
     if (!finished && !options.showTweetButton) return;
     const buttonID = finished ? 'buttonTweet2' : 'buttonTweet';
     const d = document.getElementById(buttonID);
-    while (d.firstChild != null) d.removeChild(d.firstChild);
+    while (d.firstChild !== null) d.removeChild(d.firstChild);
 
     const ele = document.createElement('a');
     ele.setAttribute('href', 'https://twitter.com/share');
     ele.setAttribute('class', 'twitter-share-button');
     let title = '';
-    if (num == 12) {
+    if (num === 12) {
       title = '「東京オリンピック・エンブレム・パズル」';
-    } else if (num == 6) {
+    } else if (num === 6) {
       title = '「東京オリンピック・エンブレム・パズル（イージーモード）」';
     } else {
       title = `「東京オリンピック・エンブレム・パズル（${num}角形ベース）」`;
@@ -1345,7 +1345,7 @@
     if (finished) {
       ele.setAttribute('data-text', `${title}を${clickCount.total}手（赤${clickCount.red}, 緑${clickCount.green}）で解きました！`);
     } else {
-      if (clickCount.total == 0) {
+      if (clickCount.total === 0) {
         ele.setAttribute('data-text', `今から、${title}に挑戦します！`);
       } else {
         ele.setAttribute('data-text', `${title}に挑戦中！ 現在${clickCount.total}手目（赤${clickCount.red}, 緑${clickCount.green}）`);
@@ -1353,10 +1353,10 @@
     }
     let buf = location.href;
     const questionPos = buf.search('\\?');
-    if (questionPos != -1) {
+    if (questionPos !== -1) {
       buf = buf.substr(0, questionPos);
     }
-    ele.setAttribute('data-url', `${buf}?level=${num}` + (dataCurrent == '' ? '' : `&s=${dataCurrent}`));
+    ele.setAttribute('data-url', `${buf}?level=${num}` + (dataCurrent === '' ? '' : `&s=${dataCurrent}`));
     ele.setAttribute('data-via', 'tatt61880');
     ele.setAttribute('data-hashtags', 'tyo2020pzl');
     const str = document.createTextNode('tweet');
@@ -1393,12 +1393,12 @@
 
     function f(iId, oId) {
       const po = pairVertex[oId];
-      if (po != -1) pairVertex[po] = iId;
+      if (po !== -1) pairVertex[po] = iId;
       pairVertex[iId] = po;
     }
     function g(aId, bId) {
-      if (aId != -1) pairVertex[aId] = bId;
-      if (bId != -1) pairVertex[bId] = aId;
+      if (aId !== -1) pairVertex[aId] = bId;
+      if (bId !== -1) pairVertex[bId] = aId;
     }
     if (clickPoints[clickID].trio) {
       clickCount.red++;
@@ -1414,13 +1414,13 @@
       cys[piece2id] = 2 * py - cys[piece2id];
       cxs[piece3id] = 2 * px - cxs[piece3id];
       cys[piece3id] = 2 * py - cys[piece3id];
-      if (properFlags[piece1id] != -1) {
+      if (properFlags[piece1id] !== -1) {
         properFlagsTarget[properFlags[piece1id]] = -1;
       }
-      if (properFlags[piece2id] != -1) {
+      if (properFlags[piece2id] !== -1) {
         properFlagsTarget[properFlags[piece2id]] = -1;
       }
-      if (properFlags[piece3id] != -1) {
+      if (properFlags[piece3id] !== -1) {
         properFlagsTarget[properFlags[piece3id]] = -1;
       }
       updateProperFlags(piece1id);
@@ -1455,10 +1455,10 @@
       const piece2id = Math.floor(clickPoints[clickID].id2 / 4);
       cxs[piece1id] = [cxs[piece2id], cxs[piece2id] = cxs[piece1id]][0];
       cys[piece1id] = [cys[piece2id], cys[piece2id] = cys[piece1id]][0];
-      if (properFlags[piece1id] != -1) {
+      if (properFlags[piece1id] !== -1) {
         properFlagsTarget[properFlags[piece1id]] = -1;
       }
-      if (properFlags[piece2id] != -1) {
+      if (properFlags[piece2id] !== -1) {
         properFlagsTarget[properFlags[piece2id]] = -1;
       }
       updateProperFlags(piece1id);
@@ -1497,9 +1497,9 @@
         notYetCompletedFlag = false;
         document.getElementById('textFinishCount').innerText = `${clickCount.total}手目に完成！！（赤${clickCount.red}, 緑${clickCount.green}）`;
         // 完成後のUndoやRedo時に毎回は更新しないようにする。
-        if (clickCount.total != clickCountFin.total ||
-            clickCount.red != clickCountFin.red ||
-            clickCount.green != clickCountFin.green) {
+        if (clickCount.total !== clickCountFin.total ||
+            clickCount.red !== clickCountFin.red ||
+            clickCount.green !== clickCountFin.green) {
           clickCountFin = clickCount;
           addTweetButton(true);
         }
@@ -1534,7 +1534,7 @@
       }
     }
 
-    if (clickID != -1) {
+    if (clickID !== -1) {
       movePieces(clickID);
       calcClickPoints();
       draw();
@@ -1597,19 +1597,19 @@
         clickID = code - 65 + 10;
       } else if (97 <= code && code <= 122) { // a-z
         clickID = code - 97 + 36;
-      } else if (dataStr.charAt(i) == '(') {
-        while (i != dataStr.length - 1 && dataStr.charAt(++i) != ')') {
+      } else if (dataStr.charAt(i) === '(') {
+        while (i !== dataStr.length - 1 && dataStr.charAt(++i) !== ')') {
           clickID *= 10;
           clickID += dataStr.charCodeAt(i) - 48;
         }
-      } else if (dataStr.charAt(i) == '.') {
+      } else if (dataStr.charAt(i) === '.') {
         calcClickPoints();
         calculatedFlag = true;
         clickID = Math.floor(Math.random() * clickPoints.length);
-      } else if (dataStr.charAt(i) == '\n' ||
-                 dataStr.charAt(i) == '\r' ||
-                 dataStr.charAt(i) == '\t' ||
-                 dataStr.charAt(i) == ' ') {
+      } else if (dataStr.charAt(i) === '\n' ||
+                 dataStr.charAt(i) === '\r' ||
+                 dataStr.charAt(i) === '\t' ||
+                 dataStr.charAt(i) === ' ') {
         continue;
       } else {
         window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が想定外です。`);
@@ -1621,7 +1621,7 @@
       } else {
         calcClickPoints(clickID);
       }
-      if (clickPoints[clickID] == null) {
+      if (clickPoints[clickID] === null) {
         window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が不正です。`);
         break;
       }
@@ -1652,12 +1652,12 @@
   function onButtonClickSavedataUndo(event) {
     event.preventDefault();
     const dataStr = dataCurrent;
-    if (dataStr.length == 0) {
+    if (dataStr.length === 0) {
       window.alert('0手目です。Undoできません。');
     } else {
       let len = dataStr.length - 1;
-      if (dataStr[len] == ')') {
-        while (!(dataStr[len] == '(' || len == 0)) {
+      if (dataStr[len] === ')') {
+        while (!(dataStr[len] === '(' || len === 0)) {
           len--;
         }
       }
@@ -1668,7 +1668,7 @@
 
   function onButtonClickSavedataRedo(event) {
     event.preventDefault();
-    if (dataRedo.indexOf('(') == -1) {
+    if (dataRedo.indexOf('(') === -1) {
       if (dataRedo.length <= clickCount.total) {
         window.alert('これ以上Redoできません。');
       } else {
@@ -1677,20 +1677,20 @@
     } else {
       let len = 0;
       let count = 0;
-      while (count++ != clickCount.total + 1) {
+      while (count++ !== clickCount.total + 1) {
         if (len > dataRedo.length) {
           window.alert('これ以上Redoできません。');
           return;
         }
-        if (dataRedo[len] == '(') {
-          while (len != dataRedo.length - 1 && dataRedo[++len] != ')');
+        if (dataRedo[len] === '(') {
+          while (len !== dataRedo.length - 1 && dataRedo[++len] !== ')');
         }
         len++;
       }
       loadData(dataRedo.substr(0, len));
     }
 
-    if (redoCount == clickCount.total) {
+    if (redoCount === clickCount.total) {
       document.getElementById('buttonRedo').style.visibility = 'hidden';
     }
   }
@@ -2024,7 +2024,7 @@
 
   function onClickOpenClose(clickId, str) { // eslint-disable-line no-unused-vars
     const obj = document.getElementById(clickId).style;
-    const closedFlag = obj.display == 'none';
+    const closedFlag = obj.display === 'none';
     obj.display = closedFlag ? 'block' : 'none';
     document.getElementById(`${clickId}Title`).innerHTML = closedFlag
       ? `△${str} (クリックして閉じる)`
