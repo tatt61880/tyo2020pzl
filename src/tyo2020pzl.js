@@ -115,9 +115,7 @@
   const myImg = new Image();
   let bShapeImage = false;
 
-  // document.addEventListener('DOMContentLoaded', function(){
-  // ↑これだと、完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
-  window.addEventListener('load', onLoad, false);
+  window.addEventListener('load', onLoad); // 'DOMContentLoaded' だと完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
 
   function initEventListener() {
     // iOSの場合とそれ以外とで画面回転時を判定するイベントを切り替える
