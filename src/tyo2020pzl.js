@@ -199,7 +199,7 @@
     // analyzing url
     {
       let paravalsStr = location.href.split('?')[1];
-      if (paravalsStr === null) paravalsStr = '';
+      if (paravalsStr === undefined) paravalsStr = '';
       const paravalsArray = paravalsStr.split('&');
       for (const paravals of paravalsArray) {
         const paraval = paravals.split('=');
@@ -618,7 +618,7 @@
 
   function numChanged() {
     let paravalsStr = location.href.split('?')[1];
-    if (paravalsStr === null) paravalsStr = '';
+    if (paravalsStr === undefined) paravalsStr = '';
     const paravalsArray = paravalsStr.split('&');
     let numUrl = -1;
     for (const paravals of paravalsArray) {
