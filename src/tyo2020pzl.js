@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   window.tyo2020pzl = window.tyo2020pzl ? window.tyo2020pzl : {};
@@ -135,13 +135,13 @@
 
     const myFile = document.getElementById('myFile');
     // 画像ファイル選択時の処理です。
-    myFile.addEventListener('change', function() {
+    myFile.addEventListener('change', function () {
       bShapeImage = true;
       const file = myFile.files[0];
       const blobUrl = window.URL.createObjectURL(file);
       document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
       myImg.src = blobUrl;
-      myImg.onload = function() {
+      myImg.onload = function () {
         draw();
       };
     }, false);
@@ -159,7 +159,7 @@
           options[optionName] = elem.checked;
           elem.addEventListener(
             'change',
-            function() {
+            function () {
               options[optionName] = elem.checked;
               optionOnchange();
             },
@@ -176,7 +176,7 @@
             }
             elem.addEventListener(
               'change',
-              function() {
+              function () {
                 if (elem.checked) {
                   options[optionName] = elem.value;
                 }
@@ -253,7 +253,7 @@
       document.getElementById('radioButtonModeNormal').checked = num === 12;
 
       const selectLevel = document.getElementById('selectLevel');
-      selectLevel.onchange = function() {
+      selectLevel.onchange = function () {
         const selectedItem = this.options[this.selectedIndex];
         num = Number(selectedItem.value);
         numChanged();
@@ -540,7 +540,7 @@
     }
   }
 
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function (event) {
     if (document.getElementById('savedataStr').style.display !== 'none' &&
         document.getElementById('savedataStr').style.display !== 'none') return;
     const k = event.keyCode;
@@ -725,14 +725,14 @@
       ctx.lineTo(-wDiv2, -hDiv2);
       ctx.closePath();
     } else if (options.shape === 'octangle') {
-      ctx.moveTo(w * 1 / 3, h * 2 / 3);
-      ctx.lineTo(w * 2 / 3, h * 1 / 3);
-      ctx.lineTo(w * 2 / 3, -h * 1 / 3);
-      ctx.lineTo(w * 1 / 3, -h * 2 / 3);
-      ctx.lineTo(-w * 1 / 3, -h * 2 / 3);
-      ctx.lineTo(-w * 2 / 3, -h * 1 / 3);
-      ctx.lineTo(-w * 2 / 3, h * 1 / 3);
-      ctx.lineTo(-w * 1 / 3, h * 2 / 3);
+      ctx.moveTo(w / 3, h * 2 / 3);
+      ctx.lineTo(w * 2 / 3, h / 3);
+      ctx.lineTo(w * 2 / 3, -h / 3);
+      ctx.lineTo(w / 3, -h * 2 / 3);
+      ctx.lineTo(-w / 3, -h * 2 / 3);
+      ctx.lineTo(-w * 2 / 3, -h / 3);
+      ctx.lineTo(-w * 2 / 3, h / 3);
+      ctx.lineTo(-w / 3, h * 2 / 3);
       ctx.closePath();
     } else if (options.shape === 'espille1') { // ※ellipseの逆スペル
       ctx.scale(1, h / w);
@@ -740,15 +740,15 @@
       const piDiv4 = Math.PI / 4;
       ctx.arc(0, w, r, 5 * piDiv4, 7 * piDiv4, false);
       ctx.arc(w, 0, r, 3 * piDiv4, 5 * piDiv4, false);
-      ctx.arc(0, -w, r, 1 * piDiv4, 3 * piDiv4, false);
-      ctx.arc(-w, 0, r, -1 * piDiv4, 1 * piDiv4, false);
+      ctx.arc(0, -w, r, piDiv4, 3 * piDiv4, false);
+      ctx.arc(-w, 0, r, -1 * piDiv4, piDiv4, false);
     } else if (options.shape === 'espille2') {
       ctx.scale(1, h / w);
       const r = w;
       const piDiv2 = Math.PI / 2;
       ctx.arc(w, w, r, 2 * piDiv2, 3 * piDiv2, false);
-      ctx.arc(w, -w, r, 1 * piDiv2, 2 * piDiv2, false);
-      ctx.arc(-w, -w, r, 0 * piDiv2, 1 * piDiv2, false);
+      ctx.arc(w, -w, r, piDiv2, 2 * piDiv2, false);
+      ctx.arc(-w, -w, r, 0 * piDiv2, piDiv2, false);
       ctx.arc(-w, w, r, -1 * piDiv2, 0 * piDiv2, false);
     } else if (options.shape === 'cross1') {
       const wDiv2 = w / 2;
@@ -759,7 +759,7 @@
       ctx.arc(wDiv2, -wDiv2, r, 5 * piDiv6, 6 * piDiv6, false);
       ctx.arc(-wDiv2, wDiv2, r, 9 * piDiv6, 10 * piDiv6, false);
       ctx.arc(wDiv2, wDiv2, r, 8 * piDiv6, 9 * piDiv6, false);
-      ctx.arc(-wDiv2, -wDiv2, r, 0 * piDiv6, 1 * piDiv6, false);
+      ctx.arc(-wDiv2, -wDiv2, r, 0 * piDiv6, piDiv6, false);
       ctx.arc(-wDiv2, wDiv2, r, 11 * piDiv6, 12 * piDiv6, false);
       ctx.arc(wDiv2, -wDiv2, r, 3 * piDiv6, 4 * piDiv6, false);
       ctx.arc(-wDiv2, -wDiv2, r, 2 * piDiv6, 3 * piDiv6, false);
@@ -781,18 +781,18 @@
       ctx.scale(1, h / w);
       const piDiv2 = Math.PI / 2;
       ctx.arc(0, wDiv2, r, 2 * piDiv2, 4 * piDiv2, false);
-      ctx.arc(wDiv2, 0, r, 1 * piDiv2, 3 * piDiv2, false);
+      ctx.arc(wDiv2, 0, r, piDiv2, 3 * piDiv2, false);
       ctx.arc(0, -wDiv2, r, 0 * piDiv2, 2 * piDiv2, false);
-      ctx.arc(-wDiv2, 0, r, 3 * piDiv2, 1 * piDiv2, false);
+      ctx.arc(-wDiv2, 0, r, 3 * piDiv2, piDiv2, false);
     } else if (options.shape === 'flower2') {
       const wDiv2 = w / 2;
       const r = wDiv2 * Math.sqrt(2.0);
       ctx.scale(1, h / w);
       const piDiv4 = Math.PI / 4;
       ctx.arc(wDiv2, wDiv2, r, 3 * piDiv4, 7 * piDiv4, false);
-      ctx.arc(wDiv2, -wDiv2, r, 1 * piDiv4, 5 * piDiv4, false);
+      ctx.arc(wDiv2, -wDiv2, r, piDiv4, 5 * piDiv4, false);
       ctx.arc(-wDiv2, -wDiv2, r, 7 * piDiv4, 3 * piDiv4, false);
-      ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, 1 * piDiv4, false);
+      ctx.arc(-wDiv2, wDiv2, r, 5 * piDiv4, piDiv4, false);
     } else if (options.shape === 'rectS') {
       const rate = 0.5;
       ctx.moveTo(0, h * rate);
@@ -922,39 +922,39 @@
     } else if (options.shape === 'div') {
       {
         ctx.beginPath();
-        ctx.moveTo(w * 1 / 3, h * 2 / 3);
-        ctx.lineTo(w * 2 / 3, h * 1 / 3);
-        ctx.lineTo(-w * 1 / 3, -h * 2 / 3);
-        ctx.lineTo(-w * 2 / 3, -h * 1 / 3);
+        ctx.moveTo(w / 3, h * 2 / 3);
+        ctx.lineTo(w * 2 / 3, h / 3);
+        ctx.lineTo(-w / 3, -h * 2 / 3);
+        ctx.lineTo(-w * 2 / 3, -h / 3);
         ctx.closePath();
         ctx.fill();
       }
       {
         ctx.beginPath();
-        ctx.moveTo(w * 2 / 3, -h * 1 / 3);
-        ctx.lineTo(w * 1 / 3, -h * 2 / 3);
+        ctx.moveTo(w * 2 / 3, -h / 3);
+        ctx.lineTo(w / 3, -h * 2 / 3);
         ctx.lineTo(
-          w * 1 / 3 * 0.72 - w * 2 / 3 * 0.28,
-          -h * 2 / 3 * 0.72 + h * 1 / 3 * 0.28
+          w / 3 * 0.72 - w * 2 / 3 * 0.28,
+          -h * 2 / 3 * 0.72 + h / 3 * 0.28
         );
         ctx.lineTo(
-          w * 2 / 3 * 0.72 - w * 1 / 3 * 0.28,
-          -h * 1 / 3 * 0.72 + h * 2 / 3 * 0.28
+          w * 2 / 3 * 0.72 - w / 3 * 0.28,
+          -h / 3 * 0.72 + h * 2 / 3 * 0.28
         );
         ctx.closePath();
         ctx.fill();
       }
       {
         ctx.beginPath();
-        ctx.moveTo(-w * 2 / 3, h * 1 / 3);
-        ctx.lineTo(-w * 1 / 3, h * 2 / 3);
+        ctx.moveTo(-w * 2 / 3, h / 3);
+        ctx.lineTo(-w / 3, h * 2 / 3);
         ctx.lineTo(
-          -w * 1 / 3 * 0.72 + w * 2 / 3 * 0.28,
-          h * 2 / 3 * 0.72 - h * 1 / 3 * 0.28
+          -w / 3 * 0.72 + w * 2 / 3 * 0.28,
+          h * 2 / 3 * 0.72 - h / 3 * 0.28
         );
         ctx.lineTo(
-          -w * 2 / 3 * 0.72 + w * 1 / 3 * 0.28,
-          h * 1 / 3 * 0.72 - h * 2 / 3 * 0.28
+          -w * 2 / 3 * 0.72 + w / 3 * 0.28,
+          h / 3 * 0.72 - h * 2 / 3 * 0.28
         );
         ctx.closePath();
         ctx.fill();
@@ -1083,12 +1083,12 @@
     ctx.restore();
   }
 
-  function drawCircle(x, y, rotStart, rotEnd, strokeStyle) {
+  function drawCircle(x_, y_, rotStart, rotEnd, strokeStyle) {
     ctx.save();
 
     const radius = centerX / 20.0;
-    x *= radius;
-    y *= radius;
+    const x = x_ * radius;
+    const y = y_ * radius;
 
     ctx.beginPath();
     ctx.arc(x, y, radius, rotStart, rotEnd, false);
@@ -1271,7 +1271,7 @@
           const py = ((cys[piece1id] + cys[piece2id] + cys[piece3id]) * 2 -
             (point1Y + point2Y + point3Y)) / 3;
           clickPoints[pointNum] = {
-            px: px, py: py, id1: p11, id2: p21, id3: p31, trio: true,
+            px, py, id1: p11, id2: p21, id3: p31, trio: true,
           };
           if (clickID !== null) {
             return;
@@ -1794,9 +1794,9 @@
     return `rgba(${c[0]},${c[1]},${c[2]},1.0)`;
   }
 
-  function hsv2rgb(h, s, v) {
+  function hsv2rgb(h, s, v_) {
     const ii = h / 60 + 60; // ここでiiがマイナスになるようなhには非対応です。
-    v = Math.floor(v);
+    const v = Math.floor(v_);
     const f = ii - Math.floor(ii);
     const p = Math.round(v * (1 - s / 255));
     const q = Math.round(v * (1 - s / 255 * f));
