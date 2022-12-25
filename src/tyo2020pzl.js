@@ -43,40 +43,40 @@
 
   // for Options
   const options = {
-    target: {type: OptionType.radio, onchange: onOptionTargetChanged},
-    shape: {type: OptionType.radio, onchange: onOptionShapeChanged},
+    target: { type: OptionType.radio, onchange: onOptionTargetChanged },
+    shape: { type: OptionType.radio, onchange: onOptionShapeChanged },
 
-    coloredProperPieces: {type: OptionType.checkbox, onchange: draw},
-    showPoints: {type: OptionType.checkbox, onchange: draw},
-    showLozenges: {type: OptionType.checkbox, onchange: draw},
-    showUnusedPieces: {type: OptionType.checkbox, onchange: draw},
-    showIndex: {type: OptionType.checkbox, onchange: draw},
-    showLines: {type: OptionType.checkbox, onchange: draw},
+    coloredProperPieces: { type: OptionType.checkbox, onchange: draw },
+    showPoints: { type: OptionType.checkbox, onchange: draw },
+    showLozenges: { type: OptionType.checkbox, onchange: draw },
+    showUnusedPieces: { type: OptionType.checkbox, onchange: draw },
+    showIndex: { type: OptionType.checkbox, onchange: draw },
+    showLines: { type: OptionType.checkbox, onchange: draw },
 
-    showTweetButton: {type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged},
+    showTweetButton: { type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged },
   };
 
   const elems = {
-    buttonLoad: {click: onButtonClickSavedataLoad},
-    buttonUndo: {click: onButtonClickSavedataUndo},
-    buttonRedo: {click: onButtonClickSavedataRedo},
+    buttonLoad: { click: onButtonClickSavedataLoad },
+    buttonUndo: { click: onButtonClickSavedataUndo },
+    buttonRedo: { click: onButtonClickSavedataRedo },
 
-    buttonDefaultColor: {click: onButtonClickDefaultColor},
-    buttonResetShape: {click: onButtonClickResetShape},
-    buttonRandom: {click: onButtonClickRandom},
-    buttonRandomInterval: {click: onButtonClickRandomInterval},
-    buttonRandomIntervalStop: {click: onButtonClickRandomIntervalStop},
-    rangeRandom: {change: oninputRange, input: oninputRange},
+    buttonDefaultColor: { click: onButtonClickDefaultColor },
+    buttonResetShape: { click: onButtonClickResetShape },
+    buttonRandom: { click: onButtonClickRandom },
+    buttonRandomInterval: { click: onButtonClickRandomInterval },
+    buttonRandomIntervalStop: { click: onButtonClickRandomIntervalStop },
+    rangeRandom: { change: oninputRange, input: oninputRange },
 
-    radioButtonModeEasy: {change: onRadioButtonChangeLevel},
-    radioButtonModeNormal: {change: onRadioButtonChangeLevel},
+    radioButtonModeEasy: { change: onRadioButtonChangeLevel },
+    radioButtonModeNormal: { change: onRadioButtonChangeLevel },
 
     canvasForColor: {},
   };
 
   let redoCount = 0;
-  let clickCount = {total: 0, red: 0, green: 0};
-  let clickCountFin = {total: 0, red: 0, green: 0};
+  let clickCount = { total: 0, red: 0, green: 0 };
+  let clickCountFin = { total: 0, red: 0, green: 0 };
   let completedFlag = false;
   let notYetCompletedFlag = true;
 
@@ -565,7 +565,7 @@
     initScale();
 
     {
-      clickCount = {total: 0, red: 0, green: 0};
+      clickCount = { total: 0, red: 0, green: 0 };
       completedFlag = false;
       notYetCompletedFlag = true;
     }
@@ -586,7 +586,7 @@
 
     const points = [];
     for (let i = 0; i < num; i++) {
-      points[i] = {x: scale * cos[2 * i], y: scale * sin[2 * i]};
+      points[i] = { x: scale * cos[2 * i], y: scale * sin[2 * i] };
     }
     for (let i = 0; i < num / 2; i++) {
       const dx = points[0].x - points[i + 1].x;
@@ -594,7 +594,7 @@
       L[i] = Math.sqrt(dx * dx + dy * dy);
     }
     for (let i = 0; i < num / 2 - 1; i++) {
-      rects[i] = {w: L[num / 2 - 2 - i], h: L[i]};
+      rects[i] = { w: L[num / 2 - 2 - i], h: L[i] };
     }
     r[0] = L[num / 2 - 2];
     for (let i = 1; i < num / 2 - 1; i++) {
