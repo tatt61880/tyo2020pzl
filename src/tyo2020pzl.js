@@ -153,40 +153,40 @@
       const optionType = options[optionName].type;
       const optionOnchange = options[optionName].onchange;
       switch (optionType) {
-      case OptionType.checkbox:
-        {
-          const elem = document.getElementById(`options-${optionName}`);
-          options[optionName] = elem.checked;
-          elem.addEventListener(
-            'change',
-            function () {
-              options[optionName] = elem.checked;
-              optionOnchange();
-            },
-            false
-          );
-        }
-        break;
-      case OptionType.radio:
-        {
-          const elems = document.getElementsByName(`options-${optionName}`);
-          for (const elem of elems) {
-            if (elem.checked) {
-              options[optionName] = elem.value;
-            }
+        case OptionType.checkbox:
+          {
+            const elem = document.getElementById(`options-${optionName}`);
+            options[optionName] = elem.checked;
             elem.addEventListener(
               'change',
               function () {
-                if (elem.checked) {
-                  options[optionName] = elem.value;
-                }
+                options[optionName] = elem.checked;
                 optionOnchange();
               },
               false
             );
           }
-        }
-        break;
+          break;
+        case OptionType.radio:
+          {
+            const elems = document.getElementsByName(`options-${optionName}`);
+            for (const elem of elems) {
+              if (elem.checked) {
+                options[optionName] = elem.value;
+              }
+              elem.addEventListener(
+                'change',
+                function () {
+                  if (elem.checked) {
+                    options[optionName] = elem.value;
+                  }
+                  optionOnchange();
+                },
+                false
+              );
+            }
+          }
+          break;
       }
     }
   }
@@ -1802,12 +1802,12 @@
     const q = Math.round(v * (1 - s / 255 * f));
     const t = Math.round(v * (1 - s / 255 * (1 - f)));
     switch (Math.floor(ii) % 6) {
-    case 0: return [v, t, p];
-    case 1: return [q, v, p];
-    case 2: return [p, v, t];
-    case 3: return [p, q, v];
-    case 4: return [t, p, v];
-    case 5: return [v, p, q];
+      case 0: return [v, t, p];
+      case 1: return [q, v, p];
+      case 2: return [p, v, t];
+      case 3: return [p, q, v];
+      case 4: return [t, p, v];
+      case 5: return [v, p, q];
     }
   }
 
