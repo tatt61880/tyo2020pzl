@@ -393,10 +393,10 @@
 
   function initializeState() {
     const rotX = centerX;
-    const rotY_ = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
+    const rotY = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
                  Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
-    const rotY1 = centerY + rotY_;
-    const rotY2 = centerY - rotY_;
+    const rotY1 = centerY + rotY;
+    const rotY2 = centerY - rotY;
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
