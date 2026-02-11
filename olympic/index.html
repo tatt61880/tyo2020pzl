@@ -10,16 +10,18 @@
   <meta name="viewport" content="width=400">
   <link rel="shortcut icon" href="./images/t.gif">
 
-  <link rel="stylesheet" href="./style.css?2022.07.02">
+  <link rel="stylesheet" href="./style.css?2026.02.12">
 
-  <script src="./main.js?2022.07.02"></script>
+  <script src="./main.js?2026.02.12"></script>
 </head>
 
 <body>
 <div id="container">
 <h1>東京オリンピック（2020年）のエンブレムの拡張？</h1>
 <form>
-  <canvas id="myCanvas"></canvas><br>
+  <canvas id="myCanvas"></canvas>
+  
+  <br>
 
   <div class="round" style="margin: 5px; padding: 5px; background-color: #ddf;">
     <div class="round" style="border: 3px solid; border-color: #bbf;">
@@ -28,12 +30,12 @@
       <span id="num" style="font-size: 150%"></span>
     </div>
 
-    <input type="radio" id="options-drawStyle-slow" name="options-drawStyle" value="slow" checked><label for="options-drawStyle-slow">徐々に描画する</label>
-    <input type="radio" id="options-drawStyle-fast" name="options-drawStyle" value="fast"><label for="options-drawStyle-fast">一気に描画する</label>
+    <label for="options-drawStyle-slow"><input type="radio" id="options-drawStyle-slow" name="options-drawStyle" value="slow" checked>徐々に描画する</label>
+    <label for="options-drawStyle-fast"><input type="radio" id="options-drawStyle-fast" name="options-drawStyle" value="fast">一気に描画する</label>
     <br>
-    <input type="checkbox" id="options-showLozenges"><label for="options-showLozenges">菱形を表示</label>
-    <input type="checkbox" id="options-typeColoring"><label for="options-typeColoring">色分け表示</label>
-    <input type="checkbox" id="options-showAllBlock"><label for="options-showAllBlock">全ブロックを表示</label>
+    <label for="options-showLozenges"><input type="checkbox" id="options-showLozenges">菱形を表示</label>
+    <label for="options-typeColoring"><input type="checkbox" id="options-typeColoring">色分け表示</label>
+    <label for="options-showAllBlock"><input type="checkbox" id="options-showAllBlock">全ブロックを表示</label>
   </div>
 </form>
 
