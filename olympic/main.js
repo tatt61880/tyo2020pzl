@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   let elemCanvas;
@@ -13,23 +13,23 @@
   const numMin = 6;
   const numMax = 150;
 
-  let rotX1 = [];
-  let rotY1 = [];
-  let rotX2 = [];
-  let rotY2 = [];
+  const rotX1 = [];
+  const rotY1 = [];
+  const rotX2 = [];
+  const rotY2 = [];
 
   let countStep1 = 0;
   let countStep2 = 0;
   let countStep3 = 0;
-  let countStep2Total = 30;
-  let countStep3Total = 30;
+  const countStep2Total = 30;
+  const countStep3Total = 30;
 
-  let rects = [];
-  let rots = [];
-  let cxs = [];
-  let cys = [];
-  let removeFlags = [];
-  let typeNums = [];
+  const rects = [];
+  const rots = [];
+  const cxs = [];
+  const cys = [];
+  const removeFlags = [];
+  const typeNums = [];
 
   let timerId;
 
@@ -42,13 +42,13 @@
   };
 
   const options = {
-    drawStyle: {type: OptionType.radio, onchange: update},
-    showLozenges: {type: OptionType.checkbox, onchange: update},
-    typeColoring: {type: OptionType.checkbox, onchange: update},
-    showAllBlock: {type: OptionType.checkbox, onchange: update},
+    drawStyle: { type: OptionType.radio, onchange: update },
+    showLozenges: { type: OptionType.checkbox, onchange: update },
+    typeColoring: { type: OptionType.checkbox, onchange: update },
+    showAllBlock: { type: OptionType.checkbox, onchange: update },
   };
 
-  window.onload = function() {
+  window.onload = function () {
     initOptions();
 
     elemCanvas = document.getElementById('myCanvas');
@@ -67,40 +67,40 @@
       const optionType = options[optionName].type;
       const optionOnchange = options[optionName].onchange;
       switch (optionType) {
-      case OptionType.checkbox:
-        {
-          const elem = document.getElementById(`options-${optionName}`);
-          options[optionName] = elem.checked;
-          elem.addEventListener(
-            'change',
-            function() {
-              options[optionName] = elem.checked;
-              optionOnchange();
-            },
-            false
-          );
-        }
-        break;
-      case OptionType.radio:
-        {
-          const elems = document.getElementsByName(`options-${optionName}`);
-          for (const elem of elems) {
-            if (elem.checked) {
-              options[optionName] = elem.value;
-            }
+        case OptionType.checkbox:
+          {
+            const elem = document.getElementById(`options-${optionName}`);
+            options[optionName] = elem.checked;
             elem.addEventListener(
               'change',
-              function() {
-                if (elem.checked) {
-                  options[optionName] = elem.value;
-                }
+              function () {
+                options[optionName] = elem.checked;
                 optionOnchange();
               },
               false
             );
           }
-        }
-        break;
+          break;
+        case OptionType.radio:
+          {
+            const elems = document.getElementsByName(`options-${optionName}`);
+            for (const elem of elems) {
+              if (elem.checked) {
+                options[optionName] = elem.value;
+              }
+              elem.addEventListener(
+                'change',
+                function () {
+                  if (elem.checked) {
+                    options[optionName] = elem.value;
+                  }
+                  optionOnchange();
+                },
+                false
+              );
+            }
+          }
+          break;
       }
     }
   }
@@ -124,7 +124,7 @@
     ctx.translate(centerX, centerY);
 
     const scale = centerX * 3 / 2 / num;
-    if (options.drawStyle == 'slow') {
+    if (options.drawStyle === 'slow') {
       countStep1 = 0;
       countStep2 = -10;
       countStep3 = 0;
@@ -133,7 +133,7 @@
       countStep3 = countStep3Total;
     }
 
-    let points = [];
+    const points = [];
     for (let i = 0; i < num; i++) {
       points[i] = {
         x: scale * Math.cos(2.0 * Math.PI * i / num),
@@ -142,13 +142,13 @@
     }
     const lengths = [];
     for (let i = 0; i < num / 2; i++) {
-      let dx = points[0].x - points[i + 1].x;
-      let dy = points[0].y - points[i + 1].y;
+      const dx = points[0].x - points[i + 1].x;
+      const dy = points[0].y - points[i + 1].y;
       lengths[i] = Math.sqrt(dx * dx + dy * dy);
     }
     for (let i = 0; i < num / 2 - 1; i++) {
-      //θ=0でのw, h
-      rects[i] = {w: lengths[num / 2 - 2 - i], h: lengths[i]};
+      // θ=0でのw, h
+      rects[i] = { w: lengths[num / 2 - 2 - i], h: lengths[i] };
     }
 
     const radius = [lengths[num / 2 - 2]];
@@ -178,8 +178,8 @@
     }
 
     {
-      let rx1 = 0.0;
-      let ry1 =
+      const rx1 = 0.0;
+      const ry1 =
         (Math.pow(
           Math.pow(radius2[num / 2 - 1], 2.0) - Math.pow(radius[0] / 2.0, 2.0),
           0.5
@@ -194,30 +194,30 @@
     }
 
     {
-      let rx2A = lengths[num / 6] / 2.0;
-      let ry2A = -Math.pow(
+      const rx2A = lengths[num / 6] / 2.0;
+      const ry2A = -Math.pow(
         Math.pow(radius2[num / 6], 2.0) - Math.pow(rx2A, 2.0),
         0.5
       );
-      let rx2Ba = -rx2A;
-      let ry2Ba = ry2A;
+      const rx2Ba = -rx2A;
+      const ry2Ba = ry2A;
       let theta;
       theta = 2 * Math.PI / num;
-      let rx2Bb = rx2Ba * Math.cos(theta) + ry2Ba * Math.sin(-theta);
-      let ry2Bb = rx2Ba * Math.sin(theta) + ry2Ba * Math.cos(theta);
+      const rx2Bb = rx2Ba * Math.cos(theta) + ry2Ba * Math.sin(-theta);
+      const ry2Bb = rx2Ba * Math.sin(theta) + ry2Ba * Math.cos(theta);
       theta = Math.PI / 3;
-      let cxB = rotX1[2] - centerX;
-      let cyB = rotY1[2] - centerY;
-      let rx2B =
+      const cxB = rotX1[2] - centerX;
+      const cyB = rotY1[2] - centerY;
+      const rx2B =
         (rx2Bb - cxB) * Math.cos(theta) +
         (ry2Bb - cyB) * Math.sin(-theta) +
         cxB;
-      let ry2B =
+      const ry2B =
         (rx2Bb - cxB) * Math.sin(theta) +
         (ry2Bb - cyB) * Math.cos(theta) +
         cyB;
-      let rx2 = (rx2A + rx2B) / 2;
-      let ry2 = (ry2A + ry2B) / 2;
+      const rx2 = (rx2A + rx2B) / 2;
+      const ry2 = (ry2A + ry2B) / 2;
       for (let i = 0; i < 3; i++) {
         const theta = (i + 1) * 2.0 * Math.PI / 3.0;
         rotX2[i] = centerX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
@@ -318,7 +318,7 @@
         ctx.globalAlpha = alpha;
       }
     }
-    if (typeNum == 0) {
+    if (typeNum === 0) {
       if (options.typeColoring && !removeFlag) {
         ctx.fillStyle = '#8bf';
       }
@@ -330,7 +330,7 @@
           ctx.fillStyle = '#fb8';
         }
       }
-      let posIdx = (typeNum - 1) % 3;
+      const posIdx = (typeNum - 1) % 3;
       if (countStep2 > 0) {
         let rotAdd = 0.0;
         const rotMax = Math.PI / 3;
@@ -398,7 +398,7 @@
 
   function draw() {
     ctx.clearRect(-centerX, -centerY, elemCanvas.width, elemCanvas.height);
-    const isSlow = options.drawStyle == 'slow';
+    const isSlow = options.drawStyle === 'slow';
 
     let bStep1Finished = false;
     for (let j = 0; j < num / 2 - 1; j++) {
@@ -407,7 +407,7 @@
           continue;
         }
         drawRect(i * num + j);
-        if (j == num / 2 - 2 && i == num - 1) {
+        if (j === num / 2 - 2 && i === num - 1) {
           bStep1Finished = true;
         }
       }
@@ -435,11 +435,11 @@
   }
 
   function incNum(event) {
-    event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+    event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     showElem(elemDec);
     if (num < numMax) {
       num += numDiff;
-      if (num == numMax) {
+      if (num === numMax) {
         hideElem(elemInc);
       }
       update();
@@ -447,11 +447,11 @@
   }
 
   function decNum(event) {
-    event.preventDefault(); //iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
+    event.preventDefault(); // iOSで連続でボタンを押しているとダブルクリック判定されて画面が移動してしまったりするので。
     showElem(elemInc);
     if (num > numMin) {
       num -= numDiff;
-      if (num == numMin) {
+      if (num === numMin) {
         hideElem(elemDec);
       }
       update();
