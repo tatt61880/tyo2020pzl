@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "tyo2020pzl",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "tyo2020pzl by tatt61880",
   "license": "MIT",
   "repository": {
@@ -12,9 +12,10 @@
   "bugs": {
     "url": "https://github.com/tatt61880/tyo2020pzl/issues"
   },
-  "homepage": "https://github.com/tatt61880/tyo2020pzl",
+  "homepage": "https://tatt61880.github.io/tyo2020pzl/",
   "scripts": {
-    "eslint": "eslint ./src/*.js --fix",
+    "lint": "npm run eslint && npm run htmlhint && npm run stylelint",
+    "eslint": "eslint eslint.config.js ./src/*.js --fix",
     "htmlhint": "htmlhint ./*.html",
     "stylelint": "stylelint ./css/*.css --fix"
   },
