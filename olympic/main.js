@@ -48,17 +48,17 @@
       onchange: update,
     },
     showLozenges: {
-      id: 'options-showLozenges',
+      id: 'options-show-lozenges',
       type: OptionType.checkbox,
       onchange: update,
     },
     typeColoring: {
-      id: 'options-typeColoring',
+      id: 'options-type-coloring',
       type: OptionType.checkbox,
       onchange: update,
     },
     showAllBlock: {
-      id: 'options-showAllBlock',
+      id: 'options-show-all-block',
       type: OptionType.checkbox,
       onchange: update,
     },
