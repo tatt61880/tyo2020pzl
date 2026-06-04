@@ -53,7 +53,10 @@
     showIndex: { type: OptionType.checkbox, onchange: draw },
     showLines: { type: OptionType.checkbox, onchange: draw },
 
-    showTweetButton: { type: OptionType.checkbox, onchange: onOptionShowTweetButtonChanged },
+    showTweetButton: {
+      type: OptionType.checkbox,
+      onchange: onOptionShowTweetButtonChanged,
+    },
   };
 
   const elems = {
@@ -119,8 +122,9 @@
 
   function initEventListener() {
     // iOSの場合とそれ以外とで画面回転時を判定するイベントを切り替える
-    const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ?
-      'orientationchange' : 'resize';
+    const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/)
+      ? 'orientationchange'
+      : 'resize';
     window.addEventListener(rotateEvent, onOrientationchange, false);
 
     for (const elemId in elems) {
@@ -135,16 +139,22 @@
 
     const myFile = document.getElementById('myFile');
     // 画像ファイル選択時の処理です。
-    myFile.addEventListener('change', function () {
-      bShapeImage = true;
-      const file = myFile.files[0];
-      const blobUrl = window.URL.createObjectURL(file);
-      document.getElementById('myFileImg').innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
-      myImg.src = blobUrl;
-      myImg.onload = function () {
-        draw();
-      };
-    }, false);
+    myFile.addEventListener(
+      'change',
+      function () {
+        bShapeImage = true;
+        const file = myFile.files[0];
+        const blobUrl = window.URL.createObjectURL(file);
+        document.getElementById(
+          'myFileImg'
+        ).innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
+        myImg.src = blobUrl;
+        myImg.onload = function () {
+          draw();
+        };
+      },
+      false
+    );
   }
 
   // オプションの初期化
@@ -216,9 +226,11 @@
 
       const MAX_LEVEL = 70;
       if (num % 2 === 1) {
-        if (window.confirm(`奇数レベルには未対応です。申し訳ありません。
+        if (
+          window.confirm(`奇数レベルには未対応です。申し訳ありません。
   1つ下のレベル（レベル${num - 1}）を読み込みます。良いですか？
-  （キャンセルした場合、レベル12を読み込みます。）`)) {
+  （キャンセルした場合、レベル12を読み込みます。）`)
+        ) {
           num--;
         } else {
           num = 12;
@@ -266,8 +278,11 @@
     document.getElementById('buttonRedo').style.visibility = 'hidden';
     canvas = document.getElementById('canvasMain');
     canvasTarget = document.getElementById('canvasTarget');
-    canvas.addEventListener(isTouchDevice ? 'touchstart' : 'click',
-      onClick, false);
+    canvas.addEventListener(
+      isTouchDevice ? 'touchstart' : 'click',
+      onClick,
+      false
+    );
 
     updateTargetLocation();
     updateShapeType();
@@ -303,8 +318,8 @@
     centerY = canvas.height / 2;
     ctx = canvas.getContext('2d');
     ctxTarget = canvasTarget.getContext('2d');
-    scale = centerX * 3 / 2 / num;
-    pointSize = 10 * scale / 25;
+    scale = (centerX * 3) / 2 / num;
+    pointSize = (10 * scale) / 25;
     if (pointSize > 15) pointSize = 15;
     if (pointSize < 4) pointSize = 4;
   }
@@ -377,8 +392,10 @@
         const point1Y = pieceVertexY[piece1id][point1id];
         for (let piece2id = piece1id + 1; piece2id < pieceNum; piece2id++) {
           for (let point2id = 0; point2id < 4; point2id++) {
-            if (nearlyEqual(point1X, pieceVertexX[piece2id][point2id]) &&
-                nearlyEqual(point1Y, pieceVertexY[piece2id][point2id])) {
+            if (
+              nearlyEqual(point1X, pieceVertexX[piece2id][point2id]) &&
+              nearlyEqual(point1Y, pieceVertexY[piece2id][point2id])
+            ) {
               pairVertex[piece1id * 4 + point1id] = piece2id * 4 + point2id;
               pairVertex[piece2id * 4 + point2id] = piece1id * 4 + point1id;
               // goto
@@ -393,14 +410,19 @@
 
   function initializeState() {
     const rotX = centerX;
-    const rotY = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
-                 Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
+    const rotY =
+      (Math.pow(
+        Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
+        0.5
+      ) +
+        rects[0].h / 2.0) /
+      2.0;
     const rotY1 = centerY + rotY;
     const rotY2 = centerY - rotY;
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + j % 2;
+        const index = i * 2 + (j % 2);
         const rot = index;
         const cx = r[j] * cos[rot] + centerX;
         const cy = r[j] * sin[rot] + centerY;
@@ -411,10 +433,12 @@
         cys[idx] = cy;
         rots[idx] = 4 * j < num - 2 ? rot : (rot + num / 2) % (2 * num);
         unusedFlags[idx] = false;
-        if (j + 1 < index && index < num - j) { // 下側の小円内のピース
+        if (j + 1 < index && index < num - j) {
+          // 下側の小円内のピース
           cxs[idx] = 2 * rotX - cxs[idx];
           cys[idx] = 2 * rotY1 - cys[idx];
-        } else if (num + j < index && index < 2 * num - j) { // 上側の小円内のピース
+        } else if (num + j < index && index < 2 * num - j) {
+          // 上側の小円内のピース
           unusedFlags[idx] = true;
           cxs[idx] = 2 * rotX - cxs[idx];
           cys[idx] = 2 * rotY2 - cys[idx];
@@ -432,18 +456,26 @@
     const rot2Y = [];
 
     const rx1 = 0.0;
-    const ry1 = (Math.pow(Math.pow(rr[num / 2 - 1], 2.0) -
-               Math.pow(r[0] / 2.0, 2.0), 0.5) + rects[0].h / 2.0) / 2.0;
+    const ry1 =
+      (Math.pow(
+        Math.pow(rr[num / 2 - 1], 2.0) - Math.pow(r[0] / 2.0, 2.0),
+        0.5
+      ) +
+        rects[0].h / 2.0) /
+      2.0;
 
     let theta;
     for (let i = 0; i < 3; i++) {
-      theta = i * 2 * num / 3.0;
+      theta = (i * 2 * num) / 3.0;
       rot1X[i] = centerX + rx1 * cos[theta] - ry1 * sin[theta];
       rot1Y[i] = centerY + rx1 * sin[theta] + ry1 * cos[theta];
     }
 
     const rx2A = L[num / 6] / 2.0;
-    const ry2A = -Math.pow(Math.pow(rr[num / 6], 2.0) - Math.pow(rx2A, 2.0), 0.5);
+    const ry2A = -Math.pow(
+      Math.pow(rr[num / 6], 2.0) - Math.pow(rx2A, 2.0),
+      0.5
+    );
     const rx2BBB = -rx2A;
     const ry2BBB = ry2A;
 
@@ -454,46 +486,54 @@
     theta = num / 3;
     const cxB = rot1X[2] - centerX;
     const cyB = rot1Y[2] - centerY;
-    const rx2B = (rx2BB - cxB) * cos[theta] -
-                (ry2BB - cyB) * sin[theta] + cxB;
-    const ry2B = (rx2BB - cxB) * sin[theta] +
-                (ry2BB - cyB) * cos[theta] + cyB;
+    const rx2B = (rx2BB - cxB) * cos[theta] - (ry2BB - cyB) * sin[theta] + cxB;
+    const ry2B = (rx2BB - cxB) * sin[theta] + (ry2BB - cyB) * cos[theta] + cyB;
     const rx2 = (rx2A + rx2B) / 2;
     const ry2 = (ry2A + ry2B) / 2;
     for (let i = 0; i < 3; i++) {
-      theta = (i + 1) * 2 * num / 3 % (2 * num);
+      theta = (((i + 1) * 2 * num) / 3) % (2 * num);
       rot2X[i] = centerX + rx2 * cos[theta] - ry2 * sin[theta];
       rot2Y[i] = centerY + rx2 * sin[theta] + ry2 * cos[theta];
     }
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + j % 2;
+        const index = i * 2 + (j % 2);
         let typeNum = 0;
         let unusedFlag = false;
-        if (j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j) {
+        if (j + 1 < index && index < j + 1 + (num / 6) * 2 && index < num - j) {
           typeNum = 1;
-        } else if (j + 1 < index - num * 2 / 3 &&
-                           index - num * 2 / 3 < j + 1 + num / 6 * 2 &&
-                           index - num * 2 / 3 < num - j) {
+        } else if (
+          j + 1 < index - (num * 2) / 3 &&
+          index - (num * 2) / 3 < j + 1 + (num / 6) * 2 &&
+          index - (num * 2) / 3 < num - j
+        ) {
           typeNum = 2;
-        } else if (j + 1 < index - num * 4 / 3 &&
-                           index - num * 4 / 3 < j + 1 + num / 6 * 2 &&
-                           index - num * 4 / 3 < num - j) {
+        } else if (
+          j + 1 < index - (num * 4) / 3 &&
+          index - (num * 4) / 3 < j + 1 + (num / 6) * 2 &&
+          index - (num * 4) / 3 < num - j
+        ) {
           typeNum = 3;
         } else if (j + 1 < index && index < num - j) {
           typeNum = 1;
           unusedFlag = true;
-        } else if (j + 1 < index - num * 2 / 3 &&
-                           index - num * 2 / 3 < num - j) {
+        } else if (
+          j + 1 < index - (num * 2) / 3 &&
+          index - (num * 2) / 3 < num - j
+        ) {
           typeNum = 2;
           unusedFlag = true;
-        } else if (j + 1 < index - num * 4 / 3 &&
-                           index - num * 4 / 3 < num - j) {
+        } else if (
+          j + 1 < index - (num * 4) / 3 &&
+          index - (num * 4) / 3 < num - j
+        ) {
           typeNum = 3;
           unusedFlag = true;
-        } else if (j + 1 < index + num * 2 / 3 &&
-                           index + num * 2 / 3 < num - j) {
+        } else if (
+          j + 1 < index + (num * 2) / 3 &&
+          index + (num * 2) / 3 < num - j
+        ) {
           typeNum = 1;
           unusedFlag = true;
         }
@@ -508,24 +548,34 @@
           const rotAdd = num / 3;
           const cxOld = cx;
           const cyOld = cy;
-          cx = (cxOld - rot1X[posIdx]) * cos[rotAdd] -
-               (cyOld - rot1Y[posIdx]) * sin[rotAdd] + rot1X[posIdx];
-          cy = (cxOld - rot1X[posIdx]) * sin[rotAdd] +
-               (cyOld - rot1Y[posIdx]) * cos[rotAdd] + rot1Y[posIdx];
+          cx =
+            (cxOld - rot1X[posIdx]) * cos[rotAdd] -
+            (cyOld - rot1Y[posIdx]) * sin[rotAdd] +
+            rot1X[posIdx];
+          cy =
+            (cxOld - rot1X[posIdx]) * sin[rotAdd] +
+            (cyOld - rot1Y[posIdx]) * cos[rotAdd] +
+            rot1Y[posIdx];
           rot += rotAdd;
         }
 
-        for (let n = 0; n < 3; n ++) {
-          if (j + 1 < index - num * 2 * n / 3 &&
-            index - num * 2 * n / 3 < num / 3 + 1 - j) {
+        for (let n = 0; n < 3; n++) {
+          if (
+            j + 1 < index - (num * 2 * n) / 3 &&
+            index - (num * 2 * n) / 3 < num / 3 + 1 - j
+          ) {
             unusedFlag = false;
             const rotAdd = num;
             const cxOld = cx;
             const cyOld = cy;
-            cx = (cxOld - rot2X[posIdx]) * cos[rotAdd] -
-                   (cyOld - rot2Y[posIdx]) * sin[rotAdd] + rot2X[posIdx];
-            cy = (cxOld - rot2X[posIdx]) * sin[rotAdd] +
-                   (cyOld - rot2Y[posIdx]) * cos[rotAdd] + rot2Y[posIdx];
+            cx =
+              (cxOld - rot2X[posIdx]) * cos[rotAdd] -
+              (cyOld - rot2Y[posIdx]) * sin[rotAdd] +
+              rot2X[posIdx];
+            cy =
+              (cxOld - rot2X[posIdx]) * sin[rotAdd] +
+              (cyOld - rot2Y[posIdx]) * cos[rotAdd] +
+              rot2Y[posIdx];
             rot += rotAdd;
           }
         }
@@ -540,20 +590,33 @@
     }
   }
 
-  document.addEventListener('keydown', function (event) {
-    if (document.getElementById('savedataStr').style.display !== 'none' &&
-        document.getElementById('savedataStr').style.display !== 'none') return;
-    const k = event.keyCode;
-    if (k === 37) { // [←]キー
-      if (document.getElementById('buttonUndo').style.visibility === 'visible') {
-        onButtonClickSavedataUndo(event);
+  document.addEventListener(
+    'keydown',
+    function (event) {
+      if (
+        document.getElementById('savedataStr').style.display !== 'none' &&
+        document.getElementById('savedataStr').style.display !== 'none'
+      )
+        return;
+      const k = event.keyCode;
+      if (k === 37) {
+        // [←]キー
+        if (
+          document.getElementById('buttonUndo').style.visibility === 'visible'
+        ) {
+          onButtonClickSavedataUndo(event);
+        }
+      } else if (k === 39) {
+        // [→]キー
+        if (
+          document.getElementById('buttonRedo').style.visibility === 'visible'
+        ) {
+          onButtonClickSavedataRedo(event);
+        }
       }
-    } else if (k === 39) { // [→]キー
-      if (document.getElementById('buttonRedo').style.visibility === 'visible') {
-        onButtonClickSavedataRedo(event);
-      }
-    }
-  }, false);
+    },
+    false
+  );
 
   function init() {
     document.getElementById('textClickCount').innerText = '初期化中…';
@@ -570,13 +633,13 @@
       notYetCompletedFlag = true;
     }
 
-    pieceNum = num * num / 2 - num;
+    pieceNum = (num * num) / 2 - num;
     for (let i = 0; i < pieceNum * 4; i++) {
       nextId[i] = (i & 3) === 3 ? i - 3 : i + 1;
     }
     for (let i = 0; i < 2 * num; i++) {
-      sin[i] = Math.sin(i * Math.PI / num);
-      cos[i] = Math.cos(i * Math.PI / num);
+      sin[i] = Math.sin((i * Math.PI) / num);
+      cos[i] = Math.cos((i * Math.PI) / num);
     }
 
     addTweetButton(false);
@@ -598,17 +661,27 @@
     }
     r[0] = L[num / 2 - 2];
     for (let i = 1; i < num / 2 - 1; i++) {
-      r[i] = Math.pow(Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) +
-                      Math.pow(rects[i - 1].h / 2.0, 2.0) -
-                      Math.pow(rects[i].h / 2.0, 2.0), 0.5) + rects[i].w / 2.0;
+      r[i] =
+        Math.pow(
+          Math.pow(r[i - 1] + rects[i - 1].w / 2.0, 2.0) +
+            Math.pow(rects[i - 1].h / 2.0, 2.0) -
+            Math.pow(rects[i].h / 2.0, 2.0),
+          0.5
+        ) +
+        rects[i].w / 2.0;
     }
     rr[0] = L[num / 2 - 1] / 2.0;
     for (let i = 1; i < num / 2; i++) {
-      rr[i] = Math.pow(Math.pow(Math.pow(
-        Math.pow(rr[i - 1], 2.0) -
-          Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5) +
-          rects[i - 1].w, 2.0) +
-          Math.pow(rects[i - 1].h / 2.0, 2.0), 0.5);
+      rr[i] = Math.pow(
+        Math.pow(
+          Math.pow(
+            Math.pow(rr[i - 1], 2.0) - Math.pow(rects[i - 1].h / 2.0, 2.0),
+            0.5
+          ) + rects[i - 1].w,
+          2.0
+        ) + Math.pow(rects[i - 1].h / 2.0, 2.0),
+        0.5
+      );
     }
 
     initializeState();
@@ -659,7 +732,7 @@
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.translate(cx, cy);
-    ctx.rotate(rot * Math.PI / num);
+    ctx.rotate((rot * Math.PI) / num);
 
     if (unusedFlag) {
       if (options.showUnusedPieces) {
@@ -707,7 +780,17 @@
       ctx.lineTo(0, -h);
       ctx.closePath();
       ctx.clip();
-      ctx.drawImage(myImg, 0, 0, myImg.width, myImg.height, -w, -h, w * 2, h * 2);
+      ctx.drawImage(
+        myImg,
+        0,
+        0,
+        myImg.width,
+        myImg.height,
+        -w,
+        -h,
+        w * 2,
+        h * 2
+      );
       ctx.restore();
     } else if (options.shape === 'ellipse') {
       ctx.scale(1, h / w);
@@ -725,16 +808,17 @@
       ctx.lineTo(-wDiv2, -hDiv2);
       ctx.closePath();
     } else if (options.shape === 'octangle') {
-      ctx.moveTo(w / 3, h * 2 / 3);
-      ctx.lineTo(w * 2 / 3, h / 3);
-      ctx.lineTo(w * 2 / 3, -h / 3);
-      ctx.lineTo(w / 3, -h * 2 / 3);
-      ctx.lineTo(-w / 3, -h * 2 / 3);
-      ctx.lineTo(-w * 2 / 3, -h / 3);
-      ctx.lineTo(-w * 2 / 3, h / 3);
-      ctx.lineTo(-w / 3, h * 2 / 3);
+      ctx.moveTo(w / 3, (h * 2) / 3);
+      ctx.lineTo((w * 2) / 3, h / 3);
+      ctx.lineTo((w * 2) / 3, -h / 3);
+      ctx.lineTo(w / 3, (-h * 2) / 3);
+      ctx.lineTo(-w / 3, (-h * 2) / 3);
+      ctx.lineTo((-w * 2) / 3, -h / 3);
+      ctx.lineTo((-w * 2) / 3, h / 3);
+      ctx.lineTo(-w / 3, (h * 2) / 3);
       ctx.closePath();
-    } else if (options.shape === 'espille1') { // ※ellipseの逆スペル
+    } else if (options.shape === 'espille1') {
+      // ※ellipseの逆スペル
       ctx.scale(1, h / w);
       const r = w / Math.sqrt(2.0);
       const piDiv4 = Math.PI / 4;
@@ -922,39 +1006,39 @@
     } else if (options.shape === 'div') {
       {
         ctx.beginPath();
-        ctx.moveTo(w / 3, h * 2 / 3);
-        ctx.lineTo(w * 2 / 3, h / 3);
-        ctx.lineTo(-w / 3, -h * 2 / 3);
-        ctx.lineTo(-w * 2 / 3, -h / 3);
+        ctx.moveTo(w / 3, (h * 2) / 3);
+        ctx.lineTo((w * 2) / 3, h / 3);
+        ctx.lineTo(-w / 3, (-h * 2) / 3);
+        ctx.lineTo((-w * 2) / 3, -h / 3);
         ctx.closePath();
         ctx.fill();
       }
       {
         ctx.beginPath();
-        ctx.moveTo(w * 2 / 3, -h / 3);
-        ctx.lineTo(w / 3, -h * 2 / 3);
+        ctx.moveTo((w * 2) / 3, -h / 3);
+        ctx.lineTo(w / 3, (-h * 2) / 3);
         ctx.lineTo(
-          w / 3 * 0.72 - w * 2 / 3 * 0.28,
-          -h * 2 / 3 * 0.72 + h / 3 * 0.28
+          (w / 3) * 0.72 - ((w * 2) / 3) * 0.28,
+          ((-h * 2) / 3) * 0.72 + (h / 3) * 0.28
         );
         ctx.lineTo(
-          w * 2 / 3 * 0.72 - w / 3 * 0.28,
-          -h / 3 * 0.72 + h * 2 / 3 * 0.28
+          ((w * 2) / 3) * 0.72 - (w / 3) * 0.28,
+          (-h / 3) * 0.72 + ((h * 2) / 3) * 0.28
         );
         ctx.closePath();
         ctx.fill();
       }
       {
         ctx.beginPath();
-        ctx.moveTo(-w * 2 / 3, h / 3);
-        ctx.lineTo(-w / 3, h * 2 / 3);
+        ctx.moveTo((-w * 2) / 3, h / 3);
+        ctx.lineTo(-w / 3, (h * 2) / 3);
         ctx.lineTo(
-          -w / 3 * 0.72 + w * 2 / 3 * 0.28,
-          h * 2 / 3 * 0.72 - h / 3 * 0.28
+          (-w / 3) * 0.72 + ((w * 2) / 3) * 0.28,
+          ((h * 2) / 3) * 0.72 - (h / 3) * 0.28
         );
         ctx.lineTo(
-          -w * 2 / 3 * 0.72 + w / 3 * 0.28,
-          h / 3 * 0.72 - h * 2 / 3 * 0.28
+          ((-w * 2) / 3) * 0.72 + (w / 3) * 0.28,
+          (h / 3) * 0.72 - ((h * 2) / 3) * 0.28
         );
         ctx.closePath();
         ctx.fill();
@@ -962,14 +1046,14 @@
     } else if (options.shape === 'circle1') {
       ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
     } else if (options.shape === 'circle2') {
-      ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
+      ctx.arc(0, 0, (w * h) / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
     } else if (options.shape === 'circle3') {
       h = rects[0].h;
       ctx.arc(0, 0, 0.5 * h, 0, 2 * Math.PI, false);
     } else if (options.shape === 'circle4') {
       h = rects[0].h;
       w = rects[0].w;
-      ctx.arc(0, 0, w * h / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
+      ctx.arc(0, 0, (w * h) / Math.sqrt(w * w + h * h), 0, 2 * Math.PI, false);
     } else if (options.shape === 'circle5') {
       ctx.arc(0, 0, h, 0, 2 * Math.PI, false);
     } else if (options.shape === 'circle6') {
@@ -1057,7 +1141,7 @@
         }
       }
       ctx.translate(targetCxs[idx], targetCys[idx]);
-      ctx.rotate(targetRots[idx] * Math.PI / num);
+      ctx.rotate((targetRots[idx] * Math.PI) / num);
       drawShape(ctx, rectType, !normalColor);
     }
     ctx.restore();
@@ -1119,10 +1203,10 @@
     ctx.save();
     ctx.translate(-3, 50);
     // 五輪マークを描画
-    drawCircle(2 + 0 / 60, 0, Math.PI * 0.00, Math.PI * 2.00, '#0081c8'); // 青
-    drawCircle(3 + 12 / 60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#fcb131'); // 黄
+    drawCircle(2 + 0 / 60, 0, Math.PI * 0.0, Math.PI * 2.0, '#0081c8'); // 青
+    drawCircle(3 + 12 / 60, 1, -Math.PI * 0.5, Math.PI * 1.4, '#fcb131'); // 黄
     drawCircle(4 + 24 / 60, 0, -Math.PI * 0.95, Math.PI * 0.95, 'black'); // 黒
-    drawCircle(5 + 36 / 60, 1, -Math.PI * 0.50, Math.PI * 1.40, '#00a651'); // 緑
+    drawCircle(5 + 36 / 60, 1, -Math.PI * 0.5, Math.PI * 1.4, '#00a651'); // 緑
     drawCircle(6 + 48 / 60, 0, -Math.PI * 0.95, Math.PI * 0.95, '#ee334e'); // 赤
     ctx.restore();
   }
@@ -1144,7 +1228,9 @@
   }
 
   function draw() {
-    document.getElementById('textClickCount').innerText = `現在${clickCount.total}手目です。（赤${clickCount.red}, 緑${clickCount.green}）`;
+    document.getElementById(
+      'textClickCount'
+    ).innerText = `現在${clickCount.total}手目です。（赤${clickCount.red}, 緑${clickCount.green}）`;
     ctx.fillStyle = colorFillBackground;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctxTarget.fillStyle = colorFillBackground;
@@ -1182,7 +1268,7 @@
   }
 
   function nearlyEqualForRot(a, b, n) {
-    return Math.abs(a - b) % (2 * num / n) === 0;
+    return Math.abs(a - b) % ((2 * num) / n) === 0;
   }
 
   let pointNum;
@@ -1235,10 +1321,15 @@
       const point2X = pieceVertexX[piece2id][point2id];
       const point2Y = pieceVertexY[piece2id][point2id];
       // for swapping 2 objects; (ペア)
-      if (unusedFlags[piece1id] !== unusedFlags[piece2id] &&
+      if (
+        unusedFlags[piece1id] !== unusedFlags[piece2id] &&
         rectTypes[piece1id] === rectTypes[piece2id] &&
-          nearlyEqualForRot(rots[piece1id], rots[piece2id],
-            (rectTypes[piece1id] + 1) * 4 === num ? 4 : 2)) {
+        nearlyEqualForRot(
+          rots[piece1id],
+          rots[piece2id],
+          (rectTypes[piece1id] + 1) * 4 === num ? 4 : 2
+        )
+      ) {
         if (clickID === null || pointNum === clickID) {
           clickPoints[pointNum] = {
             px: point2X,
@@ -1266,12 +1357,21 @@
       if (pairVertex[nextId[p31]] === p11) {
         if (clickID === null || pointNum === clickID) {
           // for swapping 3 objects; (トリオ)
-          const px = ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 -
-            (point1X + point2X + point3X)) / 3;
-          const py = ((cys[piece1id] + cys[piece2id] + cys[piece3id]) * 2 -
-            (point1Y + point2Y + point3Y)) / 3;
+          const px =
+            ((cxs[piece1id] + cxs[piece2id] + cxs[piece3id]) * 2 -
+              (point1X + point2X + point3X)) /
+            3;
+          const py =
+            ((cys[piece1id] + cys[piece2id] + cys[piece3id]) * 2 -
+              (point1Y + point2Y + point3Y)) /
+            3;
           clickPoints[pointNum] = {
-            px, py, id1: p11, id2: p21, id3: p31, trio: true,
+            px,
+            py,
+            id1: p11,
+            id2: p21,
+            id3: p31,
+            trio: true,
           };
           if (clickID !== null) {
             return;
@@ -1289,11 +1389,16 @@
   }
 
   function pieceMatchCheck(targetId, pieceId) {
-    return targetRectTypes[targetId] === rectTypes[pieceId] &&
+    return (
+      targetRectTypes[targetId] === rectTypes[pieceId] &&
       nearlyEqual(targetCxs[targetId], cxs[pieceId]) &&
-        nearlyEqual(targetCys[targetId], cys[pieceId]) &&
-        nearlyEqualForRot(targetRots[targetId], rots[pieceId],
-          (rectTypes[targetId] + 1) * 4 === num ? 4 : 2);
+      nearlyEqual(targetCys[targetId], cys[pieceId]) &&
+      nearlyEqualForRot(
+        targetRots[targetId],
+        rots[pieceId],
+        (rectTypes[targetId] + 1) * 4 === num ? 4 : 2
+      )
+    );
   }
 
   function updateProperFlags(pieceId) {
@@ -1343,12 +1448,18 @@
       title = `「東京オリンピック・エンブレム・パズル（${num}角形ベース）」`;
     }
     if (finished) {
-      ele.setAttribute('data-text', `${title}を${clickCount.total}手（赤${clickCount.red}, 緑${clickCount.green}）で解きました！`);
+      ele.setAttribute(
+        'data-text',
+        `${title}を${clickCount.total}手（赤${clickCount.red}, 緑${clickCount.green}）で解きました！`
+      );
     } else {
       if (clickCount.total === 0) {
         ele.setAttribute('data-text', `今から、${title}に挑戦します！`);
       } else {
-        ele.setAttribute('data-text', `${title}に挑戦中！ 現在${clickCount.total}手目（赤${clickCount.red}, 緑${clickCount.green}）`);
+        ele.setAttribute(
+          'data-text',
+          `${title}に挑戦中！ 現在${clickCount.total}手目（赤${clickCount.red}, 緑${clickCount.green}）`
+        );
       }
     }
     let buf = location.href;
@@ -1356,7 +1467,10 @@
     if (questionPos !== -1) {
       buf = buf.substr(0, questionPos);
     }
-    ele.setAttribute('data-url', `${buf}?level=${num}` + (dataCurrent === '' ? '' : `&s=${dataCurrent}`));
+    ele.setAttribute(
+      'data-url',
+      `${buf}?level=${num}` + (dataCurrent === '' ? '' : `&s=${dataCurrent}`)
+    );
     ele.setAttribute('data-via', 'tatt61880');
     ele.setAttribute('data-hashtags', 'tyo2020pzl');
     const str = document.createTextNode('tweet');
@@ -1453,8 +1567,8 @@
       clickCount.green++;
       const piece1id = Math.floor(clickPoints[clickID].id1 / 4);
       const piece2id = Math.floor(clickPoints[clickID].id2 / 4);
-      cxs[piece1id] = [cxs[piece2id], cxs[piece2id] = cxs[piece1id]][0];
-      cys[piece1id] = [cys[piece2id], cys[piece2id] = cys[piece1id]][0];
+      cxs[piece1id] = [cxs[piece2id], (cxs[piece2id] = cxs[piece1id])][0];
+      cys[piece1id] = [cys[piece2id], (cys[piece2id] = cys[piece1id])][0];
       if (properFlags[piece1id] !== -1) {
         properFlagsTarget[properFlags[piece1id]] = -1;
       }
@@ -1495,11 +1609,15 @@
       if (notYetCompletedFlag) {
         document.getElementById('finish').style.display = 'block';
         notYetCompletedFlag = false;
-        document.getElementById('textFinishCount').innerText = `${clickCount.total}手目に完成！！（赤${clickCount.red}, 緑${clickCount.green}）`;
+        document.getElementById(
+          'textFinishCount'
+        ).innerText = `${clickCount.total}手目に完成！！（赤${clickCount.red}, 緑${clickCount.green}）`;
         // 完成後のUndoやRedo時に毎回は更新しないようにする。
-        if (clickCount.total !== clickCountFin.total ||
-            clickCount.red !== clickCountFin.red ||
-            clickCount.green !== clickCountFin.green) {
+        if (
+          clickCount.total !== clickCountFin.total ||
+          clickCount.red !== clickCountFin.red ||
+          clickCount.green !== clickCountFin.green
+        ) {
           clickCountFin = clickCount;
           addTweetButton(true);
         }
@@ -1524,10 +1642,13 @@
     for (let i = 0; i < pointNum; i++) {
       const px = clickPoints[i].px;
       const py = clickPoints[i].py;
-      if (Math.abs(px - x) < 3 * pointSize &&
-        Math.abs(py - y) < 3 * pointSize) {
+      if (
+        Math.abs(px - x) < 3 * pointSize &&
+        Math.abs(py - y) < 3 * pointSize
+      ) {
         const distance = Math.abs(x - px) + Math.abs(y - py);
-        if (distance < minDistance) { // 条件を満たす点が複数ある場合の対策。一番クリックした位置に近いものを選択します。
+        if (distance < minDistance) {
+          // 条件を満たす点が複数ある場合の対策。一番クリックした位置に近いものを選択します。
           minDistance = distance;
           clickID = i;
         }
@@ -1591,11 +1712,14 @@
     for (let i = 0; i < dataStr.length; i++) {
       const code = dataStr.charCodeAt(i);
       let clickID = 0;
-      if (48 <= code && code <= 57) { // 0-9
+      if (48 <= code && code <= 57) {
+        // 0-9
         clickID = code - 48;
-      } else if (65 <= code && code <= 90) { // A-Z
+      } else if (65 <= code && code <= 90) {
+        // A-Z
         clickID = code - 65 + 10;
-      } else if (97 <= code && code <= 122) { // a-z
+      } else if (97 <= code && code <= 122) {
+        // a-z
         clickID = code - 97 + 36;
       } else if (dataStr.charAt(i) === '(') {
         while (i !== dataStr.length - 1 && dataStr.charAt(++i) !== ')') {
@@ -1606,10 +1730,12 @@
         calcClickPoints();
         calculatedFlag = true;
         clickID = Math.floor(Math.random() * clickPoints.length);
-      } else if (dataStr.charAt(i) === '\n' ||
-                 dataStr.charAt(i) === '\r' ||
-                 dataStr.charAt(i) === '\t' ||
-                 dataStr.charAt(i) === ' ') {
+      } else if (
+        dataStr.charAt(i) === '\n' ||
+        dataStr.charAt(i) === '\r' ||
+        dataStr.charAt(i) === '\t' ||
+        dataStr.charAt(i) === ' '
+      ) {
         continue;
       } else {
         window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が想定外です。`);
@@ -1643,10 +1769,10 @@
   function onButtonClickSavedataLoad(event) {
     event.preventDefault();
     const dataStr = document.getElementById('textareaSavedata').value;
-    console.time('loadTimer'); // eslint-disable-line no-console
+    console.time('loadTimer');
     loadData(dataStr);
     setRedoData();
-    console.timeEnd('loadTimer'); // eslint-disable-line no-console
+    console.timeEnd('loadTimer');
   }
 
   function onButtonClickSavedataUndo(event) {
@@ -1764,12 +1890,14 @@
 
   function calcIndexColorText(c1) {
     function calcColorDistance(c1, c2) {
-      return Math.abs((c1[0] - c2[0]) * 299 +
-                      (c1[1] - c2[1]) * 587 +
-                      (c1[2] - c2[2]) * 114) *
-                        (Math.abs(c1[0] - c2[0]) +
-                         Math.abs(c1[1] - c2[1]) +
-                         Math.abs(c1[2] - c2[2]));
+      return (
+        Math.abs(
+          (c1[0] - c2[0]) * 299 + (c1[1] - c2[1]) * 587 + (c1[2] - c2[2]) * 114
+        ) *
+        (Math.abs(c1[0] - c2[0]) +
+          Math.abs(c1[1] - c2[1]) +
+          Math.abs(c1[2] - c2[2]))
+      );
     }
 
     let diffMax = 0;
@@ -1799,20 +1927,26 @@
     const v = Math.floor(v_);
     const f = ii - Math.floor(ii);
     const p = Math.round(v * (1 - s / 255));
-    const q = Math.round(v * (1 - s / 255 * f));
-    const t = Math.round(v * (1 - s / 255 * (1 - f)));
+    const q = Math.round(v * (1 - (s / 255) * f));
+    const t = Math.round(v * (1 - (s / 255) * (1 - f)));
     switch (Math.floor(ii) % 6) {
-      case 0: return [v, t, p];
-      case 1: return [q, v, p];
-      case 2: return [p, v, t];
-      case 3: return [p, q, v];
-      case 4: return [t, p, v];
-      case 5: return [v, p, q];
+      case 0:
+        return [v, t, p];
+      case 1:
+        return [q, v, p];
+      case 2:
+        return [p, v, t];
+      case 3:
+        return [p, q, v];
+      case 4:
+        return [t, p, v];
+      case 5:
+        return [v, p, q];
     }
   }
 
   const hueDefault = 210;
-  const hueRadDefault = (hueDefault - 60) * Math.PI / 180 - Math.PI / 2;
+  const hueRadDefault = ((hueDefault - 60) * Math.PI) / 180 - Math.PI / 2;
   const satDefault = 255;
   const valDefault = 128;
   let hueRad = hueRadDefault;
@@ -1850,8 +1984,12 @@
     const rr = (hueCx - x) * (hueCx - x) + (hueCy - y) * (hueCy - y);
     if (hueMinR * hueMinR < rr && rr < hueMaxR * hueMaxR) {
       hueMode = true;
-    } else if (svX0 <= x && x <= svX0 + svSize &&
-               svY0 <= y && y <= svY0 + svSize) {
+    } else if (
+      svX0 <= x &&
+      x <= svX0 + svSize &&
+      svY0 <= y &&
+      y <= svY0 + svSize
+    ) {
       svMode = true;
     }
     onColorSelecting(e);
@@ -1869,13 +2007,13 @@
       let rad = Math.atan2(y - hueCy, x - hueCx);
       rad += Math.PI / 2; // (0, 1)を0度とするためにπ/2を足します。
       rad += Math.PI / hueSplitNum;
-      const hueI = Math.floor(rad / (2 * Math.PI / hueSplitNum));
-      hueRad = 2 * Math.PI / hueSplitNum * hueI - Math.PI / 2;
-      hueValue = 360 * hueI / hueSplitNum + 60;
+      const hueI = Math.floor(rad / ((2 * Math.PI) / hueSplitNum));
+      hueRad = ((2 * Math.PI) / hueSplitNum) * hueI - Math.PI / 2;
+      hueValue = (360 * hueI) / hueSplitNum + 60;
     } else if (svMode) {
       flag = true;
-      satValue = Math.max(0, Math.min(255, (x - svX0) / svSize * 255));
-      valValue = Math.max(0, Math.min(255, 255 - (y - svY0) / svSize * 255));
+      satValue = Math.max(0, Math.min(255, ((x - svX0) / svSize) * 255));
+      valValue = Math.max(0, Math.min(255, 255 - ((y - svY0) / svSize) * 255));
     }
     if (flag) {
       const rgb = hsv2rgb(hueValue, satValue, valValue);
@@ -1887,7 +2025,12 @@
       colorFillProperPieceIndex = calcIndexColorText(rgbProper);
       colorFillNormalPieceIndex = calcIndexColorText(rgb);
 
-      ctxColor.clearRect(0, 0, elems.canvasForColor.width, elems.canvasForColor.height);
+      ctxColor.clearRect(
+        0,
+        0,
+        elems.canvasForColor.width,
+        elems.canvasForColor.height
+      );
       drawHSV();
       draw();
     }
@@ -1916,9 +2059,9 @@
       ctxColor.clip();
 
       for (let i = 0; i < hueSplitNum; ++i) {
-        const currRad = 2 * Math.PI / hueSplitNum * (i - 0.5);
-        const nextRad = 2 * Math.PI / hueSplitNum * (i + 0.5);
-        const rgb = hsv2rgb(360 * i / hueSplitNum + 60, 255, 255);
+        const currRad = ((2 * Math.PI) / hueSplitNum) * (i - 0.5);
+        const nextRad = ((2 * Math.PI) / hueSplitNum) * (i + 0.5);
+        const rgb = hsv2rgb((360 * i) / hueSplitNum + 60, 255, 255);
         ctxColor.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
         ctxColor.strokeStyle = ctxColor.fillStyle;
 
@@ -1970,8 +2113,8 @@
       ctxColor.fillRect(svX0, svY0, svSize, svSize);
 
       drawSelectedCircle(
-        svX0 + satValue / 255 * svSize,
-        svY0 + svSize - valValue / 255 * svSize
+        svX0 + (satValue / 255) * svSize,
+        svY0 + svSize - (valValue / 255) * svSize
       );
       ctxColor.restore();
     }
@@ -1996,17 +2139,34 @@
     const eventNameDown = isTouchDevice ? 'touchstart' : 'mousedown';
     const eventNameMove = isTouchDevice ? 'touchmove' : 'mousemove';
     const eventNameUp = isTouchDevice ? 'touchend' : 'mouseup';
-    elems.canvasForColor.addEventListener(eventNameDown, onColorSelectStart, false);
-    elems.canvasForColor.addEventListener(eventNameMove, onColorSelecting, false);
+    elems.canvasForColor.addEventListener(
+      eventNameDown,
+      onColorSelectStart,
+      false
+    );
+    elems.canvasForColor.addEventListener(
+      eventNameMove,
+      onColorSelecting,
+      false
+    );
     elems.canvasForColor.addEventListener(eventNameUp, onColorSelectEnd, false);
     if (!isTouchDevice) {
-      elems.canvasForColor.addEventListener('mouseout', onColorSelectEnd, false);
+      elems.canvasForColor.addEventListener(
+        'mouseout',
+        onColorSelectEnd,
+        false
+      );
     }
     drawHSV();
   }
 
   function onButtonClickDefaultColor() {
-    ctxColor.clearRect(0, 0, elems.canvasForColor.width, elems.canvasForColor.height);
+    ctxColor.clearRect(
+      0,
+      0,
+      elems.canvasForColor.width,
+      elems.canvasForColor.height
+    );
     colorFillProperPiece = colorFillProperPieceDefault;
     colorFillNormalPiece = colorFillNormalPieceDefault;
     colorStrokeLozenge = colorStrokeLozengeDefault;
@@ -2022,7 +2182,7 @@
     draw();
   }
 
-  function onClickOpenClose(clickId, str) { // eslint-disable-line no-unused-vars
+  function onClickOpenClose(clickId, str) {
     const obj = document.getElementById(clickId).style;
     const closedFlag = obj.display === 'none';
     obj.display = closedFlag ? 'block' : 'none';

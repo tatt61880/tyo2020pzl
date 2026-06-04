@@ -123,7 +123,7 @@
     ctx.fillStyle = '#048';
     ctx.translate(centerX, centerY);
 
-    const scale = centerX * 3 / 2 / num;
+    const scale = (centerX * 3) / 2 / num;
     if (options.drawStyle === 'slow') {
       countStep1 = 0;
       countStep2 = -10;
@@ -136,8 +136,8 @@
     const points = [];
     for (let i = 0; i < num; i++) {
       points[i] = {
-        x: scale * Math.cos(2.0 * Math.PI * i / num),
-        y: scale * Math.sin(2.0 * Math.PI * i / num),
+        x: scale * Math.cos((2.0 * Math.PI * i) / num),
+        y: scale * Math.sin((2.0 * Math.PI * i) / num),
       };
     }
     const lengths = [];
@@ -187,7 +187,7 @@
           rects[0].h / 2.0) /
         2.0;
       for (let i = 0; i < 3; i++) {
-        const theta = i * 2.0 * Math.PI / 3.0;
+        const theta = (i * 2.0 * Math.PI) / 3.0;
         rotX1[i] = centerX + rx1 * Math.cos(theta) + ry1 * Math.sin(-theta);
         rotY1[i] = centerY + rx1 * Math.sin(theta) + ry1 * Math.cos(theta);
       }
@@ -202,7 +202,7 @@
       const rx2Ba = -rx2A;
       const ry2Ba = ry2A;
       let theta;
-      theta = 2 * Math.PI / num;
+      theta = (2 * Math.PI) / num;
       const rx2Bb = rx2Ba * Math.cos(theta) + ry2Ba * Math.sin(-theta);
       const ry2Bb = rx2Ba * Math.sin(theta) + ry2Ba * Math.cos(theta);
       theta = Math.PI / 3;
@@ -213,13 +213,11 @@
         (ry2Bb - cyB) * Math.sin(-theta) +
         cxB;
       const ry2B =
-        (rx2Bb - cxB) * Math.sin(theta) +
-        (ry2Bb - cyB) * Math.cos(theta) +
-        cyB;
+        (rx2Bb - cxB) * Math.sin(theta) + (ry2Bb - cyB) * Math.cos(theta) + cyB;
       const rx2 = (rx2A + rx2B) / 2;
       const ry2 = (ry2A + ry2B) / 2;
       for (let i = 0; i < 3; i++) {
-        const theta = (i + 1) * 2.0 * Math.PI / 3.0;
+        const theta = ((i + 1) * 2.0 * Math.PI) / 3.0;
         rotX2[i] = centerX + rx2 * Math.cos(theta) + ry2 * Math.sin(-theta);
         rotY2[i] = centerY + rx2 * Math.sin(theta) + ry2 * Math.cos(theta);
       }
@@ -227,41 +225,41 @@
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + j % 2;
+        const index = i * 2 + (j % 2);
         let removeFlag = false;
         let typeNum = 0;
-        if (j + 1 < index && index < j + 1 + num / 6 * 2 && index < num - j) {
+        if (j + 1 < index && index < j + 1 + (num / 6) * 2 && index < num - j) {
           typeNum = 1;
         } else if (
-          j + 1 < index - num * 2 / 3 &&
-          index - num * 2 / 3 < j + 1 + num / 6 * 2 &&
-          index - num * 2 / 3 < num - j
+          j + 1 < index - (num * 2) / 3 &&
+          index - (num * 2) / 3 < j + 1 + (num / 6) * 2 &&
+          index - (num * 2) / 3 < num - j
         ) {
           typeNum = 2;
         } else if (
-          j + 1 < index - num * 4 / 3 &&
-          index - num * 4 / 3 < j + 1 + num / 6 * 2 &&
-          index - num * 4 / 3 < num - j
+          j + 1 < index - (num * 4) / 3 &&
+          index - (num * 4) / 3 < j + 1 + (num / 6) * 2 &&
+          index - (num * 4) / 3 < num - j
         ) {
           typeNum = 3;
         } else if (j + 1 < index && index < num - j) {
           removeFlag = true;
           typeNum = 1;
         } else if (
-          j + 1 < index - num * 2 / 3 &&
-          index - num * 2 / 3 < num - j
+          j + 1 < index - (num * 2) / 3 &&
+          index - (num * 2) / 3 < num - j
         ) {
           removeFlag = true;
           typeNum = 2;
         } else if (
-          j + 1 < index - num * 4 / 3 &&
-          index - num * 4 / 3 < num - j
+          j + 1 < index - (num * 4) / 3 &&
+          index - (num * 4) / 3 < num - j
         ) {
           removeFlag = true;
           typeNum = 3;
         } else if (
-          j + 1 < index + num * 2 / 3 &&
-          index + num * 2 / 3 < num - j
+          j + 1 < index + (num * 2) / 3 &&
+          index + (num * 2) / 3 < num - j
         ) {
           removeFlag = true;
           typeNum = 3;
@@ -269,15 +267,15 @@
 
         for (let n = 0; n < 3; n++) {
           if (
-            j + 1 < index - num * 2 * n / 3 &&
-            index - num * 2 * n / 3 < num / 3 + 1 - j
+            j + 1 < index - (num * 2 * n) / 3 &&
+            index - (num * 2 * n) / 3 < num / 3 + 1 - j
           ) {
             removeFlag = false;
             typeNum += 3;
           }
         }
 
-        const rot = 2.0 * Math.PI * index / (num * 2);
+        const rot = (2.0 * Math.PI * index) / (num * 2);
         const cx = radius[j] * Math.cos(rot) + centerX;
         const cy = radius[j] * Math.sin(rot) + centerY;
 
@@ -337,7 +335,7 @@
         if (countStep2 >= countStep2Total) {
           rotAdd = rotMax;
         } else {
-          rotAdd = rotMax * countStep2 / countStep2Total;
+          rotAdd = (rotMax * countStep2) / countStep2Total;
         }
         const cxOld = cx;
         const cyOld = cy;
@@ -357,7 +355,7 @@
         if (countStep3 >= countStep3Total) {
           rotAdd = rotMax;
         } else {
-          rotAdd = rotMax * countStep3 / countStep3Total;
+          rotAdd = (rotMax * countStep3) / countStep3Total;
         }
         const cxOld = cx;
         const cyOld = cy;
@@ -424,7 +422,7 @@
           countStep3++;
         }
       }
-      countStep1 += Math.floor(num * num / 169) + 1;
+      countStep1 += Math.floor((num * num) / 169) + 1;
     }
 
     if (isSlow) {
