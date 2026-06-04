@@ -42,18 +42,34 @@
   };
 
   const options = {
-    drawStyle: { type: OptionType.radio, onchange: update },
-    showLozenges: { type: OptionType.checkbox, onchange: update },
-    typeColoring: { type: OptionType.checkbox, onchange: update },
-    showAllBlock: { type: OptionType.checkbox, onchange: update },
+    drawStyle: {
+      id: 'options-draw-style',
+      type: OptionType.radio,
+      onchange: update,
+    },
+    showLozenges: {
+      id: 'options-showLozenges',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
+    typeColoring: {
+      id: 'options-typeColoring',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
+    showAllBlock: {
+      id: 'options-showAllBlock',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
   };
 
   window.onload = function () {
     initOptions();
 
-    elemCanvas = document.getElementById('myCanvas');
-    elemDec = document.getElementById('buttonDec');
-    elemInc = document.getElementById('buttonInc');
+    elemCanvas = document.getElementById('main-canvas');
+    elemDec = document.getElementById('button-dec');
+    elemInc = document.getElementById('button-inc');
 
     elemDec.addEventListener('click', decNum, false);
     elemInc.addEventListener('click', incNum, false);
@@ -69,7 +85,7 @@
       switch (optionType) {
         case OptionType.checkbox:
           {
-            const elem = document.getElementById(`options-${optionName}`);
+            const elem = document.getElementById(options[optionName].id);
             options[optionName] = elem.checked;
             elem.addEventListener(
               'change',
@@ -83,7 +99,7 @@
           break;
         case OptionType.radio:
           {
-            const elems = document.getElementsByName(`options-${optionName}`);
+            const elems = document.getElementsByName(options[optionName].id);
             for (const elem of elems) {
               if (elem.checked) {
                 options[optionName] = elem.value;
@@ -93,6 +109,7 @@
                 function () {
                   if (elem.checked) {
                     options[optionName] = elem.value;
+                    console.log(elem.value);
                   }
                   optionOnchange();
                 },

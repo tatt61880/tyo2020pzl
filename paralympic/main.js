@@ -38,18 +38,34 @@
   };
 
   const options = {
-    drawStyle: { type: OptionType.radio, onchange: update },
-    showLozenges: { type: OptionType.checkbox, onchange: update },
-    typeColoring: { type: OptionType.checkbox, onchange: update },
-    showAllBlock: { type: OptionType.checkbox, onchange: update },
+    drawStyle: {
+      id: 'options-draw-style',
+      type: OptionType.radio,
+      onchange: update,
+    },
+    showLozenges: {
+      id: 'options-showLozenges',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
+    typeColoring: {
+      id: 'options-typeColoring',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
+    showAllBlock: {
+      id: 'options-showAllBlock',
+      type: OptionType.checkbox,
+      onchange: update,
+    },
   };
 
   window.onload = function () {
     initOptions();
 
-    elemCanvas = document.getElementById('myCanvas');
-    elemDec = document.getElementById('buttonDec');
-    elemInc = document.getElementById('buttonInc');
+    elemCanvas = document.getElementById('main-canvas');
+    elemDec = document.getElementById('button-dec');
+    elemInc = document.getElementById('button-inc');
 
     elemDec.addEventListener('click', decNum, false);
     elemInc.addEventListener('click', incNum, false);
@@ -65,7 +81,7 @@
       switch (optionType) {
         case OptionType.checkbox:
           {
-            const elem = document.getElementById(`options-${optionName}`);
+            const elem = document.getElementById(options[optionName].id);
             options[optionName] = elem.checked;
             elem.addEventListener(
               'change',
@@ -79,7 +95,7 @@
           break;
         case OptionType.radio:
           {
-            const elems = document.getElementsByName(`options-${optionName}`);
+            const elems = document.getElementsByName(options[optionName].id);
             for (const elem of elems) {
               if (elem.checked) {
                 options[optionName] = elem.value;
@@ -119,7 +135,7 @@
     ctx.fillStyle = '#048';
     ctx.translate(centerX, centerY);
 
-    const scale = centerX * 3 / 2 / num;
+    const scale = (centerX * 3) / 2 / num;
     if (options.drawStyle === 'slow') {
       countStep1 = 0;
       countStep2 = -10;
@@ -130,8 +146,8 @@
     const points = [];
     for (let i = 0; i < num; i++) {
       points[i] = {
-        x: scale * Math.cos(2.0 * Math.PI * i / num),
-        y: scale * Math.sin(2.0 * Math.PI * i / num),
+        x: scale * Math.cos((2.0 * Math.PI * i) / num),
+        y: scale * Math.sin((2.0 * Math.PI * i) / num),
       };
     }
     const lengths = [];
@@ -185,7 +201,7 @@
 
     for (let j = 0; j < num / 2 - 1; j++) {
       for (let i = 0; i < num; i++) {
-        const index = i * 2 + j % 2;
+        const index = i * 2 + (j % 2);
         let removeFlag = false;
         let rotateFlag = false;
         if (j + 1 < index && index < num - j) {
@@ -196,7 +212,7 @@
           removeFlag = true;
         }
 
-        const rot = 2.0 * Math.PI * index / (num * 2);
+        const rot = (2.0 * Math.PI * index) / (num * 2);
         const cx = radius[j] * Math.cos(rot) + centerX;
         const cy = radius[j] * Math.sin(rot) + centerY;
 
@@ -245,7 +261,7 @@
         if (countStep2 > countStep2Total) {
           rotAdd = Math.PI;
         } else {
-          rotAdd = Math.PI * countStep2 / countStep2Total;
+          rotAdd = (Math.PI * countStep2) / countStep2Total;
         }
         const cxOld = cx;
         const cyOld = cy;
@@ -311,7 +327,7 @@
           countStep2++;
         }
       }
-      countStep1 += Math.floor(num * num / 169) + 1;
+      countStep1 += Math.floor((num * num) / 169) + 1;
     }
 
     if (isSlow) {
