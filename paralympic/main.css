@@ -1,7 +1,9 @@
 * {
   padding: 0;
   margin: 0;
-  font-family: Meiryo, Arial, Verdana, "Hiragino Kaku Gothic Pro", Osaka, "MS PGothic", sans-serif;
+  font-family:
+    Meiryo, Arial, Verdana, "Hiragino Kaku Gothic Pro", Osaka, "MS PGothic",
+    sans-serif;
   font-size: 14px;
 }
 
@@ -23,10 +25,7 @@ ol {
 
 h1,
 h2,
-h3,
-h4,
-h5,
-h6 {
+h3 {
   padding: 2px 10px;
 }
 
@@ -43,7 +42,8 @@ h3 {
   background-color: #ffffbb;
 }
 
-th, td {
+th,
+td {
   padding: 0 10px;
 }
 
@@ -69,7 +69,7 @@ body {
 }
 
 input[type="radio"] {
-  margin:0 10px;
+  margin: 0 10px;
 }
 
 input[type="button"] {
@@ -88,10 +88,26 @@ label {
 }
 
 div.round {
-  margin:3px 5px;
+  margin: 3px 5px;
   border-radius: 0.5em;
 }
 
 canvas {
   margin: auto;
+}
+
+.option {
+  padding: 5px;
+  margin: 5px;
+  background-color: #ddddff;
+}
+
+.option-polygon {
+  border: 3px solid;
+  border-color: #bbbbff;
+}
+
+.option-polygon-num {
+  font-size: 1.3rem;
+  font-weight: bold;
 }

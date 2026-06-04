@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <title>東京パラリンピック（2020年）のエンブレムの拡張</title>
   <meta charset="UTF-8">
@@ -8,54 +9,61 @@
   <meta property="og:description" content="東京オリンピック（2020年）のエンブレムを拡張したもの（？）です。">
 
   <meta name="viewport" content="width=400">
-  <link rel="shortcut icon" href="./images/t.gif">
+  <link rel="shortcut icon" href="./images/t.gif?2026.01.01">
 
-  <link rel="stylesheet" href="./style.css?2026.02.12">
+  <link rel="stylesheet" href="./main.css">
 
-  <script src="./main.js?2026.02.12"></script>
+  <script defer src="./main.js"></script>
 </head>
 
 <body>
-<div id="container">
-<h1>東京パラリンピック（2020年）のエンブレムの拡張</h1>
-<form>
-  <canvas id="myCanvas"></canvas><br>
+  <div id="container">
+    <h1>東京パラリンピック（2020年）のエンブレムの拡張</h1>
+    <form>
+      <canvas id="myCanvas"></canvas>
 
-  <div class="round" style="margin: 5px; padding: 5px; background-color: #ddf;">
-    <div class="round" style="border: 3px solid; border-color: #bbf;">
-      <input type="button" value="-2" id="buttonDec">
-      <input type="button" value="+2" id="buttonInc">
-      <span id="num" style="font-size: 150%"></span>
-    </div>
+      <div class="option round">
+        <div class="option-polygon round">
+          <input type="button" value="-2" id="buttonDec">
+          <input type="button" value="+2" id="buttonInc">
+          <span id="num" class="option-polygon-num"></span>
+        </div>
 
-    <label for="options-drawStyle-slow"><input type="radio" id="options-drawStyle-slow" name="options-drawStyle" value="slow" checked>徐々に描画する</label>
-    <label for="options-drawStyle-fast"><input type="radio" id="options-drawStyle-fast" name="options-drawStyle" value="fast">一気に描画する</label>
-    <br>
-    <label for="options-showLozenges"><input type="checkbox" id="options-showLozenges">菱形を表示</label>
-    <label for="options-typeColoring"><input type="checkbox" id="options-typeColoring">色分け表示</label>
-    <label for="options-showAllBlock"><input type="checkbox" id="options-showAllBlock">全ブロックを表示</label>
+        <label for="options-drawtyle-slow">
+          <input type="radio" id="options-drawtyle-slow" name="options-drawtyle" value="slow" checked>
+          徐々に描画する
+        </label>
+        <label for="options-drawtyle-fast">
+          <input type="radio" id="options-drawtyle-fast" name="options-drawtyle" value="fast">
+          一気に描画する
+        </label>
+        <br>
+        <label for="options-showLozenges"><input type="checkbox" id="options-showLozenges">菱形を表示</label>
+        <label for="options-typeColoring"><input type="checkbox" id="options-typeColoring">色分け表示</label>
+        <label for="options-showAllBlock"><input type="checkbox" id="options-showAllBlock">全ブロックを表示</label>
+      </div>
+    </form>
+
+    <h2>このプログラムの作者</h2>
+    <p>
+      たっと（Tatt）<a href="https://twitter.com/tatt61880">@tatt61880</a>
+    </p>
+
+    <h3>謝辞</h3>
+    <ul>
+      <li>エンブレム作者の野老朝雄さん（<a href="https://twitter.com/asaoTOKOLO">@asaoTOKOLO</a>）さんがいなければ、このプログラムが作られることはありませんでした。</li>
+      <li>Twitterでエンブレムの話題が盛り上がっていたことが、このプログラムを作成するモチベーションになりました。また、Twitter上でのエンブレム解析情報は、このプログラムを作成する上でとても参考になりました。</li>
+    </ul>
+    <p>
+      皆様に厚くお礼申し上げます。ありがとうございました。
+    </p>
+
+    <h3>リンク集</h3>
+    <ul>
+      <li><a href="../olympic/index.html">東京オリンピック（2020年）のエンブレムの拡張？</a></li>
+      <li><a href="../index.html">東京オリンピック・エンブレム・パズル</a></li>
+    </ul>
   </div>
-</form>
-
-<h2>このプログラムの作者</h2>
-<p>
-  たっと（Tatt）<a href="https://twitter.com/tatt61880">@tatt61880</a>
-</p>
-
-<h3>謝辞</h3>
-<ul>
-  <li>エンブレム作者の野老朝雄さん（<a href="https://twitter.com/asaoTOKOLO">@asaoTOKOLO</a>）さんがいなければ、このプログラムが作られることはありませんでした。</li>
-  <li>Twitterでエンブレムの話題が盛り上がっていたことが、このプログラムを作成するモチベーションになりました。また、Twitter上でのエンブレム解析情報は、このプログラムを作成する上でとても参考になりました。</li>
-</ul>
-<p>
-  皆様に厚くお礼申し上げます。ありがとうございました。
-</p>
-
-<h3>リンク集</h3>
-<ul>
-  <li><a href="../olympic/index.html">東京オリンピック（2020年）のエンブレムの拡張？</a></li>
-  <li><a href="../index.html">東京オリンピック・エンブレム・パズル</a></li>
-</ul>
-</div>
 </body>
+
 </html>
