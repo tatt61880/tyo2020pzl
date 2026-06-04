@@ -1439,7 +1439,9 @@
     const ele = document.createElement('a');
     ele.setAttribute('href', 'https://twitter.com/share');
     ele.setAttribute('class', 'twitter-share-button');
-    let title = '';
+
+    let title;
+
     if (num === 12) {
       title = '「東京オリンピック・エンブレム・パズル」';
     } else if (num === 6) {
@@ -1447,6 +1449,7 @@
     } else {
       title = `「東京オリンピック・エンブレム・パズル（${num}角形ベース）」`;
     }
+
     if (finished) {
       ele.setAttribute(
         'data-text',
