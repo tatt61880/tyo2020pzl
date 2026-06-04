@@ -17,6 +17,19 @@ module.exports = [
     },
   },
   {
+    files: ['.github/scripts/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     files: ['src/*.js', 'lib/*.js'],
     languageOptions: {
       ecmaVersion: 2021,
