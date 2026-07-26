@@ -9,7 +9,7 @@ module.exports = [
   {
     files: ['eslint.config.js'],
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2022,
       sourceType: 'commonjs',
       globals: {
         ...globals.node,
@@ -19,7 +19,7 @@ module.exports = [
   {
     files: ['.github/scripts/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2022,
       sourceType: 'module',
       globals: {
         ...globals.node,
@@ -32,7 +32,7 @@ module.exports = [
   {
     files: ['src/*.js', 'lib/*.js'],
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2022,
       sourceType: 'script',
       globals: {
         ...globals.browser,
