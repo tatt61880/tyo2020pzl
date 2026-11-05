@@ -146,17 +146,19 @@ th.level {
   background-color: #dbe7f5;
 }
 
-input[type="radio"] {
-  margin: 3px 7px 7px 12px;
-  cursor: pointer;
-}
-
+input[type="radio"],
 input[type="checkbox"] {
-  margin: 3px 7px 7px 12px;
+  flex: none;
+  margin: 0;
   cursor: pointer;
 }
 
 label {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  max-width: calc(100% - 12px);
+  margin: 3px 0 7px 12px;
   cursor: pointer;
 }
 
@@ -167,11 +169,6 @@ select {
 div.round {
   margin: 3px 5px;
   border-radius: 10px;
-}
-
-span.nowrap {
-  margin: 0;
-  white-space: nowrap;
 }
 
 img.vertical-middle {
