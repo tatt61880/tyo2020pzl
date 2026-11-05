@@ -33,8 +33,10 @@
   let colorFillProperPieceIndex = colorFillProperPieceIndexDefault;
   let colorFillNormalPieceIndex = colorFillNormalPieceIndexDefault;
 
-  let dataRedo = '';
   let dataCurrent = '';
+  let history = [];
+  let historyIndex = 0;
+  let firstCompletion = null;
 
   const OptionType = {
     checkbox: 1,
@@ -77,11 +79,8 @@
     canvasForColor: {},
   };
 
-  let redoCount = 0;
   let clickCount = { total: 0, red: 0, green: 0 };
-  let clickCountFin = { total: 0, red: 0, green: 0 };
   let completedFlag = false;
-  let notYetCompletedFlag = true;
 
   let canvas;
   let canvasTarget;
@@ -113,20 +112,13 @@
   const targetCys = [];
   const targetUnusedFlags = [];
 
-  const isTouchDevice = navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/);
-
   const myImg = new Image();
   let bShapeImage = false;
+  let imageUrl = null;
 
-  window.addEventListener('load', onLoad); // 'DOMContentLoaded' だと完成状態のURLを読み込んだときに「twttr is not defined」となってしまうため、'load'を使います。
+  window.addEventListener('DOMContentLoaded', onLoad);
 
   function initEventListener() {
-    // iOSの場合とそれ以外とで画面回転時を判定するイベントを切り替える
-    const rotateEvent = navigator.userAgent.match(/(iPhone|iPod|iPad)/)
-      ? 'orientationchange'
-      : 'resize';
-    window.addEventListener(rotateEvent, onOrientationchange, false);
-
     for (const elemId in elems) {
       const elem = document.getElementById(elemId);
       const elemInfo = elems[elemId];
@@ -142,16 +134,29 @@
     myFile.addEventListener(
       'change',
       function () {
-        bShapeImage = true;
         const file = myFile.files[0];
+        if (!file) return;
+        removeShapeImage();
         const blobUrl = window.URL.createObjectURL(file);
-        document.getElementById(
-          'myFileImg'
-        ).innerHTML = `<img style="max-width: 100%" src="${blobUrl}">`;
-        myImg.src = blobUrl;
+        imageUrl = blobUrl;
         myImg.onload = function () {
+          if (imageUrl !== blobUrl) return;
+          bShapeImage = true;
+          const preview = document.createElement('img');
+          preview.src = blobUrl;
+          preview.alt = '選択した模様';
+          document.getElementById('myFileImg').replaceChildren(preview);
           draw();
         };
+        myImg.onerror = function () {
+          if (imageUrl !== blobUrl) return;
+          removeShapeImage();
+          draw();
+          window.alert(
+            'この画像を読み込めませんでした。別の画像を選択してください。'
+          );
+        };
+        myImg.src = blobUrl;
       },
       false
     );
@@ -205,27 +210,19 @@
     initOptions();
     initEventListener();
 
-    let dataLoad = '';
+    let dataLoad;
     // analyzing url
     {
-      let paravalsStr = location.href.split('?')[1];
-      if (paravalsStr === undefined) paravalsStr = '';
-      const paravalsArray = paravalsStr.split('&');
-      for (const paravals of paravalsArray) {
-        const paraval = paravals.split('=');
-        if (paraval.length === 2) {
-          if (paraval[0] === 'level') {
-            num = Number(paraval[1]);
-          } else if (paraval[0] === 's') {
-            dataLoad = paraval[1];
-          }
-        }
-      }
-      if (num === -1) num = 12;
-      if (isNaN(num)) num = 12;
-
+      const params = new URLSearchParams(location.search);
+      num = params.has('level') ? Number(params.get('level')) : 12;
+      dataLoad = params.get('s') || '';
       const MAX_LEVEL = 70;
-      if (num % 2 === 1) {
+      if (!Number.isInteger(num) || num < 4 || num > MAX_LEVEL) {
+        window.alert(
+          `レベルは4〜${MAX_LEVEL}の偶数を指定してください。レベル12を読み込みます。`
+        );
+        num = 12;
+      } else if (num % 2 === 1) {
         if (
           window.confirm(`奇数レベルには未対応です。申し訳ありません。
   1つ下のレベル（レベル${num - 1}）を読み込みます。良いですか？
@@ -235,10 +232,6 @@
         } else {
           num = 12;
         }
-      } else if (num > MAX_LEVEL) {
-        window.alert(`※レベル${MAX_LEVEL}より上のレベルは、フリーズ等の対策のため制限しています。
-  ご了承ください。`);
-        num = 12;
       }
 
       if (num === 6 || num === 12) {
@@ -270,46 +263,46 @@
         num = Number(selectedItem.value);
         numChanged();
       };
-      for (let i = 0; i < selectLevel.length; ++i) {
-        selectLevel.options[i].selected = selectLevel.options[i].value === num;
+      if (
+        ![...selectLevel.options].some((option) => Number(option.value) === num)
+      ) {
+        const option = document.createElement('option');
+        option.value = String(num);
+        option.textContent = `レベル${num}`;
+        selectLevel.appendChild(option);
       }
+      selectLevel.value = String(num);
     }
 
-    document.getElementById('buttonRedo').style.visibility = 'hidden';
     canvas = document.getElementById('canvasMain');
     canvasTarget = document.getElementById('canvasTarget');
-    canvas.addEventListener(
-      isTouchDevice ? 'touchstart' : 'click',
-      onClick,
-      false
-    );
+    canvas.addEventListener('click', onClick);
 
     updateTargetLocation();
     updateShapeType();
     updateShowTweetButton();
 
-    const maxStep = 10000;
-    const step = dataLoad.length;
-    if (step < maxStep) {
+    init();
+    const maxLength = 10000;
+    const length = dataLoad.length;
+    if (length === 0) {
+      refreshState();
+    } else if (length < maxLength) {
+      document.getElementById('textareaSavedata').value = dataLoad;
       loadData(dataLoad);
     } else {
-      window.alert(`読み込もうとしたデータは${step}手のデータです。
-  ${maxStep}手以上のデータは自動では読み込みません。
+      window.alert(`読み込もうとしたデータは${length}文字のデータです。
+  ${maxLength}文字以上のデータは自動では読み込みません。
   （処理に時間がかかる可能性があるためです。）
   読み込みたい場合は、セーブデータからロードしてください。`);
-      loadData('');
+      refreshState();
       document.getElementById('textareaSavedata').value = dataLoad;
     }
-    setRedoData();
   }
 
   function initScale() {
-    const clientWidth = 600;
-    const clientHeight = 600;
-    let canvasSize = clientWidth < clientHeight ? clientWidth : clientHeight;
-    const bodyWidth = document.body.clientWidth;
-    if (canvasSize <= 0) canvasSize = 400;
-    if (num <= 12 && canvasSize > bodyWidth) canvasSize = bodyWidth;
+    // 計算座標は固定し、画面サイズに応じた拡縮はCSSに任せる。
+    const canvasSize = 600;
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
     canvasTarget.setAttribute('width', canvasSize);
@@ -594,23 +587,28 @@
     'keydown',
     function (event) {
       if (
-        document.getElementById('savedataStr').style.display !== 'none' &&
-        document.getElementById('savedataStr').style.display !== 'none'
+        !canvas ||
+        event.defaultPrevented ||
+        event.isComposing ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        event.shiftKey ||
+        event.target.closest(
+          'input, textarea, select, button, [contenteditable]'
+        ) ||
+        (document.getElementById('savedataStr').style.display !== 'none' &&
+          document.getElementById('savedata').style.display !== 'none')
       )
         return;
-      const k = event.keyCode;
-      if (k === 37) {
+      if (event.key === 'ArrowLeft') {
         // [←]キー
-        if (
-          document.getElementById('buttonUndo').style.visibility === 'visible'
-        ) {
+        if (historyIndex > 0) {
           onButtonClickSavedataUndo(event);
         }
-      } else if (k === 39) {
+      } else if (event.key === 'ArrowRight') {
         // [→]キー
-        if (
-          document.getElementById('buttonRedo').style.visibility === 'visible'
-        ) {
+        if (historyIndex < history.length) {
           onButtonClickSavedataRedo(event);
         }
       }
@@ -630,7 +628,9 @@
     {
       clickCount = { total: 0, red: 0, green: 0 };
       completedFlag = false;
-      notYetCompletedFlag = true;
+      firstCompletion = null;
+      history = [];
+      historyIndex = 0;
     }
 
     pieceNum = (num * num) / 2 - num;
@@ -642,10 +642,7 @@
       cos[i] = Math.cos((i * Math.PI) / num);
     }
 
-    addTweetButton(false);
     dataCurrent = '';
-    document.getElementById('textareaSavedata').value = '';
-    document.getElementById('buttonUndo').style.visibility = 'hidden';
 
     const points = [];
     for (let i = 0; i < num; i++) {
@@ -690,19 +687,8 @@
   }
 
   function numChanged() {
-    let paravalsStr = location.href.split('?')[1];
-    if (paravalsStr === undefined) paravalsStr = '';
-    const paravalsArray = paravalsStr.split('&');
-    let numUrl = -1;
-    for (const paravals of paravalsArray) {
-      const paraval = paravals.split('=');
-      if (paraval.length === 2) {
-        if (paraval[0] === 'level') {
-          numUrl = Number(paraval[1]);
-        }
-      }
-    }
-    if (numUrl === -1) numUrl = 12;
+    const params = new URLSearchParams(location.search);
+    const numUrl = params.has('level') ? Number(params.get('level')) : 12;
     if (numUrl !== num) location.search = `?level=${num}`;
   }
 
@@ -1382,12 +1368,6 @@
     }
   }
 
-  function onOrientationchange() {
-    if (canvas === null) return;
-    initScale();
-    loadData(dataCurrent);
-  }
-
   function pieceMatchCheck(targetId, pieceId) {
     return (
       targetRectTypes[targetId] === rectTypes[pieceId] &&
@@ -1423,6 +1403,7 @@
     }
   }
   function isFinished() {
+    if (num !== 6 && num !== 12) return false;
     for (let targetId = 0; targetId < pieceNum; targetId++) {
       if (targetUnusedFlags[targetId]) continue;
       if (properFlagsTarget[targetId] === -1) return false;
@@ -1437,7 +1418,8 @@
     while (d.firstChild !== null) d.removeChild(d.firstChild);
 
     const ele = document.createElement('a');
-    ele.setAttribute('href', 'https://twitter.com/share');
+    ele.setAttribute('target', '_blank');
+    ele.setAttribute('rel', 'noopener noreferrer');
     ele.setAttribute('class', 'twitter-share-button');
 
     let title;
@@ -1453,7 +1435,7 @@
     if (finished) {
       ele.setAttribute(
         'data-text',
-        `${title}を${clickCount.total}手（赤${clickCount.red}, 緑${clickCount.green}）で解きました！`
+        `${title}を${firstCompletion.count.total}手（赤${firstCompletion.count.red}, 緑${firstCompletion.count.green}）で解きました！`
       );
     } else {
       if (clickCount.total === 0) {
@@ -1465,22 +1447,26 @@
         );
       }
     }
-    let buf = location.href;
-    const questionPos = buf.search('\\?');
-    if (questionPos !== -1) {
-      buf = buf.substr(0, questionPos);
-    }
-    ele.setAttribute(
-      'data-url',
-      `${buf}?level=${num}` + (dataCurrent === '' ? '' : `&s=${dataCurrent}`)
-    );
+    const url = new URL(location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('level', num);
+    const savedata = finished ? firstCompletion.data : dataCurrent;
+    if (savedata !== '') url.searchParams.set('s', savedata);
+    ele.setAttribute('data-url', url.href);
     ele.setAttribute('data-via', 'tatt61880');
     ele.setAttribute('data-hashtags', 'tyo2020pzl');
-    const str = document.createTextNode('tweet');
+    const intent = new URL('https://twitter.com/intent/tweet');
+    intent.searchParams.set('text', ele.getAttribute('data-text'));
+    intent.searchParams.set('url', url.href);
+    intent.searchParams.set('via', 'tatt61880');
+    intent.searchParams.set('hashtags', 'tyo2020pzl');
+    ele.href = intent.href;
+    const str = document.createTextNode('Xで共有');
     ele.appendChild(str);
     d.appendChild(ele);
 
-    twttr.widgets.load(); // eslint-disable-line no-undef
+    window.twttr?.widgets?.load(d);
   }
 
   function itoa(n) {
@@ -1497,16 +1483,23 @@
     return c;
   }
 
-  function updateSavedata(clickID) {
-    const c = itoa(clickID);
-    dataCurrent += c;
-    document.getElementById('textareaSavedata').value = dataCurrent;
-  }
-
   function movePieces(clickID) {
+    const point = clickPoints[clickID];
+    if (!point) return;
+    const pieceIds = [point.id1, point.id2];
+    if (point.trio) pieceIds.push(point.id3);
+    const ids = pieceIds.map((id) => Math.floor(id / 4));
+    const vertexIds = new Set();
+    for (const id of ids) {
+      for (let vertex = id * 4; vertex < id * 4 + 4; vertex++) {
+        vertexIds.add(vertex);
+        if (pairVertex[vertex] !== -1) vertexIds.add(pairVertex[vertex]);
+      }
+    }
+    const before = captureState(ids, [...vertexIds]);
     clickCount.total++;
-    updateSavedata(clickID);
-    document.getElementById('buttonUndo').style.visibility = 'visible';
+    const token = String(itoa(clickID));
+    dataCurrent += token;
 
     function f(iId, oId) {
       const po = pairVertex[oId];
@@ -1606,74 +1599,93 @@
       g(p13, p23);
     }
 
-    completedFlag = false;
-    if (isFinished()) {
-      completedFlag = true;
-      if (notYetCompletedFlag) {
-        document.getElementById('finish').style.display = 'block';
-        notYetCompletedFlag = false;
-        document.getElementById(
-          'textFinishCount'
-        ).innerText = `${clickCount.total}手目に完成！！（赤${clickCount.red}, 緑${clickCount.green}）`;
-        // 完成後のUndoやRedo時に毎回は更新しないようにする。
-        if (
-          clickCount.total !== clickCountFin.total ||
-          clickCount.red !== clickCountFin.red ||
-          clickCount.green !== clickCountFin.green
-        ) {
-          clickCountFin = clickCount;
-          addTweetButton(true);
-        }
+    completedFlag = isFinished();
+    if (completedFlag && firstCompletion === null) {
+      firstCompletion = { count: { ...clickCount }, data: dataCurrent };
+    }
+    history.length = historyIndex;
+    history.push({ token, before, after: captureState(ids, [...vertexIds]) });
+    historyIndex++;
+  }
+
+  // 各手で変わるピースと接続だけを記録する。盤面全体を手数分複製しない。
+  function captureState(pieceIds, vertexIds) {
+    return {
+      pieces: pieceIds.map((id) => [id, cxs[id], cys[id]]),
+      vertices: vertexIds.map((id) => [id, pairVertex[id]]),
+      count: { ...clickCount },
+      completed: completedFlag,
+      firstCompletion,
+    };
+  }
+
+  function restoreState(state) {
+    for (const [id, x, y] of state.pieces) {
+      if (properFlags[id] !== -1) properFlagsTarget[properFlags[id]] = -1;
+      cxs[id] = x;
+      cys[id] = y;
+    }
+    for (const [id] of state.pieces) updateProperFlags(id);
+    for (const [id, pair] of state.vertices) pairVertex[id] = pair;
+    clickCount = { ...state.count };
+    completedFlag = state.completed;
+    firstCompletion = state.firstCompletion;
+  }
+
+  function refreshState(updateText = true) {
+    if (updateText)
+      document.getElementById('textareaSavedata').value = dataCurrent;
+    elems.buttonUndo.disabled = historyIndex === 0;
+    elems.buttonRedo.disabled = historyIndex === history.length;
+    const finish = document.getElementById('finish');
+    finish.style.display = firstCompletion === null ? 'none' : 'block';
+    if (firstCompletion !== null) {
+      const count = firstCompletion.count;
+      document.getElementById(
+        'textFinishCount'
+      ).innerText = `${count.total}手目に完成！！（赤${count.red}, 緑${count.green}）`;
+      if (finish.dataset.savedata !== firstCompletion.data) {
+        addTweetButton(true);
+        finish.dataset.savedata = firstCompletion.data;
       }
     }
+    draw();
+    addTweetButton(false);
   }
 
   function onClick(e) {
-    let x;
-    let y;
-    const bcRect = canvas.getBoundingClientRect();
-    if (typeof e.touches !== 'undefined') {
-      x = e.touches[0].clientX - bcRect.left;
-      y = e.touches[0].clientY - bcRect.top;
-    } else {
-      x = e.clientX - bcRect.left;
-      y = e.clientY - bcRect.top;
-    }
-
-    let minDistance = 1000;
+    if (e.button !== 0) return;
+    const bounds = canvas.getBoundingClientRect();
+    const ratio = canvas.width / bounds.width;
+    const x = (e.clientX - bounds.left) * ratio;
+    const y = ((e.clientY - bounds.top) * canvas.height) / bounds.height;
+    // 小さい画面でも操作点の判定範囲を確保する。
+    const hitSize = Math.max(3 * pointSize, 12 * ratio);
+    let minDistance = Infinity;
     let clickID = -1;
     for (let i = 0; i < pointNum; i++) {
-      const px = clickPoints[i].px;
-      const py = clickPoints[i].py;
-      if (
-        Math.abs(px - x) < 3 * pointSize &&
-        Math.abs(py - y) < 3 * pointSize
-      ) {
+      const { px, py } = clickPoints[i];
+      if (Math.abs(px - x) < hitSize && Math.abs(py - y) < hitSize) {
         const distance = Math.abs(x - px) + Math.abs(y - py);
         if (distance < minDistance) {
-          // 条件を満たす点が複数ある場合の対策。一番クリックした位置に近いものを選択します。
           minDistance = distance;
           clickID = i;
         }
       }
     }
-
     if (clickID !== -1) {
       movePieces(clickID);
       calcClickPoints();
-      draw();
-      addTweetButton(false);
-      setRedoData();
+      refreshState();
     }
   }
 
   function moveRandom() {
+    if (clickPoints.length === 0) return;
     const clickID = Math.floor(Math.random() * clickPoints.length);
     movePieces(clickID);
     calcClickPoints();
-    draw();
-    addTweetButton(false);
-    setRedoData();
+    refreshState();
   }
 
   let timerRandom;
@@ -1693,8 +1705,7 @@
   function onButtonClickRandomIntervalStop(event) {
     elems.buttonRandomIntervalStop.style.visibility = 'hidden';
     event.preventDefault();
-    bRandomInterval = false;
-    clearInterval(timerRandom);
+    stopRandom();
   }
   function oninputRange(event) {
     event.preventDefault();
@@ -1709,119 +1720,122 @@
     moveRandom();
   }
 
-  function loadData(dataStr) {
-    init();
-    let calculatedFlag = true;
+  function parseSavedata(dataStr) {
+    const moves = [];
     for (let i = 0; i < dataStr.length; i++) {
-      const code = dataStr.charCodeAt(i);
-      let clickID = 0;
-      if (48 <= code && code <= 57) {
-        // 0-9
-        clickID = code - 48;
-      } else if (65 <= code && code <= 90) {
-        // A-Z
-        clickID = code - 65 + 10;
-      } else if (97 <= code && code <= 122) {
-        // a-z
-        clickID = code - 97 + 36;
-      } else if (dataStr.charAt(i) === '(') {
-        while (i !== dataStr.length - 1 && dataStr.charAt(++i) !== ')') {
-          clickID *= 10;
-          clickID += dataStr.charCodeAt(i) - 48;
+      const start = i;
+      const char = dataStr[i];
+      if (/\s/.test(char)) continue;
+      let id;
+      const code = char.charCodeAt(0);
+      if (code >= 48 && code <= 57) id = code - 48;
+      else if (code >= 65 && code <= 90) id = code - 65 + 10;
+      else if (code >= 97 && code <= 122) id = code - 97 + 36;
+      else if (char === '.') id = null;
+      else if (char === '(') {
+        const end = dataStr.indexOf(')', i + 1);
+        const digits = dataStr.slice(i + 1, end);
+        if (
+          end === -1 ||
+          !/^\d+$/.test(digits) ||
+          !Number.isSafeInteger(Number(digits))
+        ) {
+          throw new Error(
+            `${
+              i + 1
+            }文字目からの括弧内には整数を指定し、閉じ括弧を付けてください。`
+          );
         }
-      } else if (dataStr.charAt(i) === '.') {
-        calcClickPoints();
-        calculatedFlag = true;
-        clickID = Math.floor(Math.random() * clickPoints.length);
-      } else if (
-        dataStr.charAt(i) === '\n' ||
-        dataStr.charAt(i) === '\r' ||
-        dataStr.charAt(i) === '\t' ||
-        dataStr.charAt(i) === ' '
-      ) {
-        continue;
+        id = Number(digits);
+        i = end;
       } else {
-        window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が想定外です。`);
-        break;
+        throw new Error(`${i + 1}文字目(${char})が想定外です。`);
       }
-
-      if (calculatedFlag) {
-        calculatedFlag = false;
-      } else {
-        calcClickPoints(clickID);
-      }
-      if (clickPoints[clickID] === null) {
-        window.alert(`${i + 1}文字目(${dataStr.charAt(i)})が不正です。`);
-        break;
-      }
-      movePieces(clickID);
+      moves.push({ id, position: start + 1 });
     }
-    calcClickPoints();
-    draw();
-    addTweetButton(false);
+    return moves;
   }
 
-  function setRedoData() {
-    dataRedo = dataCurrent;
-    redoCount = clickCount.total;
-    document.getElementById('buttonRedo').style.visibility = 'hidden';
+  function loadData(dataStr) {
+    stopRandom();
+    let moves;
+    try {
+      moves = parseSavedata(dataStr);
+    } catch (error) {
+      window.alert(error.message);
+      refreshState(false);
+      return false;
+    }
+    const previous = {
+      state: captureState(
+        Array.from({ length: pieceNum }, (_, i) => i),
+        Array.from({ length: pieceNum * 4 }, (_, i) => i)
+      ),
+      data: dataCurrent,
+      history,
+      index: historyIndex,
+    };
+    init();
+    for (const move of moves) {
+      let id = move.id;
+      if (id === null) {
+        calcClickPoints();
+        id = Math.floor(Math.random() * clickPoints.length);
+      } else {
+        calcClickPoints(id);
+      }
+      if (!clickPoints[id]) {
+        restoreState(previous.state);
+        dataCurrent = previous.data;
+        history = previous.history;
+        historyIndex = previous.index;
+        calcClickPoints();
+        refreshState(false);
+        window.alert(
+          `${move.position}文字目の操作は、この盤面では使えません。読み込む前の状態を保持しました。`
+        );
+        return false;
+      }
+      movePieces(id);
+    }
+    calcClickPoints();
+    refreshState();
+    return true;
   }
 
   // ======================================================================
   // セーブデータ
   function onButtonClickSavedataLoad(event) {
     event.preventDefault();
-    const dataStr = document.getElementById('textareaSavedata').value;
-    console.time('loadTimer');
-    loadData(dataStr);
-    setRedoData();
-    console.timeEnd('loadTimer');
+    loadData(document.getElementById('textareaSavedata').value);
+  }
+
+  function stopRandom() {
+    bRandomInterval = false;
+    clearInterval(timerRandom);
+    elems.buttonRandomIntervalStop.style.visibility = 'hidden';
   }
 
   function onButtonClickSavedataUndo(event) {
     event.preventDefault();
-    const dataStr = dataCurrent;
-    if (dataStr.length === 0) {
-      window.alert('0手目です。Undoできません。');
-    } else {
-      let len = dataStr.length - 1;
-      if (dataStr[len] === ')') {
-        while (!(dataStr[len] === '(' || len === 0)) {
-          len--;
-        }
-      }
-      loadData(dataStr.substr(0, len));
-      document.getElementById('buttonRedo').style.visibility = 'visible';
-    }
+    stopRandom();
+    if (historyIndex === 0) return;
+    const entry = history[--historyIndex];
+    restoreState(entry.before);
+    dataCurrent = dataCurrent.slice(0, -entry.token.length);
+    calcClickPoints();
+    refreshState();
   }
 
   function onButtonClickSavedataRedo(event) {
     event.preventDefault();
-    if (dataRedo.indexOf('(') === -1) {
-      if (dataRedo.length <= clickCount.total) {
-        window.alert('これ以上Redoできません。');
-      } else {
-        loadData(dataRedo.substr(0, clickCount.total + 1));
-      }
-    } else {
-      let len = 0;
-      let count = 0;
-      while (count++ !== clickCount.total + 1) {
-        if (len > dataRedo.length) {
-          window.alert('これ以上Redoできません。');
-          return;
-        }
-        if (dataRedo[len] === '(') {
-          while (len !== dataRedo.length - 1 && dataRedo[++len] !== ')');
-        }
-        len++;
-      }
-      loadData(dataRedo.substr(0, len));
-    }
-
-    if (redoCount === clickCount.total) {
-      document.getElementById('buttonRedo').style.visibility = 'hidden';
-    }
+    stopRandom();
+    if (historyIndex === history.length) return;
+    const entry = history[historyIndex++];
+    restoreState(entry.after);
+    dataCurrent += entry.token;
+    calcClickPoints();
+    refreshState();
   }
 
   // ======================================================================
@@ -1846,6 +1860,10 @@
 
   function removeShapeImage() {
     bShapeImage = false;
+    myImg.onload = null;
+    myImg.onerror = null;
+    if (imageUrl !== null) window.URL.revokeObjectURL(imageUrl);
+    imageUrl = null;
     document.getElementById('myFileImg').innerText = '';
   }
   function onOptionShapeChanged() {
@@ -1959,26 +1977,26 @@
 
   let hueMode = false;
   let svMode = false;
+  let colorPointerId = null;
 
   function getXYonColorCanvas(e) {
-    const bcRect = elems.canvasForColor.getBoundingClientRect();
-    let x;
-    let y;
-    if (typeof e.touches !== 'undefined') {
-      x = e.touches[0].clientX - bcRect.left;
-      y = e.touches[0].clientY - bcRect.top;
-    } else {
-      x = e.clientX - bcRect.left;
-      y = e.clientY - bcRect.top;
-    }
-    return [x, y];
+    const bounds = elems.canvasForColor.getBoundingClientRect();
+    return [
+      ((e.clientX - bounds.left) * elems.canvasForColor.width) / bounds.width,
+      ((e.clientY - bounds.top) * elems.canvasForColor.height) / bounds.height,
+    ];
   }
 
-  function onColorSelectEnd() {
+  function onColorSelectEnd(e) {
+    if (e.pointerId !== colorPointerId) return;
+    colorPointerId = null;
     hueMode = false;
     svMode = false;
   }
   function onColorSelectStart(e) {
+    if (!e.isPrimary || e.button !== 0) return;
+    colorPointerId = e.pointerId;
+    elems.canvasForColor.setPointerCapture(e.pointerId);
     hueMode = false;
     svMode = false;
     const xy = getXYonColorCanvas(e);
@@ -1998,6 +2016,7 @@
     onColorSelecting(e);
   }
   function onColorSelecting(e) {
+    if (e.pointerId !== colorPointerId) return;
     if (!hueMode && !svMode) return;
     e.preventDefault();
 
@@ -2139,27 +2158,14 @@
     svX0 = hueCx - svSize / 2;
     svY0 = hueCy - svSize / 2;
 
-    const eventNameDown = isTouchDevice ? 'touchstart' : 'mousedown';
-    const eventNameMove = isTouchDevice ? 'touchmove' : 'mousemove';
-    const eventNameUp = isTouchDevice ? 'touchend' : 'mouseup';
+    elems.canvasForColor.addEventListener('pointerdown', onColorSelectStart);
+    elems.canvasForColor.addEventListener('pointermove', onColorSelecting);
+    elems.canvasForColor.addEventListener('pointerup', onColorSelectEnd);
+    elems.canvasForColor.addEventListener('pointercancel', onColorSelectEnd);
     elems.canvasForColor.addEventListener(
-      eventNameDown,
-      onColorSelectStart,
-      false
+      'lostpointercapture',
+      onColorSelectEnd
     );
-    elems.canvasForColor.addEventListener(
-      eventNameMove,
-      onColorSelecting,
-      false
-    );
-    elems.canvasForColor.addEventListener(eventNameUp, onColorSelectEnd, false);
-    if (!isTouchDevice) {
-      elems.canvasForColor.addEventListener(
-        'mouseout',
-        onColorSelectEnd,
-        false
-      );
-    }
     drawHSV();
   }
 
@@ -2189,7 +2195,9 @@
     const obj = document.getElementById(clickId).style;
     const closedFlag = obj.display === 'none';
     obj.display = closedFlag ? 'block' : 'none';
-    document.getElementById(`${clickId}Title`).innerHTML = closedFlag
+    const title = document.getElementById(`${clickId}Title`);
+    title.parentElement.setAttribute('aria-expanded', String(closedFlag));
+    title.textContent = closedFlag
       ? `△${str} (クリックして閉じる)`
       : `▼${str} (クリックして開く)`;
   }

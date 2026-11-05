@@ -3,12 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>#tyo2020pzl</title>
+  <title>東京オリンピック2020・エンブレム・パズル</title>
   <meta name="description" content="東京オリンピック(2020年)のエンブレムにちなんだパズルです。">
   <meta property="og:title" content="東京オリンピック2020・エンブレム・パズル">
   <meta property="og:description" content="東京オリンピック(2020年)のエンブレムにちなんだパズルです。">
 
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="./images/favicon.png?2026.01.01">
   <link rel="apple-touch-icon" sizes="100x100" href="./images/apple-touch-icon.png?2026.01.01">
 
@@ -20,53 +20,53 @@
 <body>
   <div id="contents">
     <form>
-      <div id="left" style="float: left; max-width: 600px;">
+      <div id="left">
         <h1 id="upperTitle">東京オリンピック2020・エンブレム・パズル</h1>
         <div id="divTargetCanvas" style="display: none;">
-          <canvas id="canvasTarget" height="0" width="0"></canvas>
+          <canvas id="canvasTarget" class="target-canvas" height="0" width="0"></canvas>
         </div>
         <div style="display: block;">
-          <canvas id="canvasMain" height="400" width="400"></canvas>
+          <canvas id="canvasMain" class="puzzle-canvas" height="400" width="400"></canvas>
         </div>
         <h1 id="lowerTitle" style="display: none;">東京オリンピック・エンブレム・パズル</h1>
         <span id="textClickCount">初期化中…</span>
-        <div id="buttonTweet" style="display: none;"></div>
+        <div id="buttonTweet" class="share-button" style="display: none;"></div>
         <div id="finish" style="display: none;">
           <span id="textFinishCount" style="color: #f00"></span>
-          <div id="buttonTweet2" style="display: inline"></div>
+          <div id="buttonTweet2" class="completion-share-button" style="display: inline"></div>
           <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs'); </script>
         </div>
       </div>
 
-      <div id="right" style="float: left; max-width: 400px;">
+      <div id="right">
         <!-- セーブデータ -->
         <div class="round savedata" style="margin-bottom: 5px; padding: 1px 0px;">
-          <div onclick="tyo2020pzl.onClickOpenClose('savedata', 'セーブデータ')" class="round savedata-category">
-            <a id="savedataTitle" style="cursor: pointer;">▼セーブデータ (クリックして開く)</a>
-          </div>
+          <button type="button" onclick="tyo2020pzl.onClickOpenClose('savedata', 'セーブデータ')" class="round savedata-category" aria-controls="savedata" aria-expanded="false">
+            <span id="savedataTitle">▼セーブデータ (クリックして開く)</span>
+          </button>
           <div id="savedata" style="display: none; clear: both;">
             <input type="button" class="savedata" value="Load" id="buttonLoad">
             <input type="button" class="savedata" value="Undo" id="buttonUndo">
             <input type="button" class="savedata" value="Redo" id="buttonRedo">
-            <div onclick="tyo2020pzl.onClickOpenClose('savedataStr', 'テキストエリア')" class="round savedata-category">
-              <a id="savedataStrTitle" style="cursor: pointer;">▼テキストエリア (クリックして開く)</a>
-            </div>
+            <button type="button" onclick="tyo2020pzl.onClickOpenClose('savedataStr', 'テキストエリア')" class="round savedata-category" aria-controls="savedataStr" aria-expanded="false">
+              <span id="savedataStrTitle">▼テキストエリア (クリックして開く)</span>
+            </button>
             <div id="savedataStr" style="display: none; clear: both;">
-              <textarea id="textareaSavedata" rows="5"
+              <textarea id="textareaSavedata" class="savedata-input" rows="5" aria-label="セーブデータ" spellcheck="false"
                 style="width: 98%; margin: 5px 1%; border: 1px solid #b0d4e5"></textarea>
             </div>
-            <div onclick="tyo2020pzl.onClickOpenClose('usageForSavedata', 'セーブデータの使い方')"
-              class="round savedata-category">
-              <a id="usageForSavedataTitle" style="cursor: pointer;">▼セーブデータの使い方 (クリックして開く)</a>
-            </div>
+            <button type="button" onclick="tyo2020pzl.onClickOpenClose('usageForSavedata', 'セーブデータの使い方')" class="round savedata-category" aria-controls="usageForSavedata" aria-expanded="false">
+              <span id="usageForSavedataTitle">▼セーブデータの使い方 (クリックして開く)</span>
+            </button>
             <div id="usageForSavedata" style="display: none; clear: both;">
               <ul>
-                <li>テキストエリア内の文字列がセーブデータです。適宜更新されます。1文字が1手に相当します。</li>
+                <li>テキストエリア内の文字列がセーブデータです。適宜更新されます。通常は1文字が1手に相当します。括弧で囲まれた数字も1手です。</li>
                 <li>【Load】セーブデータを読み込みます。</li>
-                <li>【Undo】1手前の状態に戻します。<br>※通常のUndoの意味合いと少し異なります。</li>
-                <li>【Redo】Undoする前の状態に戻します。</li>
+                <li>【Undo】1手前の状態に戻します。読み込んだセーブデータも巻き戻せます。</li>
+                <li>【Redo】Undoで戻した操作を1手やり直します。新しい手を動かすと、戻した先の履歴は消えます。</li>
+                <li>Load・Undo・Redoを行うと、自動のランダム動作は停止します。</li>
                 <li>【おまけ機能】 半角のピリオド「.」でランダムな手が使えます。</li>
-                <li>【ショートカットキー】アローキー(←→)でもUndo, Redoできます。(※テキストエリアを非表示にしている状態の時のみ有効です)</li>
+                <li>【ショートカットキー】アローキー(←→)でもUndo, Redoできます。(※テキストエリアを閉じ、入力欄やボタンにフォーカスしていないときに使えます)</li>
               </ul>
             </div>
           </div>
@@ -74,17 +74,16 @@
 
         <!-- オプション -->
         <div class="round option" style="margin-bottom: 5px; padding: 1px 0px;">
-          <div onclick="tyo2020pzl.onClickOpenClose('option', 'オプション')" class="round option-category">
-            <a id="optionTitle" style="cursor: pointer;">△オプション (クリックして閉じる)</a>
-          </div>
+          <button type="button" onclick="tyo2020pzl.onClickOpenClose('option', 'オプション')" class="round option-category" aria-controls="option" aria-expanded="true">
+            <span id="optionTitle">△オプション (クリックして閉じる)</span>
+          </button>
           <div id="option" style="display: block; clear: both;">
-            <div onclick="tyo2020pzl.drawColorSelector(); tyo2020pzl.onClickOpenClose('HueCircle', '色')"
-              class="round option-category">
-              <a id="HueCircleTitle" style="cursor: pointer;">▼色 (クリックして開く)</a>
-            </div>
+            <button type="button" onclick="tyo2020pzl.drawColorSelector(); tyo2020pzl.onClickOpenClose('HueCircle', '色')" class="round option-category" aria-controls="HueCircle" aria-expanded="false">
+              <span id="HueCircleTitle">▼色 (クリックして開く)</span>
+            </button>
             <div id="HueCircle" style="display: none; clear: both;">
               <div style="display: block; text-align: center;">
-                <canvas id="canvasForColor" height="240" width="240"></canvas>
+                <canvas id="canvasForColor" class="color-canvas" height="240" width="240"></canvas>
               </div>
               <div style="text-align: center;">
                 <input type="button" class="option" value="色を元に戻す" id="buttonDefaultColor">
@@ -92,15 +91,15 @@
             </div>
 
             <div class="round option-sub">
-              <div onclick="tyo2020pzl.onClickOpenClose('pattern', '模様')" class="round option-category">
-                <a id="patternTitle" style="cursor: pointer;">▼模様 (クリックして開く)</a>
-              </div>
+              <button type="button" onclick="tyo2020pzl.onClickOpenClose('pattern', '模様')" class="round option-category" aria-controls="pattern" aria-expanded="false">
+                <span id="patternTitle">▼模様 (クリックして開く)</span>
+              </button>
               <div id="pattern" style="display: none; clear: both;">
-                <input type="file" multiple id="myFile">
+                <input type="file" accept="image/*" id="myFile" class="shape-file" aria-label="模様に使う画像">
                 <div style="text-align: center;">
                   <input type="button" class="option" value="模様を元に戻す" id="buttonResetShape">
                 </div>
-                <div id="myFileImg"></div>
+                <div id="myFileImg" class="shape-preview"></div>
                 <span class="nowrap"><input type="radio" name="options-shape" value="ellipse"
                     id="options-shape-ellipse"><label for="options-shape-ellipse">楕円</label></span>
                 <span class="nowrap"><input type="radio" name="options-shape" value="octagram"
@@ -183,9 +182,9 @@
               <span class="nowrap"><input type="checkbox" id="options-showLines"><label
                   for="options-showLines">隣接ピースの中央を結ぶ線</label></span>
               <hr class="option">
-              <div onclick="tyo2020pzl.onClickOpenClose('random', 'ランダム動作')" class="round option-category">
-                <a id="randomTitle" style="cursor: pointer;">▼ランダム動作 (クリックして開く)</a>
-              </div>
+              <button type="button" onclick="tyo2020pzl.onClickOpenClose('random', 'ランダム動作')" class="round option-category" aria-controls="random" aria-expanded="false">
+                <span id="randomTitle">▼ランダム動作 (クリックして開く)</span>
+              </button>
               <div id="random" style="display: none; clear: both; text-align: center;">
                 <input type="button" class="option" value="1手動かす" id="buttonRandom">
                 <input type="button" class="option" value="動かし続ける" id="buttonRandomInterval">
@@ -205,9 +204,9 @@
 
         <!-- レベル -->
         <div class="round level" style="margin-bottom: 5px; padding: 1px 0px;">
-          <div onclick="tyo2020pzl.onClickOpenClose('levelSelect', 'レベル')" class="round level-category">
-            <a id="levelSelectTitle" style="cursor: pointer;">▼レベル (クリックして開く)</a>
-          </div>
+          <button type="button" onclick="tyo2020pzl.onClickOpenClose('levelSelect', 'レベル')" class="round level-category" aria-controls="levelSelect" aria-expanded="false">
+            <span id="levelSelectTitle">▼レベル (クリックして開く)</span>
+          </button>
           <div id="levelSelect" style="display: none; clear: both; padding-bottom: 5px">
             <p>
               <strong style="color: #F00;">【注意事項】</strong>レベルを変更するとページを再読み込みします。初期化されるのでご注意ください。
@@ -337,10 +336,7 @@
         </tr>
       </table>
 
-      <h3>既知の不具合</h3>
-      <ul>
-        <li>スマホで、画面を傾けたときに正しくリサイズされない場合があります (iPhoneの場合、Safariでは問題ない様子)。</li>
-      </ul>
+      <h3>不具合・要望</h3>
       <p>
         不具合を発見された場合は、報告していただけると幸いです。よろしくお願いします。<br>
         要望がある場合も是非。<br>
@@ -349,7 +345,6 @@
       </p>
       <h3>改善したい内容</h3>
       <ul>
-        <li>LoadやUndoやRedoの処理速度向上。</li>
         <li>奇数レベルへの対応。</li>
         <li>レベル6, レベル12以外の完成形の定義。</li>
       </ul>
